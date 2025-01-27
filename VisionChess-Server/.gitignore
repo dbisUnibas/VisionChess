@@ -1,5 +1,11 @@
 # Compiled class file
 *.class
+stockfish/
+.idea/
+.gradle/
+build/
+*.env
+docs/
 
 # Log file
 *.log

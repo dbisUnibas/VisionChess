@@ -1,0 +1,755 @@
+openapi: "3.0.0"
+info:
+  title: "VisionChessServer API"
+  description: "VisionChessServer API"
+  version: "1.0.0"
+servers:
+- url: "http://127.0.0.1:8090"
+paths:
+  /:
+    get:
+      description: ""
+      responses:
+        "302":
+          description: "Found <br> Redirect"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "/swagger-ui"
+  /game:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/GameResponse"
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GameRequest"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+  /game/{id}:
+    delete:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing game id"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Game Deleted successfully"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Game not found"
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing id"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GameResponse"
+    put:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GameRequest"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing game id"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /game/{id}/bestMove:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing GameId"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: ""
+                Example#3:
+                  value: ""
+                Example#4:
+                  value: ""
+                Example#5:
+                  value: ""
+                Example#6:
+                  value: ""
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: ""
+  /game/{id}/move:
+    post:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoveRequest"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing GameId"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: ""
+                Example#3:
+                  value: ""
+                Example#4:
+                  value: ""
+                Example#5:
+                  value: ""
+                Example#6:
+                  value: ""
+                Example#7:
+                  value: ""
+                Example#8:
+                  value: ""
+                Example#9:
+                  value: ""
+                Example#10:
+                  value: ""
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Function1"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: "Move did not succeed"
+                Example#3:
+                  value: ""
+  /users:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/UserResponse"
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "409":
+          description: "Conflict"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "User already exists"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HashMap_String"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Could not register User"
+  /users/{id}:
+    delete:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing user id"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "User Deleted successfully"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "User not found"
+    patch:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing user id"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /users/{email}:
+    get:
+      description: ""
+      parameters:
+      - name: "email"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing email"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /users/{id}/password:
+    patch:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing user id"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /users/auth/login:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "User not found."
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Password incorrect."
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Token could not be generated."
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /users/auth/logout:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogoutRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "User not found"
+  /users/auth/profile:
+    get:
+      description: ""
+      responses:
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "User not found"
+                Example#2:
+                  value: "User not found"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Token could not be generated."
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema: {}
+components:
+  schemas:
+    GameResponse:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        gameState:
+          type: "string"
+        moves:
+          type: "array"
+          items:
+            type: "string"
+        white:
+          type: "string"
+        black:
+          type: "string"
+        opponent:
+          type: "string"
+          enum:
+          - "PHYSICAL"
+          - "MIXED"
+          - "VIRTUAL"
+        winner:
+          type: "string"
+      required:
+      - "id"
+      - "gameState"
+      - "moves"
+      - "white"
+      - "black"
+      - "opponent"
+    GameRequest:
+      type: "object"
+      properties:
+        white:
+          type: "string"
+        black:
+          type: "string"
+        opponent:
+          type: "string"
+          enum:
+          - "PHYSICAL"
+          - "MIXED"
+          - "VIRTUAL"
+      required:
+      - "white"
+      - "black"
+      - "opponent"
+    MoveRequest:
+      type: "object"
+      properties:
+        move:
+          type: "string"
+      required:
+      - "move"
+    Function1:
+      type: "object"
+      properties: {}
+    UserSessionResponse:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+        CSRF:
+          type: "string"
+        validTo:
+          type: "string"
+      required:
+      - "token"
+      - "CSRF"
+      - "validTo"
+    UserResponse:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+        lastLogin:
+          type: "string"
+        activeSessions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserSessionResponse"
+        role:
+          type: "string"
+      required:
+      - "id"
+      - "email"
+      - "password"
+      - "lastLogin"
+      - "activeSessions"
+      - "role"
+    LoginRequest:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        password:
+          type: "string"
+      required:
+      - "email"
+      - "password"
+    HashMap:
+      type: "object"
+      properties: {}
+    HashMap_String:
+      type: "string"
+    ObjectId:
+      type: "object"
+      properties:
+        timestamp:
+          type: "integer"
+          format: "int32"
+    UserSession:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+        CSRF:
+          type: "string"
+        validTo:
+          type: "string"
+          format: "date-time"
+      required:
+      - "token"
+      - "CSRF"
+      - "validTo"
+    User:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/ObjectId"
+        email:
+          type: "string"
+        password:
+          type: "string"
+        lastLogin:
+          type: "string"
+          format: "date-time"
+        activeSessions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserSession"
+        role:
+          type: "string"
+      required:
+      - "id"
+      - "email"
+      - "password"
+      - "lastLogin"
+      - "activeSessions"
+      - "role"
+    UserLoginResponse:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        email:
+          type: "string"
+        CSRF:
+          type: "string"
+        role:
+          type: "string"
+      required:
+      - "id"
+      - "email"
+      - "CSRF"
+      - "role"
+    LoginResponse:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+        user:
+          $ref: "#/components/schemas/UserLoginResponse"
+      required:
+      - "token"
+      - "user"
+    LogoutRequest:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+      required:
+      - "id"
