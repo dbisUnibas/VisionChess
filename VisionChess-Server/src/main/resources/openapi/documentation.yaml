@@ -9,6 +9,7 @@ paths:
   /:
     get:
       description: ""
+      tags: ["Swagger-UI"]
       responses:
         "302":
           description: "Found <br> Redirect"
@@ -19,9 +20,10 @@ paths:
               examples:
                 Example#1:
                   value: "/swagger-ui"
-  /game:
+  /games:
     get:
       description: ""
+      tags: ["Games"]
       responses:
         "200":
           description: "OK"
@@ -33,6 +35,7 @@ paths:
                   $ref: "#/components/schemas/GameResponse"
     post:
       description: ""
+      tags: ["Games"]
       requestBody:
         content:
           application/json:
@@ -49,9 +52,10 @@ paths:
               examples:
                 Example#1:
                   value: ""
-  /game/{id}:
+  /games/{id}:
     delete:
       description: ""
+      tags: ["Games"]
       parameters:
       - name: "id"
         in: "path"
@@ -88,6 +92,7 @@ paths:
                   value: "Game not found"
     get:
       description: ""
+      tags: ["Games"]
       parameters:
       - name: "id"
         in: "path"
@@ -118,6 +123,7 @@ paths:
                 $ref: "#/components/schemas/GameResponse"
     put:
       description: ""
+      tags: ["Games"]
       parameters:
       - name: "id"
         in: "path"
@@ -152,9 +158,10 @@ paths:
             text/plain:
               schema:
                 type: "string"
-  /game/{id}/bestMove:
+  /games/{id}/bestMove:
     get:
       description: ""
+      tags: ["Games"]
       parameters:
       - name: "id"
         in: "path"
@@ -210,9 +217,10 @@ paths:
                   value: ""
                 Example#2:
                   value: ""
-  /game/{id}/move:
+  /games/{id}/move:
     post:
       description: ""
+      tags: ["Games"]
       parameters:
       - name: "id"
         in: "path"
@@ -284,6 +292,7 @@ paths:
   /users:
     get:
       description: ""
+      tags: ["Users"]
       responses:
         "200":
           description: "OK"
@@ -295,6 +304,7 @@ paths:
                   $ref: "#/components/schemas/UserResponse"
     post:
       description: ""
+      tags: ["Users"]
       requestBody:
         content:
           application/json:
@@ -329,6 +339,7 @@ paths:
   /users/{id}:
     delete:
       description: ""
+      tags: ["Users"]
       parameters:
       - name: "id"
         in: "path"
@@ -365,6 +376,7 @@ paths:
                   value: "User not found"
     patch:
       description: ""
+      tags: ["Users"]
       parameters:
       - name: "id"
         in: "path"
@@ -402,6 +414,7 @@ paths:
   /users/{email}:
     get:
       description: ""
+      tags: ["Users"]
       parameters:
       - name: "email"
         in: "path"
@@ -433,6 +446,7 @@ paths:
   /users/{id}/password:
     patch:
       description: ""
+      tags: ["Users"]
       parameters:
       - name: "id"
         in: "path"
@@ -470,6 +484,7 @@ paths:
   /users/auth/login:
     post:
       description: ""
+      tags: ["Users"]
       requestBody:
         content:
           application/json:
@@ -513,6 +528,7 @@ paths:
   /users/auth/logout:
     post:
       description: ""
+      tags: ["Users"]
       requestBody:
         content:
           application/json:
@@ -538,6 +554,7 @@ paths:
   /users/auth/profile:
     get:
       description: ""
+      tags: ["Users"]
       responses:
         "404":
           description: "Not Found"

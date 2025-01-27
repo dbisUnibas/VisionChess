@@ -1,7 +1,6 @@
 package de.timbachmann.api.routes
 
 import de.timbachmann.api.engine.Client
-import de.timbachmann.api.model.entity.Side
 import de.timbachmann.api.model.request.GameRequest
 import de.timbachmann.api.model.request.MoveRequest
 import de.timbachmann.api.repository.interfaces.GameRepositoryInterface
@@ -17,7 +16,7 @@ fun Route.gameRouting() {
 
     val repository by inject<GameRepositoryInterface>()
 
-    route("/game") {
+    route("/games") {
         get {
             repository.getAll().let {
                 call.respond(it.map{obj -> obj.toResponse()})
