@@ -7,20 +7,20 @@ import org.bson.types.ObjectId
 data class Game(
     @BsonId
     val id: ObjectId,
-    val gameState: String,
-    val moves: List<ObjectId>,
+    var gameState: String,
+    var moves: List<String>,
     val white: String,
     val black: String,
     val opponent: ChessOpponent,
-    val winner: ObjectId?,
+    val winner: String,
 ){
     fun toResponse() = GameResponse(
         id = id.toString(),
         gameState = gameState,
-        moves = moves.map { it.toString() },
+        moves = moves,
         white = white,
         black = black,
         opponent = opponent,
-        winner = winner.toString()
+        winner = winner
     )
 }

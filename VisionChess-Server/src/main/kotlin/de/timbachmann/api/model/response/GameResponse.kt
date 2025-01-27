@@ -10,5 +10,5 @@ data class GameResponse(
     val white: String,
     val black: String,
     val opponent: ChessOpponent,
-    val winner: String?
+    val winner: String
 )
