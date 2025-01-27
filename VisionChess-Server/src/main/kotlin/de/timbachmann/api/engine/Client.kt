@@ -88,10 +88,10 @@ class Client {
         try {
             val currentPosition: String = command(
                 "d",
-                { lines -> lines.stream().filter { s -> s.startsWith("fen:") }.findFirst().get() },
+                { lines -> lines.stream().filter { s -> s.startsWith("Fen:") }.findFirst().get() },
                 { line -> line?.startsWith("Checkers:") == true },
                 5000L
-            ).split(" ")[1]
+            ).split(" ").drop(1).joinToString(" ")
 
             return currentPosition;
         } catch (e: IOException) {
@@ -124,7 +124,7 @@ class Client {
                 { line -> line?.startsWith("bestmove") == true },
                 5000L
             ).split(" ")[1]
-            return validMove == move
+            return validMove === move
 
         } catch (e: IOException) {
             e.printStackTrace()
