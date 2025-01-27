@@ -108,15 +108,18 @@ fun Route.gameRouting() {
                 client.initUci()
                 val moveSucceeded = client.move(moveRequest.move, currentPosition)
                 if (moveSucceeded) {
-                    client.getCurrentBestMove()?.let { bestMove ->
+                    game.gameState = client.getCurrentPosition().toString()
+                    game.moves = game.moves.plus(moveRequest.move)
+                    val updated = repository.updateOne(game.id, game)
+
+                    if (!updated.wasAcknowledged()) {
                         client.close()
-                        return@post call.respond(HttpStatusCode.Created, bestMove)
-                    } ?: {
-                        client.close()
+                        return@post call.respondText("Game state not updated for id $gameId")
                     }
-                    return@post call.respondText("Move succeeded, no best move found for id $gameId")
+                    client.close()
+                    return@post call.respond(HttpStatusCode.Created, "Move {${moveRequest.move}} succeeded.")
                 }
-                return@post call.respondText("Move did not succeed")
+                return@post call.respondText("Move {${moveRequest.move}} not valid for state {${game.gameState}}")
             } ?:return@post call.respondText("No game found for id $gameId")
         }
     }
