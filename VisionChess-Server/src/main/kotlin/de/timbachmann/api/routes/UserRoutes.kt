@@ -48,7 +48,7 @@ fun Route.userRouting() {
                     password = passwordHash,
                     lastLogin = Date(0),
                     activeSessions = listOf(),
-                    role = "ADMIN"
+                    role = "USER"
                 )
             )?.let {
                 call.respond(hashMapOf("id" to it.toString()))
