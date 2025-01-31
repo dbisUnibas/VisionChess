@@ -12,17 +12,27 @@ import io.ktor.server.routing.*
 import org.bson.types.ObjectId
 import org.koin.ktor.ext.inject
 
+/**
+ * Defines the game-related routes for the Ktor application.
+ * This includes game creation, retrieval, deletion, updating, move handling, and AI move suggestions.
+ */
 fun Route.gameRouting() {
 
     val repository by inject<GameRepositoryInterface>()
 
     route("/games") {
+        /**
+         * Retrieves all games from the repository.
+         */
         get {
             repository.getAll().let {
                 call.respond(it.map{obj -> obj.toResponse()})
             }
         }
 
+        /**
+         * Retrieves a specific game by ID.
+         */
         get("/{id?}") {
             val id = call.parameters["id"]
             if (id.isNullOrEmpty()) {
@@ -36,12 +46,18 @@ fun Route.gameRouting() {
             } ?: call.respondText("No records found for id $id")
         }
 
+        /**
+         * Creates a new game and inserts it into the repository.
+         */
         post {
             val newGame = call.receive<GameRequest>()
             val insertedId = repository.insertOne(newGame.toGameObject())
             call.respond(HttpStatusCode.Created, "Created game with id $insertedId")
         }
 
+        /**
+         * Deletes a game by ID.
+         */
         delete("/{id?}") {
             val id = call.parameters["id"] ?: return@delete call.respondText(
                 text = "Missing game id",
@@ -54,6 +70,9 @@ fun Route.gameRouting() {
             return@delete call.respondText("Game not found", status = HttpStatusCode.NotFound)
         }
 
+        /**
+         * Updates a game by ID.
+         */
         put("/{id?}") {
             val id = call.parameters["id"] ?: return@put call.respondText(
                 text = "Missing game id",
@@ -67,6 +86,10 @@ fun Route.gameRouting() {
             )
         }
 
+        /**
+         * Retrieves the best move for a given game state using client engine.
+         * @see Client
+         */
         get("/{id?}/bestMove") {
             val gameId = call.parameters["id"]
             if (gameId.isNullOrEmpty()) {
@@ -92,6 +115,9 @@ fun Route.gameRouting() {
             } ?:return@get call.respondText("No game found for id $gameId")
         }
 
+        /**
+         * Processes a player's move and updates the game state accordingly.
+         */
         post("/{id?}/move") {
             val moveRequest = call.receive<MoveRequest>()
             val gameId = call.parameters["id"]

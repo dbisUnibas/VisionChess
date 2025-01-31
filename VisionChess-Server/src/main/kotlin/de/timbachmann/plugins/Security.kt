@@ -12,6 +12,11 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import org.koin.ktor.ext.inject
 
+/**
+ * Configures authentication and security for the Ktor application using JWT.
+ * This function sets up authentication with JWT, validates user credentials,
+ * and handles unauthorized access responses.
+ */
 fun Application.configureSecurity() {
     val userRepository by inject<UserRepositoryInterface>()
 

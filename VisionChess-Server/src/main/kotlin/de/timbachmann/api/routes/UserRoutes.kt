@@ -20,11 +20,18 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
+/**
+ * Defines the user-related routes for the Ktor application.
+ * This includes user registration, authentication (login/logout), and user profile management.
+ */
 fun Route.userRouting() {
 
     val repository by inject<UserRepositoryInterface>()
 
     route("/users") {
+        /**
+         * Registers a new user. If the email is already in use, it returns a conflict response.
+         */
         post {
             val user = call.receive<LoginRequest>()
             if (repository.findByEmail(email = user.email) !== null) {
@@ -49,12 +56,18 @@ fun Route.userRouting() {
 
         }
 
+        /**
+         * Retrieves all users.
+         */
         get {
             repository.getAll().let {
                 call.respond(it.map { obj -> obj.toResponse() })
             }
         }
 
+        /**
+         * Deletes a user by ID.
+         */
         delete("/{id?}") {
             val id = call.parameters["id"] ?: return@delete call.respondText(
                 text = "Missing user id",
@@ -67,6 +80,9 @@ fun Route.userRouting() {
             return@delete call.respondText("User not found", status = HttpStatusCode.NotFound)
         }
 
+        /**
+         * Retrieves a user by email.
+         */
         get("/{email?}") {
             val email = call.parameters["email"]
             if (email.isNullOrEmpty()) {
@@ -80,6 +96,9 @@ fun Route.userRouting() {
             } ?: call.respondText("No records found for id $email")
         }
 
+        /**
+         * Updates a user's details by ID.
+         */
         patch("/{id?}") {
             val id = call.parameters["id"] ?: return@patch call.respondText(
                 text = "Missing user id",
@@ -92,6 +111,9 @@ fun Route.userRouting() {
             )
         }
 
+        /**
+         * Updates a user's password by ID.
+         */
         patch("/{id?}/password") {
             val id = call.parameters["id"] ?: return@patch call.respondText(
                 text = "Missing user id",
@@ -104,6 +126,9 @@ fun Route.userRouting() {
             )
         }
 
+        /**
+         * Handles user login, verifies credentials, and generates a JWT token.
+         */
         post("/auth/login") {
             val userDTO = call.receive<LoginRequest>()
             val email = userDTO.email
@@ -146,6 +171,9 @@ fun Route.userRouting() {
             )
         }
 
+        /**
+         * Handles user logout by invalidating the active session.
+         */
         post("/auth/logout") {
             val request = call.receive<LogoutRequest>()
             repository.findById(ObjectId(request.id))?.let {
@@ -161,6 +189,9 @@ fun Route.userRouting() {
             } ?: call.respond(HttpStatusCode.NotFound, "User not found")
         }
 
+        /**
+         * Retrieves the authenticated user's profile and renews the token if expired.
+         */
         get("/auth/profile") {
             val authorization = call.request.headers[HttpHeaders.Authorization]
             val accessToken = authorization?.split(' ')?.get(1)

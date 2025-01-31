@@ -2,9 +2,16 @@ package de.timbachmann.api.engine
 
 import de.timbachmann.api.model.entity.Side
 
+/**
+ * Validates if a given FEN (Forsyth-Edwards Notation) string has a correct syntax.
+ *
+ * @param fen The FEN string to validate.
+ * @return `true` if the FEN string is valid, `false` otherwise.
+ */
 fun isFenSyntaxValid(fen: String): Boolean {
     if (fen == "startpos") return true
-    // Regex to validate the FEN structure
+
+    // Regex pattern to validate the FEN structure
     val fenPattern = Regex(
         "\\s*^(((?:[rnbqkpRNBQKP1-8]+/){7})[rnbqkpRNBQKP1-8]+)\\s([b|w])\\s(-|[K|Q|k|q]{1,4})\\s(-|[a-h][1-8])\\s(\\d+\\s\\d+)$"
     )
@@ -32,7 +39,7 @@ fun isFenSyntaxValid(fen: String): Boolean {
         for (c in fenPart) {
             when (c) {
                 in '1'..'8' -> {
-                    if (previousWasDigit) return false // Two digits next to each other
+                    if (previousWasDigit) return false // Two consecutive digits are not allowed
                     fieldSum += c.toString().toInt()
                     previousWasDigit = true
                 }
@@ -43,14 +50,20 @@ fun isFenSyntaxValid(fen: String): Boolean {
                 else -> return false // Invalid character
             }
         }
-        if (fieldSum != 8) return false // One of the rows doesn't have 8 columns
+        if (fieldSum != 8) return false // Each row must contain exactly 8 columns
     }
 
     return true
 }
 
+/**
+ * Extracts the side to move from a given FEN string.
+ *
+ * @param fen The FEN string to extract the side to move from.
+ * @return The corresponding {@link Side} (`WHITE` or `BLACK`), or `null` if the FEN is invalid.
+ */
 fun getSideToMoveFromFen(fen: String): Side? {
-    if (!isFenSyntaxValid(fen)) return null;
+    if (!isFenSyntaxValid(fen)) return null
     val sideToMoveFen = fen.split(" ")[1]
     return Side.byFenNotation(sideToMoveFen)
 }

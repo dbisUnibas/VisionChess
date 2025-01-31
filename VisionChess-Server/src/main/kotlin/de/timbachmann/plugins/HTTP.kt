@@ -7,6 +7,10 @@ import io.ktor.server.plugins.openapi.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
 
+/**
+ * Configures HTTP settings for the Ktor application.
+ * This includes enabling CORS, setting up OpenAPI documentation, and adding Swagger UI.
+ */
 fun Application.configureHTTP() {
     install(CORS) {
         allowMethod(HttpMethod.Options)

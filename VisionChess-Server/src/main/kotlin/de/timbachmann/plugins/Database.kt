@@ -9,6 +9,10 @@ import io.ktor.server.application.*
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 
+/**
+ * Configures the database for the Ktor application using MongoDB and Koin for dependency injection.
+ * This function sets up the repositories and database connection.
+ */
 fun Application.configureDatabase() {
     install(Koin) {
         modules(

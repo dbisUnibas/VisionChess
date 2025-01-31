@@ -42,18 +42,10 @@ dependencies {
     // MongoDB
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
 
-    implementation("com.lordcodes.turtle:turtle:0.10.0")
-
     // Koin
     implementation("io.insert-koin:koin-ktor:3.5.3")
     implementation("io.insert-koin:koin-logger-slf4j:3.5.3")
 
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.apache.commons:commons-lang3:3.14.0")
-
-
-    // Tests
-    testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-    implementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
