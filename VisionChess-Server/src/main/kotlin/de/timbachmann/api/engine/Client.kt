@@ -58,8 +58,13 @@ class Client {
             return false;
         }
         try {
-            command("position fen $fen", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
-            return true;
+            if (fen == "startpos") {
+                command("position startpos", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
+                return true;
+            } else {
+                command("position fen $fen", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
+                return true;
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -68,7 +73,7 @@ class Client {
 
     fun move(move: String, currentPosition: String = "startpos"): Boolean {
         try {
-            if (isFenSyntaxValid(currentPosition) && isValidMove(move)) {
+            if (isFenSyntaxValid(currentPosition) && isValidMove(move, currentPosition)) {
                 if (currentPosition == "startpos") {
                     command("position startpos moves $move", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
                     return true;
@@ -116,15 +121,16 @@ class Client {
         return null;
     }
 
-    private fun isValidMove(move: String): Boolean {
+    private fun isValidMove(move: String, currentPosition: String): Boolean {
         try {
+            setPosition(currentPosition)
             val validMove: String = command(
                 "go depth 1 searchmoves $move",
                 { lines -> lines.stream().filter { s -> s.startsWith("bestmove") }.findFirst().get() },
                 { line -> line?.startsWith("bestmove") == true },
                 5000L
             ).split(" ")[1]
-            return validMove === move
+            return validMove == move
 
         } catch (e: IOException) {
             e.printStackTrace()
@@ -133,6 +139,9 @@ class Client {
     }
 
     fun getSideToMove(fen: String): Side? {
+        if (fen == "startpos") {
+            return Side.WHITE;
+        }
         return getSideToMoveFromFen(fen);
     }
 
