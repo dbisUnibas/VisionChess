@@ -2,10 +2,23 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Used for ARKit</string>
+	<key>NSEnterpriseMCAMUsageDescription</key>
+	<string>Used for ARKit</string>
+	<key>NSHandsTrackingUsageDescription</key>
+	<string>Used for ARKit</string>
+	<key>NSWorldSensingUsageDescription</key>
+	<string>Used for ARKit</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationPreferredDefaultSceneSessionRole</key>
-		<string>UIWindowSceneSessionRoleApplication</string>
+		<string>UISceneSessionRoleImmersiveSpaceApplication</string>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
 		<key>UISceneConfigurations</key>

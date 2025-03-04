@@ -1,0 +1,24 @@
+{
+    "fileFormatVersion": "1.0.0",
+    "itemInfoEntries": {
+        "07221D89-C453-44A5-91E7-2185838C8C93": {
+            "author": "com.apple.CoreML",
+            "description": "CoreML Model Specification",
+            "name": "ChessPieceDetectionModel.mlmodel",
+            "path": "com.apple.CoreML/ChessPieceDetectionModel.mlmodel"
+        },
+        "5ABB1F3A-D8F0-4B17-B48B-17F6D32898B9": {
+            "author": "com.apple.CoreML",
+            "description": "External FeatureDescription Overlay",
+            "name": "FeatureDescriptions.json",
+            "path": "com.apple.CoreML/FeatureDescriptions.json"
+        },
+        "7EB2EF34-1F28-4545-9192-A7B21C505110": {
+            "author": "com.apple.CoreML",
+            "description": "External Metadata Overlay",
+            "name": "Metadata.json",
+            "path": "com.apple.CoreML/Metadata.json"
+        }
+    },
+    "rootModelIdentifier": "07221D89-C453-44A5-91E7-2185838C8C93"
+}

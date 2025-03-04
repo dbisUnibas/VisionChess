@@ -7,16 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		223408792D75E08700A0806C /* OpenAPIClient in Frameworks */ = {isa = PBXBuildFile; productRef = 223408782D75E08700A0806C /* OpenAPIClient */; };
+		2234087D2D76284E00A0806C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2234087C2D76284E00A0806C /* Settings.bundle */; };
 		22C1B38C2D35083C00C5C076 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 22C1B38B2D35083C00C5C076 /* RealityKitContent */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2234087C2D76284E00A0806C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		22C1B3862D35083C00C5C076 /* VisionChess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VisionChess.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C1B38A2D35083C00C5C076 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		22C1B39D2D35083E00C5C076 /* Exceptions for "VisionChess" folder in "VisionChess" target */ = {
+		228003D42D5A665F004F0A98 /* Exceptions for "VisionChess" folder in "VisionChess" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -26,10 +29,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		22C1B3882D35083C00C5C076 /* VisionChess */ = {
+		228003A72D5A665F004F0A98 /* VisionChess */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				22C1B39D2D35083E00C5C076 /* Exceptions for "VisionChess" folder in "VisionChess" target */,
+				228003D42D5A665F004F0A98 /* Exceptions for "VisionChess" folder in "VisionChess" target */,
 			);
 			path = VisionChess;
 			sourceTree = "<group>";
@@ -41,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				223408792D75E08700A0806C /* OpenAPIClient in Frameworks */,
 				22C1B38C2D35083C00C5C076 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -51,7 +55,8 @@
 		22C1B37D2D35083C00C5C076 = {
 			isa = PBXGroup;
 			children = (
-				22C1B3882D35083C00C5C076 /* VisionChess */,
+				2234087C2D76284E00A0806C /* Settings.bundle */,
+				228003A72D5A665F004F0A98 /* VisionChess */,
 				22C1B3892D35083C00C5C076 /* Packages */,
 				22C1B3872D35083C00C5C076 /* Products */,
 			);
@@ -89,11 +94,12 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				22C1B3882D35083C00C5C076 /* VisionChess */,
+				228003A72D5A665F004F0A98 /* VisionChess */,
 			);
 			name = VisionChess;
 			packageProductDependencies = (
 				22C1B38B2D35083C00C5C076 /* RealityKitContent */,
+				223408782D75E08700A0806C /* OpenAPIClient */,
 			);
 			productName = VisionChess;
 			productReference = 22C1B3862D35083C00C5C076 /* VisionChess.app */;
@@ -123,6 +129,9 @@
 			);
 			mainGroup = 22C1B37D2D35083C00C5C076;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				223408772D75E08700A0806C /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 22C1B3872D35083C00C5C076 /* Products */;
 			projectDirPath = "";
@@ -138,6 +147,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2234087D2D76284E00A0806C /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,13 +169,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = VisionChess/VisionChess.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"VisionChess/Preview Content\"";
 				DEVELOPMENT_TEAM = 883GXF926S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = VisionChess;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.strategy-games";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -174,6 +189,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.timbachmann.VisionChess;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
@@ -185,13 +201,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = VisionChess/VisionChess.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"VisionChess/Preview Content\"";
 				DEVELOPMENT_TEAM = 883GXF926S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = VisionChess;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.strategy-games";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -200,6 +221,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.timbachmann.VisionChess;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
@@ -348,7 +370,18 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		223408772D75E08700A0806C /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient";
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		223408782D75E08700A0806C /* OpenAPIClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OpenAPIClient;
+		};
 		22C1B38B2D35083C00C5C076 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;

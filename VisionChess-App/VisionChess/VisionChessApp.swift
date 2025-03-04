@@ -13,13 +13,9 @@ struct VisionChessApp: App {
     @State private var appModel = AppModel()
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(appModel)
-        }
-
+        #if os(visionOS)
         ImmersiveSpace(id: appModel.immersiveSpaceID) {
-            ImmersiveView()
+            GameView()
                 .environment(appModel)
                 .onAppear {
                     appModel.immersiveSpaceState = .open
@@ -29,5 +25,11 @@ struct VisionChessApp: App {
                 }
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
+        #else
+        WindowGroup {
+            ContentView()
+                .environment(appModel)
+        }
+        #endif
      }
 }

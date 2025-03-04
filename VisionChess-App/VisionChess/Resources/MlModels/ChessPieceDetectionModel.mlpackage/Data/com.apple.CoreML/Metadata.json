@@ -1,0 +1,17 @@
+{
+  "MLModelVersionStringKey" : "8.3.70",
+  "MLModelDescriptionKey" : "Ultralytics YOLO11m model trained on custom Chess Dataset",
+  "MLModelCreatorDefinedKey" : {
+    "stride" : "32",
+    "Confidence threshold" : "0.5",
+    "IoU threshold" : "0.7",
+    "task" : "detect",
+    "imgsz" : "[640, 640]",
+    "date" : "2025-02-05T13:43:02.087300",
+    "batch" : "1",
+    "args" : "{'batch': 1, 'half': False, 'int8': False, 'nms': True}",
+    "names" : "{0: 'black-bishop', 1: 'black-king', 2: 'black-knight', 3: 'black-pawn', 4: 'black-queen', 5: 'black-rook', 6: 'white-bishop', 7: 'white-king', 8: 'white-knight', 9: 'white-pawn', 10: 'white-queen', 11: 'white-rook'}"
+  },
+  "MLModelAuthorKey" : "Tim Bachmann",
+  "MLModelLicenseKey" : "AGPL-3.0 License (https:\/\/ultralytics.com\/license)"
+}
