@@ -9,27 +9,13 @@ import SwiftUI
 
 @main
 struct VisionChessApp: App {
-
     @State private var appModel = AppModel()
-
+    
     var body: some Scene {
-        #if os(visionOS)
-        ImmersiveSpace(id: appModel.immersiveSpaceID) {
-            GameView()
-                .environment(appModel)
-                .onAppear {
-                    appModel.immersiveSpaceState = .open
-                }
-                .onDisappear {
-                    appModel.immersiveSpaceState = .closed
-                }
+        Group {
+            VisionChessWindow()
+            GameSpace()
         }
-        .immersionStyle(selection: .constant(.mixed), in: .mixed)
-        #else
-        WindowGroup {
-            ContentView()
-                .environment(appModel)
-        }
-        #endif
-     }
+        .environment(appModel)
+    }
 }

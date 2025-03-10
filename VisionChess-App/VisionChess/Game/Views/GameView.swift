@@ -25,8 +25,6 @@ struct GameView: View {
     @Environment(AppModel.self) private var appModel
     @Environment(\.realityKitScene) var scene: RealityKit.Scene?
     @Environment(\.modelContext) var modelContext
-    
-    @State var viewModel: GameViewModel = .init()
     @State var currentDragTransformStart: Transform? = nil
     @State private var sourceTransform: Transform?
     
@@ -38,7 +36,6 @@ struct GameView: View {
         do {
             modelContainer = try ModelContainer(for: PersistedModel.self)
             dataSource = .init(context: modelContainer.mainContext)
-            viewModel.dataSource = dataSource
         } catch {
             fatalError("Could not initialize ModelContainer")
         }
@@ -50,88 +47,33 @@ struct GameView: View {
                 dataSource.removeAll()
             }
             
-            await viewModel.loadResources()
-            
-            let cameraFeedVisualizationEntity = viewModel.cameraFeedVisualizationEntity
-            
-            if let mainViewEntity = attachments.entity(for: ViewAttachment.mainView.rawValue) {
-                viewModel.contentContainerEntity.addChild(mainViewEntity)
-            }
+            let cameraFeedVisualizationEntity = appModel.viewModel?.cameraFeedVisualizationEntity
             
             guard let scene else {
                 return
             }
-            viewModel.prepare(withContent: content, andScene: scene)
+            
+            appModel.viewModel?.prepare(withContent: content, andScene: scene)
             
         } update: { content, attachments in
-            if (viewModel.viewState == .setup && !content.entities.contains(where: {$0 == viewModel.utilityEntities.contentEntity})) {
-                content.add(viewModel.utilityEntities.contentEntity)
-            }
-            
-            if let rightUIViewEntity = attachments.entity(for: ViewAttachment.uiRightView.rawValue) {
-                if (viewModel.viewState == .playing) {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        var transform = rightUIViewEntity.transform
-                        transform.rotation = simd_quatf(angle: -.pi / 2, axis: [1.0, 0.0, 0.0])
-                        rightUIViewEntity.transform = transform
-                        viewModel.utilityEntities.contentEntity.findEntity(named: "ui_right_transform")?.addChild(rightUIViewEntity)
-                    }
-                }
-                
-            }
-            
-            
-            if let leftUIViewEntity = attachments.entity(for: ViewAttachment.uiLeftView.rawValue) {
-                if (viewModel.viewState == .playing) {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        var transform = leftUIViewEntity.transform
-                        transform.rotation = simd_quatf(angle: -.pi / 2, axis: [1.0, 0.0, 0.0])
-                        leftUIViewEntity.transform = transform
-                        viewModel.utilityEntities.contentEntity.findEntity(named: "ui_left_transform")?.addChild(leftUIViewEntity)
-                    }
+            if (appModel.sessionController?.game.stage == .inSetup && !content.entities.contains(where: {$0 == appModel.viewModel?.utilityEntities.contentEntity})) {
+                if let contentEntity = appModel.viewModel?.utilityEntities.contentEntity {
+                    content.add(contentEntity)
                 }
             }
             
-            if let bottomUIViewEntity = attachments.entity(for: ViewAttachment.uiBottomView.rawValue) {
-                if (viewModel.viewState == .playing) {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        var transform = bottomUIViewEntity.transform
-                        transform.rotation = simd_quatf(angle: -.pi / 2, axis: [1.0, 0.0, 0.0])
-                        bottomUIViewEntity.transform = transform
-                        viewModel.utilityEntities.contentEntity.findEntity(named: "ui_bottom_transform")?.addChild(bottomUIViewEntity)
-                    }
-                }
-            }
-            
-            viewModel.handleCollisions(content: content)
+            appModel.viewModel?.handleCollisions(content: content)
             
         } attachments: {
-            Attachment(id: ViewAttachment.mainView.rawValue) {
-                mainView
-            }
-            
-            Attachment(id: ViewAttachment.uiLeftView.rawValue) {
-                uiLeftView
-            }
-            
-            Attachment(id: ViewAttachment.uiRightView.rawValue) {
-                uiRightView
-            }
-            
-            Attachment(id: ViewAttachment.uiBottomView.rawValue) {
-                uiBottomView
-            }
-            
-            Attachment(id: ViewAttachment.debugView.rawValue) {
-                debugView
-            }
         }
         .gesture(
             SpatialTapGesture()
                 .targetedToAnyEntity()
                 .onEnded { value in
-                    if (viewModel.viewState == .setup) {
-                        viewModel.placeBoard(dataSource.insert())
+                    if (appModel.sessionController?.game.stage == .inSetup) {
+                        appModel.viewModel?.placeBoard(dataSource.insert())
+                        appModel.sessionController?.startGame()
+                        appModel.viewModel?.gameManager?.startGame()
                     }
                 }
         )
@@ -141,7 +83,7 @@ struct GameView: View {
                 .targetedToAnyEntity()
                 .handActivationBehavior(.pinch)
                 .onChanged { value in
-                    if viewModel.gameManager?.currentSide != .white {
+                    if appModel.viewModel?.gameManager?.currentSide != .white {
                         return
                     }
                     
@@ -149,8 +91,8 @@ struct GameView: View {
                         sourceTransform = value.entity.transform
                     }
                     
-                    if viewModel.currentlyMovingChessPiece == nil && viewModel.currentlyMovingChessPieceCollisionSubscription == nil {
-                        viewModel.currentlyMovingChessPiece = value.entity
+                    if appModel.viewModel?.currentlyMovingChessPiece == nil && appModel.viewModel?.currentlyMovingChessPieceCollisionSubscription == nil {
+                        appModel.viewModel?.currentlyMovingChessPiece = value.entity
                     }
 
                     if let rotation = value.second?.rotation {
@@ -160,7 +102,7 @@ struct GameView: View {
                         value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = false
                         let location3D = value.convert(transform, from: .local, to: .scene)
                         Task {
-                            await viewModel.moveCube(entity: value.entity, to: location3D)
+                            await appModel.viewModel?.moveCube(entity: value.entity, to: location3D)
                         }
                     }
                 }
@@ -168,37 +110,39 @@ struct GameView: View {
                     sourceTransform = nil
                     value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = true
                     
-                    if viewModel.currentTargetField.isEmpty || viewModel.gameManager?.currentSide != .white {
+                    if appModel.viewModel?.currentTargetField.isEmpty ?? true || appModel.viewModel?.gameManager?.currentSide != .white {
                         return
                     }
                     
-                    let fieldEntity = viewModel.currentTargetField.last!
-                    viewModel.gameManager?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!) { success in
-                        if success {
-                            fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
-                            viewModel.currentTargetField = []
-                            viewModel.currentlyMovingChessPiece = nil
-                            viewModel.currentlyMovingChessPieceCollisionSubscription?.cancel()
-                            viewModel.currentlyMovingChessPieceCollisionSubscription = nil
-                            viewModel.currentlyMovingChessPieceCollisionSubscriptionEnd?.cancel()
-                            viewModel.currentlyMovingChessPieceCollisionSubscriptionEnd = nil
-                            viewModel.deactivateInput()
-                        } else {
-                            if let initialField = viewModel.currentlyMovingChessPieceInitialField {
-                                viewModel.gameManager?.animateMove(piece: value.entity, field: initialField)
-                                initialField.components[OpacityComponent.self]?.opacity = 0.4
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    initialField.components[OpacityComponent.self]?.opacity = 0.0
-                                    
+                    let fieldEntity = appModel.viewModel?.currentTargetField.last!
+                    if let fieldEntity = fieldEntity {
+                        appModel.viewModel?.gameManager?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!) { success in
+                            if success {
+                                fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
+                                appModel.viewModel?.currentTargetField = []
+                                appModel.viewModel?.currentlyMovingChessPiece = nil
+                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscription?.cancel()
+                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscription = nil
+                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscriptionEnd?.cancel()
+                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscriptionEnd = nil
+                                appModel.viewModel?.deactivateInput()
+                            } else {
+                                if let initialField = appModel.viewModel?.currentlyMovingChessPieceInitialField {
+                                    appModel.viewModel?.gameManager?.animateMove(piece: value.entity, field: initialField)
+                                    initialField.components[OpacityComponent.self]?.opacity = 0.4
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        initialField.components[OpacityComponent.self]?.opacity = 0.4
+                                        initialField.components[OpacityComponent.self]?.opacity = 0.0
                                         
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                            initialField.components[OpacityComponent.self]?.opacity = 0.0
+                                            initialField.components[OpacityComponent.self]?.opacity = 0.4
                                             
-                                            
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                                viewModel.errorMessage = nil
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                                initialField.components[OpacityComponent.self]?.opacity = 0.0
+                                                
+                                                
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                    appModel.viewModel?.errorMessage = nil
+                                                }
                                             }
                                         }
                                     }
@@ -209,82 +153,18 @@ struct GameView: View {
                 }
         )
         .onAppear {
-            viewModel.handleViewDidAppear()
+            appModel.initViewModel(dataSource: dataSource)
         }
         .task {
             print("awaiting anchor updates")
-            await viewModel.processWorldAnchorUpdates()
+            await appModel.viewModel?.processWorldAnchorUpdates()
         }
         .task {
-            await viewModel.processDeviceAnchorUpdates()
+            await appModel.viewModel?.processDeviceAnchorUpdates()
         }
         .task {
-            await viewModel.processPlaneDetectionUpdates()
+            await appModel.viewModel?.processPlaneDetectionUpdates()
         }
-        .task {
-            viewModel.registerGroupActivity()
-        }
-        .task {
-            viewModel.configureGroupSession()
-        }
-    }
-    
-    @ViewBuilder
-    var mainView: some View {
-        VStack {
-            switch viewModel.viewState {
-            case .initializing:
-                ProgressView()
-            case .preGame:
-                PreGameView(viewModel: viewModel)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .transition(.opacity.combined(with: .scale))
-            case .inModeSelection:
-                ModeSelection(viewModel: viewModel)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .transition(.opacity.combined(with: .scale))
-            case .inGameMenu:
-                GameMenuView(viewModel: viewModel)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .transition(.opacity.combined(with: .scale))
-            case .setup:
-                BoardSetupView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .transition(.opacity.combined(with: .scale))
-            case .playing:
-                EmptyView()
-            case .gameOver:
-                GameEndView(viewModel: viewModel)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .transition(.opacity.combined(with: .scale))
-            }
-        }
-        .frame(width: 800, height: 600)
-        .animation(.smooth, value: viewModel.viewState)
-    }
-    
-    @ViewBuilder
-    var uiRightView: some View {
-        GamePlayingViewRight(viewModel: viewModel)
-            .frame(width: 400, height: 600)
-            .animation(.smooth, value: viewModel.viewState)
-            .transition(.opacity.combined(with: .scale))
-    }
-    
-    @ViewBuilder
-    var uiLeftView: some View {
-        GamePlayingViewLeft(viewModel: viewModel)
-            .frame(width: 400, height: 600)
-            .animation(.smooth, value: viewModel.viewState)
-            .transition(.opacity.combined(with: .scale))
-    }
-    
-    @ViewBuilder
-    var uiBottomView: some View {
-        GamePlayingViewBottom(viewModel: viewModel)
-            .frame(width: 400, height: 600)
-            .animation(.smooth, value: viewModel.viewState)
-            .transition(.opacity.combined(with: .scale))
     }
     
     func formattedPercentage(_ value: Float) -> String {
@@ -298,7 +178,7 @@ struct GameView: View {
         
         VStack {
             ZStack {
-                if let predictions = viewModel.predictions, !predictions.isEmpty {
+                if let predictions = appModel.viewModel?.predictions, !predictions.isEmpty {
                     VStack {
 //                        ForEach(predictions, id: \.id) { prediction in
 //                            Text("\(prediction.label.description) – \(formattedPercentage(prediction.confidence))")
@@ -310,37 +190,13 @@ struct GameView: View {
             .padding()
             .frame(width: 400)
             .background {
-                if let predictions = viewModel.predictions, predictions.contains(where: { $0.isBallInAir && $0.confidence > 0.6 }) {
+                if let predictions = appModel.viewModel?.predictions, predictions.contains(where: { $0.isBallInAir && $0.confidence > 0.6 }) {
                     Color(uiColor: .systemGreen).opacity(0.5)
                         .blendMode(.overlay)
                         .clipShape(shape)
                 }
             }
             .glassBackgroundEffect(in: shape)
-        }
-    }
-    
-    @ViewBuilder
-    var debugView: some View {
-        switch viewModel.viewState {
-        case .initializing:
-            VStack {
-                ProgressView("Initializing")
-            }
-        case .playing:
-            makeStatusContainerView {
-                predictionsView
-                
-                if let error = viewModel.error {
-                    HStack {
-                        Image(systemName: "exclamationmark.bubble.fill")
-                        Text("Error: \(error.localizedDescription)")
-                    }
-                    .foregroundStyle(Color(uiColor: .systemRed))
-                }
-            }
-        case .preGame, .inModeSelection, .inGameMenu, .setup, .gameOver:
-            EmptyView()
         }
     }
     
@@ -366,9 +222,4 @@ extension Transform {
         return result
     }
 }
-
-//#Preview(immersionStyle: .mixed) {
-//    ImmersiveView()
-//        .environment(AppModel())
-//}
 #endif

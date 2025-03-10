@@ -8,14 +8,23 @@
 import SwiftUI
 
 /// Maintains app-wide state
-@MainActor
-@Observable
+@Observable @MainActor
 class AppModel {
-    let immersiveSpaceID = "ImmersiveSpace"
-    enum ImmersiveSpaceState {
-        case closed
-        case inTransition
-        case open
+    var sessionController: SessionController?
+    var viewModel: GameViewModel?
+    
+    var playerName: String = UserDefaults.standard.string(forKey: "player-name") ?? "" {
+        didSet {
+            UserDefaults.standard.set(playerName, forKey: "player-name")
+            sessionController?.localPlayer.name = playerName
+        }
     }
-    var immersiveSpaceState = ImmersiveSpaceState.closed
+    
+    var showPlayerNameAlert = false
+    var isImmersiveSpaceOpen = false
+        
+    func initViewModel(dataSource: PlaneAnchoringDataSource) {
+        self.viewModel = .init(dataSource: dataSource)
+    }
+    
 }

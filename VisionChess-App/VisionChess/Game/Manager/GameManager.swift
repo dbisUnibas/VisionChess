@@ -22,7 +22,7 @@ struct GameOverData: Equatable {
 class GameManager {
     var viewModel: GameViewModel
     private(set) var gameStateFen: String = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    private(set) var gameMode: GameMode? = .virtual
+    private(set) var gameMode: GameModel.GameMode? = .virtual
     private(set) var gameId: String?
     private(set) var currentSide: Side? = .white
     
@@ -71,11 +71,11 @@ class GameManager {
         currentSide = .white
     }
     
-    func setGameMode(mode: GameMode) {
+    func setGameMode(mode: GameModel.GameMode) {
         gameMode = mode
     }
     
-    func getGameMode() -> GameMode? {
+    func getGameMode() -> GameModel.GameMode? {
         return gameMode
     }
     
