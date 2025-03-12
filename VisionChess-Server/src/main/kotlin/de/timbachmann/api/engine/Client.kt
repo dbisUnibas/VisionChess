@@ -61,8 +61,8 @@ class Client {
     fun initUci(level: Int) {
         try {
             command("uci", identity(), { s -> s?.startsWith("uciok") == true }, 2000L)
-            command("setoption name UCI_LimitStrength value true", identity(), { s -> s?.startsWith("uciok") == true }, 2000L)
-            command("setoption name UCI_Elo value ${OpponentStrength.fromLevel(level)}", identity(), { s -> s?.startsWith("uciok") == true }, 2000L)
+            command("setoption name UCI_LimitStrength value true", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
+            command("setoption name UCI_Elo value ${OpponentStrength.fromLevel(level)}", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -103,7 +103,7 @@ class Client {
                 } else {
                     "position fen $currentPosition moves $move"
                 }
-                command(commandStr, identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
+                command(commandStr, identity(), { s -> s?.startsWith("readyok") == true }, 5000L)
                 return true
             }
             return false
@@ -118,16 +118,19 @@ class Client {
      *
      * @return The FEN string representing the current board state, or `null` if retrieval fails.
      */
-    fun getCurrentPosition(): String? {
+    fun getCurrentPosition(): GameState? {
         try {
-            val currentPosition: String = command(
+            val currentPosition: List<String> = command(
                 "d",
-                { lines -> lines.stream().filter { s -> s.startsWith("Fen:") }.findFirst().get() },
+                { lines -> lines.stream().filter { s -> s.startsWith("Fen:") || s.startsWith("Checkers:") }.toList() },
                 { line -> line?.startsWith("Checkers:") == true },
                 5000L
-            ).split(" ").drop(1).joinToString(" ")
+            )
 
-            return currentPosition
+            val fen = currentPosition[0].split(" ").drop(1).joinToString(" ")
+            val checkers = currentPosition[1].split(" ").drop(1)
+
+            return GameState(gameState = fen, checkers = checkers)
         } catch (e: IOException) {
             e.printStackTrace()
         }

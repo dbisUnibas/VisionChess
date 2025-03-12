@@ -609,6 +609,10 @@ components:
           type: "string"
         black:
           type: "string"
+        checkers:
+          type: "array"
+          items:
+            type: "string"
         opponentStrength:
           type: "integer"
           format: "int32"
@@ -626,6 +630,7 @@ components:
       - "moves"
       - "white"
       - "black"
+      - "checkers"
       - "opponentStrength"
       - "opponent"
       - "winner"

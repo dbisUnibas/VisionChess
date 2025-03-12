@@ -140,7 +140,11 @@ fun Route.gameRouting() {
                 client.initUci(level)
                 val moveSucceeded = client.move(moveRequest.move, currentPosition)
                 if (moveSucceeded) {
-                    game.gameState = client.getCurrentPosition().toString()
+                    client.getCurrentPosition()?.let { position ->
+                        game.gameState = position.gameState
+                        game.checkers = position.checkers
+                    } ?: return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
+
                     game.moves = game.moves.plus(moveRequest.move)
                     val updated = repository.updateOne(game.id, game)
 

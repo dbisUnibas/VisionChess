@@ -22,6 +22,7 @@ data class Game(
     var moves: List<String>,
     val white: String,
     val black: String,
+    var checkers: List<String>,
     val opponent: ChessOpponent,
     val opponentStrength: Int,
     val winner: String,
@@ -37,6 +38,7 @@ data class Game(
         moves = moves,
         white = white,
         black = black,
+        checkers = checkers,
         opponentStrength = opponentStrength,
         opponent = opponent,
         winner = winner

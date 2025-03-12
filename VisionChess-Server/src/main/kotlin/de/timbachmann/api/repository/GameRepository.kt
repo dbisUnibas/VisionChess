@@ -89,6 +89,8 @@ class GameRepository(private val mongoDatabase: MongoDatabase) : GameRepositoryI
             Updates.set(Game::moves.name, game.moves),
             Updates.set(Game::white.name, game.white),
             Updates.set(Game::black.name, game.black),
+            Updates.set(Game::checkers.name, game.checkers),
+            Updates.set(Game::opponentStrength.name, game.opponentStrength),
             Updates.set(Game::opponent.name, game.opponent),
             Updates.set(Game::winner.name, game.winner)
         )

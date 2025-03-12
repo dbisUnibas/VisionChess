@@ -30,6 +30,7 @@ data class GameRequest(
             moves = listOf(),
             white = white,
             black = black,
+            checkers = listOf(),
             opponentStrength = opponentStrength,
             opponent = opponent,
             winner = "null"
