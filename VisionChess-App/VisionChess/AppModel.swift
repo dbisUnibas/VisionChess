@@ -11,6 +11,11 @@ import SwiftUI
 @Observable @MainActor
 class AppModel {
     var sessionController: SessionController?
+    var gameController: GameController?
+    var activeController: GameControllerProtocol? {
+        return sessionController ?? gameController
+    }
+    
     var viewModel: GameViewModel?
     
     var playerName: String = UserDefaults.standard.string(forKey: "player-name") ?? "" {
@@ -24,7 +29,7 @@ class AppModel {
     var isImmersiveSpaceOpen = false
         
     func initViewModel(dataSource: PlaneAnchoringDataSource) {
-        self.viewModel = .init(dataSource: dataSource)
+        self.viewModel = .init(appModel: self, dataSource: dataSource)
     }
     
 }

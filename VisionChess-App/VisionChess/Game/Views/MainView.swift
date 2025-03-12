@@ -1,9 +1,9 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-The main UI view, which presents different subviews based on the app's current state.
-*/
+//
+//  MainView.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import GroupActivities
 import SwiftUI
@@ -16,7 +16,20 @@ struct MainView: View {
             // Select the appropriate view for each stage in the game.
             switch appModel.sessionController?.game.stage {
                 case .none:
-                    WelcomeView()
+                    switch appModel.gameController?.game.stage {
+                    case .none:
+                        WelcomeView()
+                    case .modeSelection:
+                        ModeSelectionView()
+                    case .sideSelection:
+                        TeamSelectionView()
+                    case .inSetup:
+                        BoardSetupView()
+                    case .inGame:
+                        GamePlayingView()
+                    case .gameOver:
+                        GameOverView()
+                    }
                 case .modeSelection:
                     ModeSelectionView()
                 case .sideSelection:
@@ -25,6 +38,8 @@ struct MainView: View {
                     BoardSetupView()
                 case .inGame:
                     GamePlayingView()
+                case .gameOver:
+                    GameOverView()
             }
         }
         .task(observeGroupSessions)

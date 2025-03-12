@@ -23,7 +23,7 @@ struct BoardSetupView: View {
                     .frame(width: 64, height: 64)
             }
             .padding()
-            .guessTogetherToolbar()
+            .visionChessToolbar()
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button("End game", systemImage: "xmark") {

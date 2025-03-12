@@ -1,9 +1,9 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-The implementation of the SharePlay button.
-*/
+//
+//  SharePlayButton.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import CoreTransferable
 import GroupActivities
@@ -75,4 +75,12 @@ struct ActivitySharingView<ActivityType: GroupActivity & Sendable>: UIViewContro
     }
 
     func updateUIViewController(_: GroupActivitySharingController, context: Context) {}
+}
+
+struct SharePlayButton_Previews: PreviewProvider {
+    static let appModel = AppModel()
+
+    static var previews: some View {
+        SharePlayButton("Test", activity: ChessGroupActivity())
+    }
 }

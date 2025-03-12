@@ -1,14 +1,13 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-Implementation for the Guess Together view modifier.
-*/
+//
+//  VisionChessToolbar.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import SwiftUI
 
 struct VisionChessToolbarModifier: ViewModifier {
-    @Environment(AppModel.self) var appModel
     
     func body(content: Content) -> some View {
         content
@@ -44,7 +43,7 @@ struct VisionChessToolbarModifier: ViewModifier {
 
 // A convenience custom modifier wrapper.
 extension View {
-    func guessTogetherToolbar() -> some View {
+    func visionChessToolbar() -> some View {
         return modifier(VisionChessToolbarModifier())
     }
 }

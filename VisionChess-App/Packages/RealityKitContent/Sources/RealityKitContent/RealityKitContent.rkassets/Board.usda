@@ -71,6 +71,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -131,6 +132,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -194,6 +196,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -257,6 +260,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -317,6 +321,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -377,6 +382,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -437,6 +443,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -497,6 +504,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -557,6 +565,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -620,6 +629,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -682,6 +692,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -744,6 +755,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -806,6 +818,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -868,6 +881,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -930,6 +944,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -992,6 +1007,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1063,7 +1079,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1124,7 +1140,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1186,7 +1202,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1247,7 +1263,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1308,7 +1324,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1369,7 +1385,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1430,7 +1446,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1491,7 +1507,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1552,7 +1568,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1613,7 +1629,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1677,7 +1693,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1741,7 +1757,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1803,7 +1819,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1865,7 +1881,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1927,7 +1943,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 
@@ -1988,7 +2004,7 @@ def "board_entity" (
 
                 def RealityKitComponent "InputTarget"
                 {
-                    bool enabled = 0
+                    bool enabled = 1
                     uniform token info:id = "RealityKit.InputTarget"
                 }
 

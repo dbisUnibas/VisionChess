@@ -14,7 +14,7 @@
 			<key>Key</key>
 			<string>app_base_url</string>
 			<key>DefaultValue</key>
-			<string>http://192.168.2.179:8090</string>
+			<string>http://10.34.64.140:8090</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>KeyboardType</key>

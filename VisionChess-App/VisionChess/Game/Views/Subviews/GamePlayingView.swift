@@ -1,15 +1,16 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-A view that displays each team's score next to the round's timer during a game.
-*/
+//
+//  GamePlayingView.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import SwiftUI
 import RealityKit
 
 struct GamePlayingView: View {
     @Environment(AppModel.self) var appModel
+    @Environment(\.openImmersiveSpace) var openImmersiveSpace
     
     @State var showEndGameConfirmation: Bool = false
     
@@ -26,9 +27,16 @@ struct GamePlayingView: View {
             .frame(maxWidth: .infinity)
         }
         .padding()
-        .guessTogetherToolbar()
+        .visionChessToolbar()
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
+                if !appModel.isImmersiveSpaceOpen {
+                    Button("Open Immersive Space", systemImage: "mountain.2.fill") {
+                        Task {
+                            await openImmersiveSpace(id: GameSpace.spaceID)
+                        }
+                    }
+                }
                 Button("End game", systemImage: "xmark") {
                     showEndGameConfirmation = true
                 }
@@ -36,7 +44,7 @@ struct GamePlayingView: View {
         }
         .confirmationDialog("End the game for everyone?", isPresented: $showEndGameConfirmation, titleVisibility: .visible) {
             Button("End game", role: .destructive) {
-                appModel.sessionController?.endGame()
+                appModel.activeController?.endGame()
             }
         }
     }
@@ -47,7 +55,11 @@ struct GamePlayingView: View {
                 player.side == team
             }
         } else {
-            return false
+            if appModel.gameController != nil {
+                return true
+            } else {
+                return false
+            }
         }
     }
 }
@@ -64,7 +76,15 @@ struct TeamStatusView: View {
     
     var players: [PlayerModel] {
         guard let sessionController = appModel.sessionController else {
-            return []
+            guard let gameController = appModel.gameController else {
+                return []
+            }
+            
+            if gameController.localPlayer.side == team {
+                return [gameController.localPlayer]
+            } else {
+                return [PlayerModel(id: UUID(), name: "Stockfish", side: gameController.localPlayer.side == .white ? .black : .white)]
+            }
         }
         
         return sessionController.players.values.filter { player in
@@ -77,11 +97,11 @@ struct TeamStatusView: View {
         Section(team.name) {
             ForEach(players) { player in
                 if player.isPlaying {
-                    LabeledContent(player.name, value: player.score.description)
+                    LabeledContent(player.name, value: String(player.score))
                         .foregroundStyle(.green)
                         .bold()
                 } else {
-                    LabeledContent(player.name, value: player.score.description)
+                    LabeledContent(player.name, value: String(player.score))
                 }
             }
             
@@ -89,7 +109,7 @@ struct TeamStatusView: View {
                 Text("Captured Pieces:")
                 
                 HStack {
-                    ForEach(Array(appModel.viewModel?.gameManager?.getDefeatedPieces(side: team.name).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
+                    ForEach(Array(appModel.gameController?.getDefeatedPieces(side: team.name.lowercased()).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
                         Model3D(named: model)
                     }
                 }

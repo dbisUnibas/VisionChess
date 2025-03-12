@@ -1,31 +1,13 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-The implementation for the welcome view.
-*/
+//
+//  WelcomeView.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import SwiftUI
 import RealityKit
 
-/// A view that introduces the Guess Together game, and invites the person to
-/// create a SharePlay group session with the current FaceTime call.
-///
-/// ```
-/// ┌───────────────────────────────────────┐
-/// │                                       │
-/// │               {   *   }               │
-/// │                                       │
-/// │            Guess Together!            │
-/// │                                       │
-/// │                                       │
-/// │   Welcome! To play, join a FaceTime   │
-/// │                call...                │
-/// │              ┌─────────┐              │
-/// │              │ Play  ▶ │              │
-/// │              └─────────┘              │
-/// └───────────────────────────────────────┘
-/// ```
 struct WelcomeView: View {
     @Environment(AppModel.self) var appModel
     
@@ -35,39 +17,43 @@ struct WelcomeView: View {
             
             Text("VisionChess").italic().font(.extraLargeTitle)
             
+            Text("Welcome to VisionChess!")
+            .multilineTextAlignment(.center)
+            .padding(.top)
+            
             Text("""
-                Welcome to VisionChess! \
-                To play, join a FaceTime call with a friend. \
+                To play, join a FaceTime call with a friend or practice on your own. \
                 You'll join a side and take turns playing chess.
                 """
             )
             .multilineTextAlignment(.center)
-            .padding()
+            .padding(.bottom)
+            .padding(.horizontal)
             
-            SharePlayButton("Play together!", activity: ChessGroupActivity())
-                .padding(.vertical, 20)
+            
+            HStack(spacing: 36.0) {
+                SharePlayButton("Play together!", activity: ChessGroupActivity())
+                    .padding(.vertical, 20)
+                
+                Button("Training", systemImage: "chart.line.uptrend.xyaxis") {
+                    appModel.gameController = GameController()
+                }
+                .tint(.gray)
+            }
+            
         }
-        .padding(.horizontal)
+        .padding()
     }
 }
 
 struct WelcomeBanner: View {
     var body: some View {
         HStack(alignment: .center, spacing: 48.0) {
-            Model3D(named: "black-knight")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
-            Model3D(named: "black-bishop")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
-            Model3D(named: "black-queen")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
-            Model3D(named: "black-king")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
-            
             ZStack {
                 Image("AppIcon/Back/Content")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 86)
+                    .frame(width: 128)
                 Image("AppIcon/Middle/Content")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -78,17 +64,19 @@ struct WelcomeBanner: View {
                     .frame(width: 48)
             }
             .clipShape(.circle)
-            
-            Model3D(named: "white-king")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
-            Model3D(named: "white-queen")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
-            Model3D(named: "white-bishop")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
-            Model3D(named: "white-knight")
-                .scaleEffect(x: 2.0, y: 2.0, z: 2.0)
         }
         .font(.system(size: 50))
         .frame(maxHeight: .infinity)
+    }
+}
+
+struct WelcomeView_Previews: PreviewProvider {
+    static let appModel = AppModel()
+
+    static var previews: some View {
+        WelcomeView()
+            .environment(appModel)
+            .glassBackgroundEffect()
+            .frame(width: 900, height: 600)
     }
 }

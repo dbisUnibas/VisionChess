@@ -1,9 +1,9 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-A session controller extension that synchronizes the app's state with the SharePlay group session.
-*/
+//
+//  SessionController+RemoteParticipantSynchronization.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import GroupActivities
 
@@ -126,12 +126,12 @@ extension SessionController {
             }
         }
     }
-    
-    struct GameSyncStore {
-        var editCount: Int = 0
-        var lastModifiedBy: Participant?
-        var game = GameModel()
-    }
+}
+
+struct GameSyncStore {
+    var editCount: Int = 0
+    var lastModifiedBy: Participant?
+    var game = GameModel()
 }
 
 struct GameMessage: Codable, Sendable {

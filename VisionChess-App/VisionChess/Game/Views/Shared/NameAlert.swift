@@ -1,9 +1,9 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-A view modifier that presents an alert that asks for the participant's name.
-*/
+//
+//  NameAlertModifier.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import SwiftUI
 

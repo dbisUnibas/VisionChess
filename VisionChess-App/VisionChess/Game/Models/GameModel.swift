@@ -1,23 +1,24 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-A model that represents the current state of the game
-  in the SharePlay group session.
-*/
+//
+//  GameModel.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import Foundation
 import GroupActivities
 
 struct GameModel: Codable, Hashable, Sendable {
     var mode: GameMode?
-    
-    /// The game's current state, which includes pre-game and in-game stages.
+    var currentSide: PlayerModel.Side = .white
+    var gameStateFen: String = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    var checkers: [ChessField] = []
+    var winner: PlayerModel.Side?
+    var gameMode: GameModel.GameMode? = .virtual
+    var gameId: String?
+    var lastKnownPosition: [ChessPiece: ChessField] = initialPosition
     var stage: ActivityStage = .modeSelection
-    
-    /// A record of all the player's turns throughout the game, which the app updates when the player completes a turn.
     var moveHistory: [Participant.ID] = []
-    
 }
 
 extension GameModel {
@@ -33,6 +34,7 @@ extension GameModel {
         case sideSelection
         case inSetup
         case inGame(GameStage)
+        case gameOver
         
         var isInGame: Bool {
             if case .inGame = self {
@@ -52,5 +54,35 @@ extension GameModel {
                 case .virtual: return "virtual"
             }
           }
+    }
+    
+    enum OpponentStrength: String, CaseIterable, Identifiable {
+        case easy = "Easy"
+        case medium = "Medium"
+        case hard = "Hard"
+        case expert = "Expert"
+
+        var id: String { self.rawValue }
+
+        // Mapping to numbers 1 to 5
+        var level: Int {
+            switch self {
+            case .easy: return 1
+            case .medium: return 2
+            case .hard: return 3
+            case .expert: return 4
+            }
+        }
+
+        // Convert from number to OpponentStrength
+        static func fromLevel(_ level: Int) -> OpponentStrength? {
+            switch level {
+            case 1: return .easy
+            case 2: return .medium
+            case 3: return .hard
+            case 4: return .expert
+            default: return nil // Return nil if level is out of range
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@
 //
 //  Created by Tim Bachmann on 10.03.2025.
 //
+
 import SwiftUI
 import ARKit
 import RealityKit
@@ -11,8 +12,7 @@ import RealityKitContent
 import Combine
 import GroupActivities
 
-
-@Observable
+@MainActor
 class GameViewModel {
     let contentContainerEntity = Entity()
     let cameraFeedVisualizationEntity: CameraFeedVisualizationEntity = {
@@ -24,7 +24,6 @@ class GameViewModel {
 
     private var content: RealityViewContent?
     private weak var scene: RealityKit.Scene?
-    private(set) var gameManager: GameManager?
     private(set) var predictions: [ChessPieceDetectionManager.PredictionResult]?
     private(set) var error: Error?
     private(set) var gameEntityResources: [GameEntityResource: ModelEntity] = [:]
@@ -40,69 +39,26 @@ class GameViewModel {
 
     let worldTracking = WorldTrackingProvider()
     let planeDetection = PlaneDetectionProvider()
-    var utilityEntities: UtilityEntities
     private var arInterface: ARKitInterface
-    private var planeAnchorHandler: PlaneAnchorHandler
+    private var planeAnchorHandler: PlaneAnchorHandler?
     var deviceAnchorPresent = false
     var planeAnchorsPresent = false
     var boardPlaced: Bool = false
     private var worldAnchors: [UUID:WorldAnchor] = [:]
     static private let placedObjectsOffsetOnPlanes: Float = 0.0001
     var dataSource: PlaneAnchoringDataSource?
+    var appModel: AppModel?
 
-    var currentTargetField: [Entity] = []
-    var currentlyMovingChessPiece: Entity? = nil
-    var currentlyMovingChessPieceInitialField: Entity? = nil
-    var currentlyMovingChessPieceCollisionSubscription: EventSubscription? = nil
-    var currentlyMovingChessPieceCollisionSubscriptionEnd: EventSubscription? = nil
-
-    var uiRightEntity: Entity? = nil
-    var uiLeftEntity: Entity? = nil
-
-    var errorMessage: String? = nil
-
-    struct UtilityEntities {
-        var contentEntity = Entity()
-        let deviceLocation: Entity = .init()
-        let raycastOrigin: Entity = .init()
-        let placementLocation: Entity = .init()
-        
-        init() {
-            contentEntity.addChild(placementLocation)
-            deviceLocation.addChild(raycastOrigin)
-            
-            // Angle raycasts 15 degrees down.
-            let raycastDownwardAngle = 15.0 * (Float.pi / 180)
-            raycastOrigin.orientation = simd_quatf(angle: -raycastDownwardAngle, axis: [1.0, 0.0, 0.0])
-        }
-    }
-
-    /// When the user is gazing at a valid plane target, insert the placement cursor
-    var planeToProjectOnFound = false {
-        didSet {
-            if planeToProjectOnFound {
-                utilityEntities.contentEntity.addChild(utilityEntities.placementLocation)
-            } else {
-                utilityEntities.placementLocation.removeFromParent()
-            }
-        }
-    }
-
-    init(dataSource: PlaneAnchoringDataSource) {
+    init(appModel: AppModel, dataSource: PlaneAnchoringDataSource) {
         print("Initializing GameViewModel")
+        self.appModel = appModel
         self.dataSource = dataSource
-        let entities = UtilityEntities()
-        self.utilityEntities = entities
         
-        planeAnchorHandler = .init(rootEntity: entities.contentEntity)
+        if let activeController = appModel.activeController {
+            planeAnchorHandler = .init(rootEntity: activeController.contentEntity)
+        }
         arInterface = .init()
         
-        Task {
-            let cursor = try await ModelEntity(named: "PlacementCursor")
-            await utilityEntities.placementLocation.addChild(cursor)
-        }
-        
-        self.gameManager = .init(viewModel: self)
         //self.objectDetectionManager = .init()
         
         //        objectDetectionPredictionSubscription = objectDetectionManager?.predictionsSubject
@@ -126,7 +82,7 @@ class GameViewModel {
             await runARKitSession()
         }
         #endif
-        runTrackingProviders()
+        //runTrackingProviders()
     }
 
     func toggle(entity: Entity, isEnabled: Bool, animated: Bool = true) {
@@ -210,24 +166,20 @@ class GameViewModel {
         }
     }
 
-    @MainActor
     func runARKitSession() async {
         await arInterface.beginSession(world: worldTracking, plane: planeDetection)
     }
 
-    @MainActor
     func processDeviceAnchorUpdates() async {
         await run(function: self.queryAndProcessLatestDeviceAnchor, withFrequency: 90)
     }
 
-    @MainActor
     func processWorldAnchorUpdates() async {
         for await anchorUpdate in worldTracking.anchorUpdates {
             process(anchorUpdate)
         }
     }
 
-    @MainActor
     private func queryAndProcessLatestDeviceAnchor() async {
         // Device anchors are only available when the provider is running.
         guard worldTracking.state == .running else { return }
@@ -235,64 +187,65 @@ class GameViewModel {
         let deviceAnchor = worldTracking.queryDeviceAnchor(atTimestamp: CACurrentMediaTime())
         
         deviceAnchorPresent = deviceAnchor != nil
-        planeAnchorsPresent = !planeAnchorHandler.planeAnchors.isEmpty
+        planeAnchorsPresent = !(planeAnchorHandler?.planeAnchors.isEmpty ?? false)
         
         guard let deviceAnchor, deviceAnchor.isTracked else { return }
         
         await updatePlacementLocation(deviceAnchor)
     }
 
-    @MainActor
     private func updatePlacementLocation(_ deviceAnchor: DeviceAnchor) async {
         if !boardPlaced {
-            utilityEntities.deviceLocation.transform = Transform(matrix: deviceAnchor.originFromAnchorTransform)
-            let originFromUprightDeviceAnchorTransform = deviceAnchor.originFromAnchorTransform.gravityAligned
-            
-            // Determine a placement location on planes in front of the device by casting a ray.
-            
-            // Cast the ray from the device origin.
-            let origin: SIMD3<Float> = utilityEntities.raycastOrigin.transformMatrix(relativeTo: nil).translation
-            
-            // Cast the ray along the negative z-axis of the device anchor, but with a slight downward angle.
-            // (The downward angle is configurable using the `raycastOrigin` orientation.)
-            let direction: SIMD3<Float> =  -utilityEntities.raycastOrigin.transformMatrix(relativeTo: nil).zAxis
-            
-            // Only consider raycast results that are within 0.2 to 3 meters from the device.
-            let minDistance: Float = 0.2
-            let maxDistance: Float = 3
-            
-            // Only raycast against horizontal planes.
-            let collisionMask = PlaneAnchor.allPlanesCollisionGroup
-            
-            var originFromPointOnPlaneTransform: float4x4? = nil
-            if let result = utilityEntities.contentEntity.scene?.raycast(origin: origin, direction: direction, length: maxDistance, query: .nearest, mask: collisionMask)
-                .first, result.distance > minDistance {
-                if result.entity.components[CollisionComponent.self]?.filter.group != PlaneAnchor.verticalCollisionGroup {
-                    // If the raycast hit a horizontal plane, use that result with a small, fixed offset.
-                    originFromPointOnPlaneTransform = originFromUprightDeviceAnchorTransform
-                    originFromPointOnPlaneTransform?.translation = result.position + [0.0, Self.placedObjectsOffsetOnPlanes, 0.0]
+            if let activeController = appModel?.activeController {
+                activeController.deviceLocation.transform = Transform(matrix: deviceAnchor.originFromAnchorTransform)
+                let originFromUprightDeviceAnchorTransform = deviceAnchor.originFromAnchorTransform.gravityAligned
+                
+                // Determine a placement location on planes in front of the device by casting a ray.
+                
+                // Cast the ray from the device origin.
+                let origin: SIMD3<Float> = activeController.raycastOrigin.transformMatrix(relativeTo: nil).translation
+                
+                // Cast the ray along the negative z-axis of the device anchor, but with a slight downward angle.
+                // (The downward angle is configurable using the `raycastOrigin` orientation.)
+                let direction: SIMD3<Float> =  -activeController.raycastOrigin.transformMatrix(relativeTo: nil).zAxis
+                
+                // Only consider raycast results that are within 0.2 to 3 meters from the device.
+                let minDistance: Float = 0.2
+                let maxDistance: Float = 3
+                
+                // Only raycast against horizontal planes.
+                let collisionMask = PlaneAnchor.allPlanesCollisionGroup
+                
+                var originFromPointOnPlaneTransform: float4x4? = nil
+                if let result = activeController.contentEntity.scene?.raycast(origin: origin, direction: direction, length: maxDistance, query: .nearest, mask: collisionMask)
+                    .first, result.distance > minDistance {
+                    if result.entity.components[CollisionComponent.self]?.filter.group != PlaneAnchor.verticalCollisionGroup {
+                        // If the raycast hit a horizontal plane, use that result with a small, fixed offset.
+                        originFromPointOnPlaneTransform = originFromUprightDeviceAnchorTransform
+                        originFromPointOnPlaneTransform?.translation = result.position + [0.0, Self.placedObjectsOffsetOnPlanes, 0.0]
+                    }
                 }
-            }
-            
-            if let originFromPointOnPlaneTransform {
-                utilityEntities.placementLocation.transform = Transform(matrix: originFromPointOnPlaneTransform)
-                planeToProjectOnFound = true
+                
+                if let originFromPointOnPlaneTransform {
+                    activeController.setPlacementLocationTransform(value: Transform(matrix: originFromPointOnPlaneTransform))
+                    activeController.setPlaneToProjectOnFound(value: true)
+                }
             }
         }
     }
 
     func processPlaneDetectionUpdates() async {
         for await anchorUpdate in planeDetection.anchorUpdates {
-            await planeAnchorHandler.process(anchorUpdate)
+            await planeAnchorHandler?.process(anchorUpdate)
         }
     }
 
-    @MainActor
     func placeBoard(_ entity: AnchorableEntity) {
         
-        #if targetEnvironment(simulator)
-            entity.renderContent?.position = utilityEntities.placementLocation.position
-            entity.renderContent?.orientation = utilityEntities.placementLocation.orientation
+        if let activeController = appModel?.activeController {
+#if targetEnvironment(simulator)
+            entity.renderContent?.position = activeController.placementLocation.position
+            entity.renderContent?.orientation = activeController.placementLocation.orientation
             
             Task {
                 let anchorId = UUID()
@@ -301,16 +254,16 @@ class GameViewModel {
                     contentToRender.position = .init(x: 0, y: 0.68, z: -2)
                     contentToRender.orientation = .init()
                     contentToRender.isEnabled = true
-                    utilityEntities.contentEntity.addChild(contentToRender)
+                    activeController.contentEntity.addChild(contentToRender)
                 }
                 
                 print("Board placed!")
                 boardPlaced = true
-                utilityEntities.placementLocation.removeFromParent()
+                activeController.placementLocation.removeFromParent()
             }
-        #else
-            entity.renderContent?.position = utilityEntities.placementLocation.position
-            entity.renderContent?.orientation = utilityEntities.placementLocation.orientation
+#else
+            entity.renderContent?.position = activeController.placementLocation.position
+            entity.renderContent?.orientation = activeController.placementLocation.orientation
             
             Task {
                 let newWorldAnchor = await attachEntityToWorldAnchor(entity)
@@ -319,12 +272,12 @@ class GameViewModel {
                 }
                 print("Board placed!")
                 boardPlaced = true
-                utilityEntities.placementLocation.removeFromParent()
+                activeController.placementLocation.removeFromParent()
             }
-        #endif
+#endif
+        }
     }
 
-    @MainActor
     func run(function: () async -> Void, withFrequency hz: UInt64) async {
         while true {
             if Task.isCancelled {
@@ -344,7 +297,6 @@ class GameViewModel {
         }
     }
 
-    @MainActor
     func process(_ anchorUpdate: AnchorUpdate<WorldAnchor>) {
         
         print("Handling anchor update: \(anchorUpdate.anchor.id)")
@@ -363,11 +315,11 @@ class GameViewModel {
             // it could be a world anchor from a previous run of the app.
             // ARKit surfaces all of the world anchors associated with this app
             // when the world tracking provider starts.
-            if let contentToRender = dataSource?.renderContentForAnchor(anchor) {
+            if let contentToRender = dataSource?.renderContentForAnchor(anchor), let activeController = appModel?.activeController {
                 contentToRender.position = anchor.originFromAnchorTransform.translation
                 contentToRender.orientation = anchor.originFromAnchorTransform.rotation
                 contentToRender.isEnabled = anchor.isTracked
-                utilityEntities.contentEntity.addChild(contentToRender)
+                activeController.contentEntity.addChild(contentToRender)
             } else {
                 if dataSource?.shouldRemoveEntity(for: anchor.id) == true {
                     Task {
@@ -381,11 +333,11 @@ class GameViewModel {
         case .updated:
             // Keep the position of placed objects in sync with their corresponding
             // world anchor, and hide the object if the anchor isn’t tracked.
-            if let object = dataSource?.renderContentForAnchor(anchor) {
+            if let object = dataSource?.renderContentForAnchor(anchor), let activeController = appModel?.activeController {
                 object.position = anchor.originFromAnchorTransform.translation
                 object.orientation = anchor.originFromAnchorTransform.rotation
                 object.isEnabled = anchor.isTracked
-                utilityEntities.contentEntity.addChild(object)
+                activeController.contentEntity.addChild(object)
             }
         case .removed:
             // Remove the placed object if the corresponding world anchor was removed.
@@ -393,7 +345,6 @@ class GameViewModel {
         }
     }
 
-    @MainActor
     func attachEntityToWorldAnchor(_ entity: AnchorableEntity) async -> WorldAnchor? {
         // First, create a new world anchor and try to add it to the world tracking provider.
         guard let renderContent = entity.renderContent else {
@@ -437,86 +388,5 @@ class GameViewModel {
         }
     }
 
-    func moveCube(entity: Entity, to: SIMD3<Float>) async {
-        await entity.setPosition(to, relativeTo: nil)
-    }
-
-    func isValidChessField(field: String) -> Bool {
-        let validFiles = "abcdefgh"
-        let validRanks = "12345678"
-        
-        guard field.count == 2 else { return false }
-        
-        let file = field.first!
-        let rank = field.last!
-        
-        return validFiles.contains(file) && validRanks.contains(rank)
-    }
-
-    func isValidChessPiece(piece: String) -> Bool {
-        return ChessPiece(rawValue: piece) != nil
-    }
-
-    func deactivateInput() {
-        let pieces = utilityEntities.contentEntity.findEntity(named: "white")?.children
-        pieces?.forEach{ piece in
-            if var inputComponent = piece.component(forType: InputTargetComponent.self) {
-                inputComponent.isEnabled = false
-            }
-        }
-    }
-
-    func activateInput() {
-        let pieces = utilityEntities.contentEntity.findEntity(named: "white")?.children
-        pieces?.forEach{ piece in
-            if var inputComponent = piece.component(forType: InputTargetComponent.self) {
-                inputComponent.isEnabled = true
-            }
-        }
-    }
-
-
-    func handleCollisions(content: RealityViewContent) {
-        if let currentChessPiece = currentlyMovingChessPiece {
-            if (currentlyMovingChessPieceCollisionSubscription == nil) {
-                let subscription = content.subscribe(to: CollisionEvents.Began.self, on: currentChessPiece) { collisionEvent in
-                    print("Collision with \(collisionEvent.entityB.name)")
-                    
-                    if self.isValidChessField(field: collisionEvent.entityB.name) {
-                        self.currentTargetField.append(collisionEvent.entityB)
-                        collisionEvent.entityB.components[OpacityComponent.self]?.opacity = 0.4
-                        
-                    } else if self.isValidChessPiece(piece: collisionEvent.entityB.name) {
-                        print("Chess Piece Collision")
-                        
-                        let targetPieceEntity = collisionEvent.entityB
-                        let currentTargetPiece = ChessPiece(rawValue: targetPieceEntity.name)!
-                        
-                        if (currentChessPiece.name.hasPrefix("white") && targetPieceEntity.name.hasPrefix("black"))
-                            || (currentChessPiece.name.hasPrefix("black") && targetPieceEntity.name.hasPrefix("white")) {
-                            
-                            self.gameManager?.lastKnownPosition[currentTargetPiece] = .defeated
-                            targetPieceEntity.removeFromParent()
-                        }
-                    }
-                }
-                
-                let subscriptionEnd = content.subscribe(to: CollisionEvents.Ended.self, on: currentChessPiece) { collisionEvent in
-                    if self.isValidChessField(field: collisionEvent.entityB.name) {
-                        if self.currentlyMovingChessPieceInitialField == nil {
-                            print("Initial Field: \(collisionEvent.entityB.name)")
-                            self.currentlyMovingChessPieceInitialField = collisionEvent.entityB
-                        }
-                        self.currentTargetField.removeAll(where: {$0.name == collisionEvent.entityB.name})
-                        collisionEvent.entityB.components[OpacityComponent.self]?.opacity = 0.0
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.currentlyMovingChessPieceCollisionSubscription = subscription
-                    self.currentlyMovingChessPieceCollisionSubscriptionEnd = subscriptionEnd
-                }
-            }
-        }
-    }
+    
 }

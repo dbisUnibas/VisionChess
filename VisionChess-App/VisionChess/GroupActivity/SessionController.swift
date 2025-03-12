@@ -1,15 +1,17 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-The controller manages the app's active SharePlay session.
-*/
+//
+//  SessionController.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import GroupActivities
 import Observation
+import RealityKit
+import SwiftUI
 
 @Observable @MainActor
-final class SessionController {
+final class SessionController: GameControllerProtocol {
     let session: GroupSession<ChessGroupActivity>
     let messenger: GroupSessionMessenger
     let systemCoordinator: SystemCoordinator
@@ -53,6 +55,30 @@ final class SessionController {
         }
     }
     
+    // GameControllerProtocol
+    
+    var opponentStregth: GameModel.OpponentStrength = .medium
+    
+    var currentTargetField: [Entity] = []
+    var currentlyMovingChessPiece: Entity? = nil
+    var currentlyMovingChessPieceCollisionSubscription: EventSubscription? = nil
+    var currentlyMovingChessPieceCollisionSubscriptionEnd: EventSubscription? = nil
+    
+    var contentEntity = Entity()
+    var deviceLocation: Entity = .init()
+    var raycastOrigin: Entity = .init()
+    var placementLocation: Entity = .init()
+    
+    var planeToProjectOnFound = false {
+        didSet {
+            if planeToProjectOnFound {
+                contentEntity.addChild(placementLocation)
+            } else {
+                placementLocation.removeFromParent()
+            }
+        }
+    }
+    
     init?(_ groupSession: GroupSession<ChessGroupActivity>, appModel: AppModel) async {
         guard let groupSystemCoordinator = await groupSession.systemCoordinator else {
             return nil
@@ -88,6 +114,8 @@ final class SessionController {
                 systemCoordinator.configuration.spatialTemplatePreference = .custom(GameTemplate())
             case .inGame:
                 systemCoordinator.configuration.spatialTemplatePreference = .custom(GameTemplate())
+            case .gameOver:
+                systemCoordinator.configuration.spatialTemplatePreference = .custom(GameTemplate())
         }
     }
     
@@ -104,10 +132,8 @@ final class SessionController {
                         systemCoordinator.assignRole(TeamSelectionTemplate.Role.white)
                     case .black:
                         systemCoordinator.assignRole(TeamSelectionTemplate.Role.black)
-                    case .spectator:
-                        systemCoordinator.assignRole(TeamSelectionTemplate.Role.spectator)
                 }
-            case .inGame, .inSetup:
+        case .inGame, .inSetup, .gameOver:
                 switch localPlayer.side {
                     case .none:
                         systemCoordinator.resignRole()
@@ -115,8 +141,6 @@ final class SessionController {
                         systemCoordinator.assignRole(TeamSelectionTemplate.Role.white)
                     case .black:
                         systemCoordinator.assignRole(TeamSelectionTemplate.Role.black)
-                    case .spectator:
-                        systemCoordinator.assignRole(TeamSelectionTemplate.Role.spectator)
                 }
         }
     }
@@ -141,20 +165,6 @@ final class SessionController {
     
     func joinTeam(_ side: PlayerModel.Side?) {
         localPlayer.side = side
-        
-        players.forEach { player in
-            print(player)
-            if player.key.id != localPlayer.id {
-                var newPlayer = player.value
-                players.removeValue(forKey: player.key)
-                if side == .white {
-                    newPlayer.side = .black
-                } else {
-                    newPlayer.side = .white
-                }
-                players[player.key] = newPlayer
-            }
-        }
     }
     
     func startSetup() {
@@ -175,15 +185,21 @@ final class SessionController {
         }
         
         game.moveHistory.append(session.localParticipant.id)
+        game.currentSide = game.currentSide == .white ? .black : .white
         game.stage = .inGame(.beforePlayersTurn)
         
-        if playerAfterLocalParticipant != localPlayer {
+        if game.currentSide != localPlayer.side {
             localPlayer.isPlaying = false
         }
     }
     
     func endGame() {
         game.stage = .modeSelection
+    }
+    
+    func setWinner(side: PlayerModel.Side) {
+        game.winner = side
+        game.stage = .gameOver
     }
     
     func gameStateChanged() {
@@ -196,4 +212,102 @@ final class SessionController {
         updateCurrentPlayer()
         updateLocalParticipantRole()
     }
+    
+    func updateCurrentPlayer() {
+        if game.stage.isInGame, localPlayer.side == game.currentSide {
+            localPlayer.isPlaying = true
+        }
+    }
+    
+    var currentPlayer: PlayerModel? {
+        players.values.first(where: \.isPlaying)
+    }
+    
+    var activeTeam: PlayerModel.Side? {
+        return currentPlayer?.side
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // GameControllerProtocol
+    
+    func startGame(opponentStrength: GameModel.OpponentStrength) {
+        
+    }
+    
+    func updateGameState() {
+        
+    }
+    
+    func pieceAt(field: String) -> ChessPieceFen? {
+        return nil
+    }
+    
+    func getFieldEntityFromChessPieceEntity(_ chessPieceEntity: Entity) -> Entity? {
+        return nil
+    }
+    
+    func getBestMove(completion: @escaping (String?) -> Void) {
+        
+    }
+    
+    func move(piece: ChessPiece, to: ChessField, completion: @escaping (Bool) -> Void) {
+        
+    }
+    
+    func getPieceByField(field: ChessField) -> ChessPiece? {
+        return nil
+    }
+    
+    func animateMove(piece: Entity, field: Entity) {
+        
+    }
+    
+    func getDefeatedPieces(side: String) -> [String] {
+        return []
+    }
+    
+    func moveCube(entity: Entity, to: SIMD3<Float>) {
+        
+    }
+    
+    func isValidChessField(field: String) -> Bool {
+        return false
+    }
+    
+    func isValidChessPiece(piece: String) -> Bool {
+        return false
+    }
+    
+    func deactivateInput() {
+        
+    }
+    
+    func activateInput() {
+        
+    }
+    
+    func handleCollisions(content: RealityViewContent) {
+        
+    }
+    
+    func setPlaneToProjectOnFound(value: Bool) {
+        planeToProjectOnFound = value
+    }
+    
+    func setPlacementLocationTransform(value: Transform) {
+        placementLocation.transform = value
+    }
+    
+    func setCurrentlyMovingChessPiece(entity: Entity) {
+        currentlyMovingChessPiece = entity
+    }
+    
 }

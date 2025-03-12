@@ -5,7 +5,6 @@
 //  Created by Tim Bachmann on 13.01.2025.
 //
 
-#if os(visionOS)
 import SwiftUI
 import ARKit
 import RealityKit
@@ -24,22 +23,11 @@ struct GameView: View {
     
     @Environment(AppModel.self) private var appModel
     @Environment(\.realityKitScene) var scene: RealityKit.Scene?
-    @Environment(\.modelContext) var modelContext
+
     @State var currentDragTransformStart: Transform? = nil
     @State private var sourceTransform: Transform?
     
-    
-    let modelContainer: ModelContainer
-    let dataSource: ModelDataSource
-    
-    init() {
-        do {
-            modelContainer = try ModelContainer(for: PersistedModel.self)
-            dataSource = .init(context: modelContainer.mainContext)
-        } catch {
-            fatalError("Could not initialize ModelContainer")
-        }
-    }
+    var dataSource: ModelDataSource
     
     var body: some View {
         RealityView { content, attachments in
@@ -53,16 +41,22 @@ struct GameView: View {
                 return
             }
             
+            Task {
+                let cursor = try await ModelEntity(named: "PlacementCursor")
+                appModel.activeController?.placementLocation.addChild(cursor)
+            }
+            
             appModel.viewModel?.prepare(withContent: content, andScene: scene)
             
         } update: { content, attachments in
-            if (appModel.sessionController?.game.stage == .inSetup && !content.entities.contains(where: {$0 == appModel.viewModel?.utilityEntities.contentEntity})) {
-                if let contentEntity = appModel.viewModel?.utilityEntities.contentEntity {
+            if ((appModel.sessionController?.game.stage == .inSetup || appModel.activeController?.game.stage == .inSetup)
+                && !content.entities.contains(where: {$0 == appModel.activeController?.contentEntity})) {
+                if let contentEntity = appModel.activeController?.contentEntity {
                     content.add(contentEntity)
                 }
             }
             
-            appModel.viewModel?.handleCollisions(content: content)
+            appModel.activeController?.handleCollisions(content: content)
             
         } attachments: {
         }
@@ -70,10 +64,11 @@ struct GameView: View {
             SpatialTapGesture()
                 .targetedToAnyEntity()
                 .onEnded { value in
-                    if (appModel.sessionController?.game.stage == .inSetup) {
-                        appModel.viewModel?.placeBoard(dataSource.insert())
-                        appModel.sessionController?.startGame()
-                        appModel.viewModel?.gameManager?.startGame()
+                    if let activeController = appModel.activeController {
+                        if (activeController.game.stage == .inSetup) {
+                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white))
+                            activeController.startGame(opponentStrength: activeController.opponentStregth)
+                        }
                     }
                 }
         )
@@ -83,7 +78,7 @@ struct GameView: View {
                 .targetedToAnyEntity()
                 .handActivationBehavior(.pinch)
                 .onChanged { value in
-                    if appModel.viewModel?.gameManager?.currentSide != .white {
+                    if appModel.activeController?.game.stage != .inGame(.duringPlayersTurn) {
                         return
                     }
                     
@@ -91,8 +86,8 @@ struct GameView: View {
                         sourceTransform = value.entity.transform
                     }
                     
-                    if appModel.viewModel?.currentlyMovingChessPiece == nil && appModel.viewModel?.currentlyMovingChessPieceCollisionSubscription == nil {
-                        appModel.viewModel?.currentlyMovingChessPiece = value.entity
+                    if appModel.activeController?.currentlyMovingChessPiece == nil && appModel.activeController?.currentlyMovingChessPieceCollisionSubscription == nil {
+                        appModel.activeController?.setCurrentlyMovingChessPiece(entity: value.entity)
                     }
 
                     if let rotation = value.second?.rotation {
@@ -101,34 +96,25 @@ struct GameView: View {
                     } else if let transform = value.first?.location3D {
                         value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = false
                         let location3D = value.convert(transform, from: .local, to: .scene)
-                        Task {
-                            await appModel.viewModel?.moveCube(entity: value.entity, to: location3D)
-                        }
+                        appModel.activeController?.moveCube(entity: value.entity, to: location3D)
                     }
                 }
                 .onEnded { value in
                     sourceTransform = nil
                     value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = true
                     
-                    if appModel.viewModel?.currentTargetField.isEmpty ?? true || appModel.viewModel?.gameManager?.currentSide != .white {
+                    if appModel.activeController?.currentTargetField.isEmpty ?? true || appModel.activeController?.game.stage != .inGame(.duringPlayersTurn) {
                         return
                     }
                     
-                    let fieldEntity = appModel.viewModel?.currentTargetField.last!
+                    let fieldEntity = appModel.activeController?.currentTargetField.last!
                     if let fieldEntity = fieldEntity {
-                        appModel.viewModel?.gameManager?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!) { success in
+                        appModel.activeController?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!) { success in
                             if success {
                                 fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
-                                appModel.viewModel?.currentTargetField = []
-                                appModel.viewModel?.currentlyMovingChessPiece = nil
-                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscription?.cancel()
-                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscription = nil
-                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscriptionEnd?.cancel()
-                                appModel.viewModel?.currentlyMovingChessPieceCollisionSubscriptionEnd = nil
-                                appModel.viewModel?.deactivateInput()
                             } else {
-                                if let initialField = appModel.viewModel?.currentlyMovingChessPieceInitialField {
-                                    appModel.viewModel?.gameManager?.animateMove(piece: value.entity, field: initialField)
+                                if let initialField = appModel.activeController?.getFieldEntityFromChessPieceEntity(value.entity) {
+                                    appModel.activeController?.animateMove(piece: value.entity, field: initialField)
                                     initialField.components[OpacityComponent.self]?.opacity = 0.4
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                         initialField.components[OpacityComponent.self]?.opacity = 0.0
@@ -138,11 +124,6 @@ struct GameView: View {
                                             
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                                 initialField.components[OpacityComponent.self]?.opacity = 0.0
-                                                
-                                                
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                                    appModel.viewModel?.errorMessage = nil
-                                                }
                                             }
                                         }
                                     }
@@ -152,9 +133,6 @@ struct GameView: View {
                     }
                 }
         )
-        .onAppear {
-            appModel.initViewModel(dataSource: dataSource)
-        }
         .task {
             print("awaiting anchor updates")
             await appModel.viewModel?.processWorldAnchorUpdates()
@@ -222,4 +200,3 @@ extension Transform {
         return result
     }
 }
-#endif

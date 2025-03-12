@@ -1,0 +1,65 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "Reality Composer Pro Version 2.0 (448.60.4)"
+    }
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "Root"
+{
+    reorder nameChildren = ["Material_white", "Material_black", "white_king", "black_king"]
+    def "white_king" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+        references = @Models/Pieces/black-king.usdz@</Scene>
+    )
+    {
+        rel material:binding = </Root/Material_white> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (2.2, 2.2, 2.2)
+        float3 xformOp:translate = (-0.02, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Material_black" (
+        active = true
+        references = @Models/Pieces/black-king.usdz@</Material_2>
+    )
+    {
+        token outputs:mtlx:surface
+        token outputs:realitykit:vertex
+    }
+
+    def "black_king" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+        customData = {
+            float3 rotationEulerHint = (7.704212e-9, -6.098475e-10, -1.6247877)
+        }
+        references = @Models/Pieces/white-king.usdz@</Scene>
+    )
+    {
+        rel material:binding = </Root/Material_black> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        quatf xformOp:orient = (0.6877626, 2.4279796e-9, -3.0060963e-9, -0.72593564)
+        float3 xformOp:scale = (2.2, 2.2, 2.2)
+        float3 xformOp:translate = (0.002, 0.016570106, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Material_white" (
+        active = true
+        references = @Models/Pieces/white-king.usdz@</Material_2>
+    )
+    {
+        token outputs:mtlx:surface
+        token outputs:realitykit:vertex
+    }
+}
+

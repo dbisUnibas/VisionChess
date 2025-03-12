@@ -1,9 +1,9 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-A model that represents each player's state in the SharePlay group session.
-*/
+//
+//  PlayerModel.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import Spatial
 import SwiftUI
@@ -21,7 +21,6 @@ struct PlayerModel: Codable, Hashable, Sendable, Identifiable {
     enum Side: String, Codable, Hashable, Sendable {
         case white
         case black
-        case spectator
     }
 }
 
@@ -30,7 +29,6 @@ extension PlayerModel.Side {
         switch self {
             case .white: "White"
             case .black: "Black"
-            case .spectator: "Spectator"
         }
     }
     
@@ -38,7 +36,6 @@ extension PlayerModel.Side {
         switch self {
             case .white: .white
             case .black: .black
-            case .spectator: .orange
         }
     }
 }

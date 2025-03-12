@@ -1,39 +1,16 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-The custom spatial template used to arrange spatial Personas
-  during Guess Together's team-selection stage.
-*/
+//
+//  TeamSelectionTemplate.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import GroupActivities
 
-/// The team selection template contains three sets of seats:
-///
-/// 1. Five audience seats that participants are initially placed in.
-/// 2. Three Blue Team seats that participants are moved to
-///    when they join team Blue.
-/// 3. Three Red Team seats.
-///
-/// ```
-///                ┌────────────────────┐
-///                │   Guess Together   │
-///                │     app window     │
-///                └────────────────────┘
-///
-///
-///              %                       $
-///                %                   $
-///   Blue Team      %               $      Red Team
-///                    *  *  *  *  *
-///
-///                       Audience
-/// ```
 struct TeamSelectionTemplate: SpatialTemplate {
     enum Role: String, SpatialTemplateRole {
         case white
         case black
-        case spectator
     }
     
     /// An array of seating positions the game uses to position spatial Personas during the team-selection stage.

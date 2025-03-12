@@ -1,10 +1,9 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-The custom spatial template used to arrange spatial Personas
-  during Guess Together's game stage.
-*/
+//
+//  GameTemplate.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import GroupActivities
 import Spatial
@@ -14,7 +13,6 @@ struct GameTemplate: SpatialTemplate {
     enum Role: String, SpatialTemplateRole {
         case white
         case black
-        case spectator
     }
     
     var elements: [any SpatialTemplateElement] {
@@ -25,10 +23,10 @@ struct GameTemplate: SpatialTemplate {
         ]
         
         let spectatorSeats: [any SpatialTemplateElement] = [
-            .seat(position: .app.offsetBy(x: 4, z: 4), role: Role.spectator),
-            .seat(position: .app.offsetBy(x: 4, z: 4), role: Role.spectator),
-            .seat(position: .app.offsetBy(x: -4, z: 4), role: Role.spectator),
-            .seat(position: .app.offsetBy(x: -4, z: 4), role: Role.spectator)
+            .seat(position: .app.offsetBy(x: 4, z: 4)),
+            .seat(position: .app.offsetBy(x: 4, z: 4)),
+            .seat(position: .app.offsetBy(x: -4, z: 4)),
+            .seat(position: .app.offsetBy(x: -4, z: 4))
         ]
         
         return playerSeats + spectatorSeats

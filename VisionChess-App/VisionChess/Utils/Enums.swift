@@ -4,6 +4,7 @@
 //
 //  Created by Tim Bachmann on 02.03.2025.
 //
+
 import RealityKit
 import Foundation
 import ARKit
@@ -17,7 +18,7 @@ enum Side: String, CaseIterable {
     }
 }
 
-enum ChessPiece: String {
+enum ChessPiece: String, Codable {
     case blackKing
     case blackQueen
     case blackBishopC
@@ -52,7 +53,7 @@ enum ChessPiece: String {
     case whitePawnH
 }
 
-enum ChessField: String {
+enum ChessField: String, Codable {
     case a1
     case a2
     case a3

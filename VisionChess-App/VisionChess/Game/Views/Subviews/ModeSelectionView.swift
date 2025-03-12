@@ -2,7 +2,7 @@
 //  ModeSelectionView.swift
 //  VisionChess
 //
-//  Created by Tim Bachmann on 10.03.2025.
+//  Created by Tim Bachmann on 12.03.2025.
 //
 
 import SwiftUI
@@ -25,7 +25,16 @@ struct ModeSelectionView: View {
                 Text("Select the mode you'd like to play in.")
             }
         }
-        .guessTogetherToolbar()
+        .visionChessToolbar()
+        .toolbar {
+            if appModel.gameController != nil {
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    Button("Back", systemImage: "chevron.left") {
+                        appModel.gameController = nil
+                    }
+                }
+            }
+        }
     }
     
     struct ModeButton: View {
@@ -35,7 +44,7 @@ struct ModeSelectionView: View {
         
         var body: some View {
             Button {
-                appModel.sessionController?.enterTeamSelection(gameMode: mode)
+                appModel.activeController?.enterTeamSelection(gameMode: mode)
             } label: {
                 VStack(spacing: 24) {
                     Image(mode.description)
@@ -53,4 +62,15 @@ struct ModeSelectionView: View {
         }
     }
 
+}
+
+struct ModeSelectionView_Previews: PreviewProvider {
+    static let appModel = AppModel()
+
+    static var previews: some View {
+        ModeSelectionView()
+            .environment(appModel)
+            .glassBackgroundEffect()
+            .frame(width: 900, height: 600)
+    }
 }
