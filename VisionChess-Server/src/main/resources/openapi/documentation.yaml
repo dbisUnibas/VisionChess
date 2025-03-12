@@ -4,7 +4,7 @@ info:
   description: "VisionChessServer API"
   version: "1.0.0"
 servers:
-- url: "http://127.0.0.1:8090"
+- url: "http://10.34.64.140:8090"
 paths:
   /:
     get:
@@ -22,7 +22,7 @@ paths:
                   value: "/swagger-ui"
   /games:
     get:
-      description: ""
+      description: "Retrieves all games from the repository."
       tags: ["Games"]
       responses:
         "200":
@@ -34,7 +34,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/GameResponse"
     post:
-      description: ""
+      description: "Creates a new game and inserts it into the repository."
       tags: ["Games"]
       requestBody:
         content:
@@ -52,9 +52,18 @@ paths:
               examples:
                 Example#1:
                   value: ""
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Cannot post a new game"
   /games/{id}:
     delete:
-      description: ""
+      description: "Deletes a game by ID."
       tags: ["Games"]
       parameters:
       - name: "id"
@@ -91,7 +100,7 @@ paths:
                 Example#1:
                   value: "Game not found"
     get:
-      description: ""
+      description: "Retrieves a specific game by ID."
       tags: ["Games"]
       parameters:
       - name: "id"
@@ -112,17 +121,20 @@ paths:
         "200":
           description: "OK"
           content:
-            text/plain:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GameResponse"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
               schema:
                 type: "string"
               examples:
                 Example#1:
                   value: ""
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/GameResponse"
     put:
-      description: ""
+      description: "Updates a game by ID."
       tags: ["Games"]
       parameters:
       - name: "id"
@@ -160,7 +172,8 @@ paths:
                 type: "string"
   /games/{id}/bestMove:
     get:
-      description: ""
+      description: "Retrieves the best move for a given game state using client engine.\
+        \ <br> Client "
       tags: ["Games"]
       parameters:
       - name: "id"
@@ -195,8 +208,6 @@ paths:
                   value: ""
                 Example#5:
                   value: ""
-                Example#6:
-                  value: ""
         "201":
           description: "Created"
           content:
@@ -206,8 +217,8 @@ paths:
               examples:
                 Example#1:
                   value: ""
-        "200":
-          description: "OK"
+        "404":
+          description: "Not Found"
           content:
             text/plain:
               schema:
@@ -219,7 +230,7 @@ paths:
                   value: ""
   /games/{id}/move:
     post:
-      description: ""
+      description: "Processes a player's move and updates the game state accordingly."
       tags: ["Games"]
       parameters:
       - name: "id"
@@ -242,6 +253,8 @@ paths:
                 type: "string"
               examples:
                 Example#1:
+                  value: ""
+                Example#2:
                   value: "Missing GameId"
         "500":
           description: "Internal Server Error"
@@ -266,18 +279,17 @@ paths:
                   value: ""
                 Example#8:
                   value: ""
-                Example#9:
-                  value: ""
-                Example#10:
-                  value: ""
         "201":
           description: "Created"
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Function1"
-        "200":
-          description: "OK"
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+        "404":
+          description: "Not Found"
           content:
             text/plain:
               schema:
@@ -285,13 +297,9 @@ paths:
               examples:
                 Example#1:
                   value: ""
-                Example#2:
-                  value: "Move did not succeed"
-                Example#3:
-                  value: ""
   /users:
     get:
-      description: ""
+      description: "Retrieves all users."
       tags: ["Users"]
       responses:
         "200":
@@ -303,7 +311,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/UserResponse"
     post:
-      description: ""
+      description: "Registers a new user. If the email is already in use, it returns\
+        \ a conflict response."
       tags: ["Users"]
       requestBody:
         content:
@@ -338,7 +347,7 @@ paths:
                   value: "Could not register User"
   /users/{id}:
     delete:
-      description: ""
+      description: "Deletes a user by ID."
       tags: ["Users"]
       parameters:
       - name: "id"
@@ -375,7 +384,7 @@ paths:
                 Example#1:
                   value: "User not found"
     patch:
-      description: ""
+      description: "Updates a user's details by ID."
       tags: ["Users"]
       parameters:
       - name: "id"
@@ -413,7 +422,7 @@ paths:
                 type: "string"
   /users/{email}:
     get:
-      description: ""
+      description: "Retrieves a user by email."
       tags: ["Users"]
       parameters:
       - name: "email"
@@ -445,7 +454,7 @@ paths:
                 $ref: "#/components/schemas/UserResponse"
   /users/{id}/password:
     patch:
-      description: ""
+      description: "Updates a user's password by ID."
       tags: ["Users"]
       parameters:
       - name: "id"
@@ -483,7 +492,8 @@ paths:
                 type: "string"
   /users/auth/login:
     post:
-      description: ""
+      description: "Handles user login, verifies credentials, and generates a JWT\
+        \ token."
       tags: ["Users"]
       requestBody:
         content:
@@ -527,7 +537,7 @@ paths:
                 $ref: "#/components/schemas/LoginResponse"
   /users/auth/logout:
     post:
-      description: ""
+      description: "Handles user logout by invalidating the active session."
       tags: ["Users"]
       requestBody:
         content:
@@ -553,7 +563,8 @@ paths:
                   value: "User not found"
   /users/auth/profile:
     get:
-      description: ""
+      description: "Retrieves the authenticated user's profile and renews the token\
+        \ if expired."
       tags: ["Users"]
       responses:
         "404":
@@ -598,6 +609,9 @@ components:
           type: "string"
         black:
           type: "string"
+        opponentStrength:
+          type: "integer"
+          format: "int32"
         opponent:
           type: "string"
           enum:
@@ -612,7 +626,9 @@ components:
       - "moves"
       - "white"
       - "black"
+      - "opponentStrength"
       - "opponent"
+      - "winner"
     GameRequest:
       type: "object"
       properties:
@@ -626,10 +642,14 @@ components:
           - "PHYSICAL"
           - "MIXED"
           - "VIRTUAL"
+        opponentStrength:
+          type: "integer"
+          format: "int32"
       required:
       - "white"
       - "black"
       - "opponent"
+      - "opponentStrength"
     MoveRequest:
       type: "object"
       properties:
@@ -637,9 +657,6 @@ components:
           type: "string"
       required:
       - "move"
-    Function1:
-      type: "object"
-      properties: {}
     UserSessionResponse:
       type: "object"
       properties:

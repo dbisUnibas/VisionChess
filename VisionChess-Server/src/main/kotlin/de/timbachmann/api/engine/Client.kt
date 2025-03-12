@@ -1,5 +1,6 @@
 package de.timbachmann.api.engine
 
+import de.timbachmann.api.model.entity.OpponentStrength
 import de.timbachmann.api.model.entity.Side
 import java.io.BufferedReader
 import java.io.IOException
@@ -22,7 +23,7 @@ class Client {
     private var process: Process? = null
     private var reader: BufferedReader? = null
     private var writer: OutputStreamWriter? = null
-    private val stockfishPath = "./stockfish/stockfish"
+    private val stockfishPath = "../stockfish/stockfish-ubuntu-x86-64-avx2"
 
     /**
      * Initializes the Stockfish process and sets up input/output streams.
@@ -57,9 +58,11 @@ class Client {
     /**
      * Initializes the UCI (Universal Chess Interface) for communication with Stockfish.
      */
-    fun initUci() {
+    fun initUci(level: Int) {
         try {
             command("uci", identity(), { s -> s?.startsWith("uciok") == true }, 2000L)
+            command("setoption name UCI_LimitStrength value true", identity(), { s -> s?.startsWith("uciok") == true }, 2000L)
+            command("setoption name UCI_Elo value ${OpponentStrength.fromLevel(level)}", identity(), { s -> s?.startsWith("uciok") == true }, 2000L)
         } catch (e: IOException) {
             e.printStackTrace()
         }

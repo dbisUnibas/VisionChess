@@ -23,6 +23,7 @@ data class Game(
     val white: String,
     val black: String,
     val opponent: ChessOpponent,
+    val opponentStrength: Int,
     val winner: String,
 ) {
     /**
@@ -36,6 +37,7 @@ data class Game(
         moves = moves,
         white = white,
         black = black,
+        opponentStrength = opponentStrength,
         opponent = opponent,
         winner = winner
     )

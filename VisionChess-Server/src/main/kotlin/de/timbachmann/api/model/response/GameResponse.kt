@@ -19,6 +19,7 @@ data class GameResponse(
     val moves: List<String>,
     val white: String,
     val black: String,
+    val opponentStrength: Int,
     val opponent: ChessOpponent,
     val winner: String
 )

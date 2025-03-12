@@ -14,7 +14,8 @@ import org.bson.types.ObjectId
 data class GameRequest(
     val white: String,
     val black: String,
-    val opponent: ChessOpponent
+    val opponent: ChessOpponent,
+    val opponentStrength: Int
 ) {
 
     /**
@@ -29,6 +30,7 @@ data class GameRequest(
             moves = listOf(),
             white = white,
             black = black,
+            opponentStrength = opponentStrength,
             opponent = opponent,
             winner = "null"
         )

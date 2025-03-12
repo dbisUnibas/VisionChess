@@ -43,7 +43,7 @@ fun Route.gameRouting() {
             }
             repository.findById(ObjectId(id))?.let {
                 call.respond(it.toResponse())
-            } ?: call.respondText("No records found for id $id")
+            } ?: call.respond(HttpStatusCode.NotFound, "No records found for id $id")
         }
 
         /**
@@ -52,7 +52,11 @@ fun Route.gameRouting() {
         post {
             val newGame = call.receive<GameRequest>()
             val insertedId = repository.insertOne(newGame.toGameObject())
-            call.respond(HttpStatusCode.Created, "Created game with id $insertedId")
+            if (insertedId != null) {
+                call.respond(HttpStatusCode.Created, "${insertedId.asObjectId().value}")
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Cannot post a new game")
+            }
         }
 
         /**
@@ -100,9 +104,10 @@ fun Route.gameRouting() {
             }
             repository.findById(ObjectId(gameId))?.let { game ->
                 val currentPosition = game.gameState
+                val level = game.opponentStrength
 
                 val client = Client()
-                client.initUci()
+                client.initUci(level)
                 client.setPosition(currentPosition)
                 val side = client.getSideToMove(currentPosition)
                 client.getCurrentBestMove()?.let { bestMove ->
@@ -111,8 +116,8 @@ fun Route.gameRouting() {
                 } ?: {
                     client.close()
                 }
-                return@get call.respondText("No best move found for id $gameId")
-            } ?:return@get call.respondText("No game found for id $gameId")
+                return@get call.respondText("No best move found for id $gameId", status = HttpStatusCode.NotFound)
+            } ?:return@get call.respondText("No game found for id $gameId", status = HttpStatusCode.NotFound)
         }
 
         /**
@@ -129,9 +134,10 @@ fun Route.gameRouting() {
             }
             repository.findById(ObjectId(gameId))?.let { game ->
                 val currentPosition = game.gameState
+                val level = game.opponentStrength
 
                 val client = Client()
-                client.initUci()
+                client.initUci(level)
                 val moveSucceeded = client.move(moveRequest.move, currentPosition)
                 if (moveSucceeded) {
                     game.gameState = client.getCurrentPosition().toString()
@@ -140,13 +146,13 @@ fun Route.gameRouting() {
 
                     if (!updated.wasAcknowledged()) {
                         client.close()
-                        return@post call.respondText("Game state not updated for id $gameId")
+                        return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
                     }
                     client.close()
                     return@post call.respond(HttpStatusCode.Created, "Move {${moveRequest.move}} succeeded.")
                 }
-                return@post call.respondText("Move {${moveRequest.move}} not valid for state {${game.gameState}}")
-            } ?:return@post call.respondText("No game found for id $gameId")
+                return@post call.respondText("Move {${moveRequest.move}} not valid for state {${game.gameState}}", status = HttpStatusCode.BadRequest)
+            } ?:return@post call.respondText("No game found for id $gameId", status = HttpStatusCode.NotFound)
         }
     }
 }
