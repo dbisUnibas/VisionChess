@@ -18,7 +18,7 @@ enum Side: String, CaseIterable {
     }
 }
 
-enum ChessPiece: String, Codable {
+enum ChessPiece: String, CaseIterable, Codable {
     case blackKing
     case blackQueen
     case blackBishopC
@@ -53,7 +53,7 @@ enum ChessPiece: String, Codable {
     case whitePawnH
 }
 
-enum ChessField: String, Codable {
+enum ChessField: String, CaseIterable, Codable {
     case a1
     case a2
     case a3

@@ -282,3 +282,27 @@ extension CVPixelBuffer {
         return Image(uiImage: uiImage)
     }
 }
+
+import Foundation
+import RealityKit
+import Combine
+
+extension Entity {
+    
+    @MainActor func moveAsync(to target: Transform, relativeTo referenceEntity: Entity?, duration: TimeInterval, timingFunction: AnimationTimingFunction = .default) async {
+        guard let scene else {
+            return
+        }
+        let animationPlaybackController = move(to: target, relativeTo: referenceEntity, duration: duration, timingFunction: timingFunction)
+        
+        let publisher = scene.publisher(for: AnimationEvents.PlaybackCompleted.self, on: self)
+        await withCheckedContinuation { continuation in
+            Task {
+                for await event in publisher.values {
+                    if event.playbackController == animationPlaybackController { continuation.resume() }
+                }
+            }
+        }
+    }
+    
+}

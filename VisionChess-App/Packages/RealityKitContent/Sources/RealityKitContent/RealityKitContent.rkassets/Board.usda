@@ -69,12 +69,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -128,12 +122,6 @@ def "board_entity" (
                             float3 position = (3.7252903e-9, 0.020360075, 9.313226e-10)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -194,12 +182,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -258,12 +240,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -317,12 +293,6 @@ def "board_entity" (
                             float3 position = (-0.00013362872, 0.016130108, -0.000020570122)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -380,12 +350,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -439,12 +403,6 @@ def "board_entity" (
                             float3 position = (1.0244548e-8, 0.012869786, -7.450581e-9)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -502,12 +460,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -561,12 +513,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -627,12 +573,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -688,12 +628,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -753,12 +687,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -814,12 +742,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -879,12 +801,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -942,12 +858,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1003,12 +913,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -1077,12 +981,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1136,12 +1034,6 @@ def "board_entity" (
                             float3 position = (1.0244548e-8, 0.012869786, -7.450581e-9)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -1200,12 +1092,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1259,12 +1145,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -1322,12 +1202,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1381,12 +1255,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -1444,12 +1312,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1503,12 +1365,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -1566,12 +1422,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1625,12 +1475,6 @@ def "board_entity" (
                             float3 position = (0, 0.010586675, 0)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -1691,12 +1535,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1755,12 +1593,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1815,12 +1647,6 @@ def "board_entity" (
                             float3 position = (-0.00013362872, 0.016130108, -0.000020570122)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"
@@ -1879,12 +1705,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -1941,12 +1761,6 @@ def "board_entity" (
                     }
                 }
 
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
-                }
-
                 def RealityKitComponent "RigidBody"
                 {
                     uniform token info:id = "RealityKit.RigidBody"
@@ -2000,12 +1814,6 @@ def "board_entity" (
                             float3 position = (-6.9849193e-10, 0.01846889, -1.1641532e-9)
                         }
                     }
-                }
-
-                def RealityKitComponent "InputTarget"
-                {
-                    bool enabled = 1
-                    uniform token info:id = "RealityKit.InputTarget"
                 }
 
                 def RealityKitComponent "RigidBody"

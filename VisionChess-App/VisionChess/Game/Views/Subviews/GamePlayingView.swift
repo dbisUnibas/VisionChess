@@ -104,14 +104,18 @@ struct TeamStatusView: View {
                     LabeledContent(player.name, value: String(player.score))
                 }
             }
+        
+            HStack(spacing: 5) {
+                Text("Moves:")
+                ForEach(appModel.activeController?.game.moveHistory.enumerated().filter({team == .white ? $0.offset % 2 == 1 : $0.offset % 2 == 0}).map({$0.element}) ?? [], id: \.self) { move in
+                    Text(move)
+                }
+            }
             
-            VStack(spacing: 12) {
+            HStack {
                 Text("Captured Pieces:")
-                
-                HStack {
-                    ForEach(Array(appModel.gameController?.getDefeatedPieces(side: team.name.lowercased()).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
-                        Model3D(named: model)
-                    }
+                ForEach(Array(appModel.activeController?.getDefeatedPieces(side: team.name.lowercased()).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
+                    Model3D(named: model)
                 }
             }
         }

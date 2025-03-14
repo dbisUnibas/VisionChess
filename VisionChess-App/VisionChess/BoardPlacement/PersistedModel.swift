@@ -30,15 +30,18 @@ class PersistedModel: AnchorableEntity {
         }
     }
     
-    func loadContent(side: PlayerModel.Side) {
+    func loadContent(side: PlayerModel.Side, isSpatial: Bool) {
         let rotation180Y = simd_quatf(angle: .pi, axis: [0, 1, 0])
+        let rotation90Y = simd_quatf(angle: -.pi/2, axis: [0, 1, 0])
         
         Task {
             let placeholder = try? await Entity(named: "Board", in: realityKitContentBundle)
             
             DispatchQueue.main.async {
-                if side == .black {
+                if side == .black && !isSpatial {
                     placeholder?.orientation *= rotation180Y
+                } else if isSpatial {
+                    placeholder?.orientation *= rotation90Y
                 }
             }
         
@@ -52,11 +55,11 @@ class PersistedModel: AnchorableEntity {
         }
     }
     
-    init(timestamp: Date = .now, side: PlayerModel.Side) {
+    init(timestamp: Date = .now, side: PlayerModel.Side, isSpatial: Bool) {
         self.timestamp = timestamp
         self.renderContent = .init()
         
-        loadContent(side: side)
+        loadContent(side: side, isSpatial: isSpatial)
     }
 }
 

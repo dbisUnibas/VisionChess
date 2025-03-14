@@ -18,7 +18,7 @@ struct GameModel: Codable, Hashable, Sendable {
     var gameId: String?
     var lastKnownPosition: [ChessPiece: ChessField] = initialPosition
     var stage: ActivityStage = .modeSelection
-    var moveHistory: [Participant.ID] = []
+    var moveHistory: [String] = []
 }
 
 extension GameModel {

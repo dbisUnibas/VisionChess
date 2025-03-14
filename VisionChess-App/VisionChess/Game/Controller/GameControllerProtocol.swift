@@ -39,13 +39,14 @@ protocol GameControllerProtocol {
     func getBestMove(completion: @escaping (String?) -> Void)
     func move(piece: ChessPiece, to: ChessField, completion: @escaping (Bool) -> Void)
     func getPieceByField(field: ChessField) -> ChessPiece?
-    func animateMove(piece: Entity, field: Entity)
+    func animateMove(piece: Entity, field: Entity) async
     func getDefeatedPieces(side: String) -> [String]
     func moveCube(entity: Entity, to: SIMD3<Float>)
     func isValidChessField(field: String) -> Bool
     func isValidChessPiece(piece: String) -> Bool
     func deactivateInput()
     func activateInput()
+    func movePieceToLastKnownPosition(piece: Entity)
     func handleCollisions(content: RealityViewContent)
     func setPlaneToProjectOnFound(value: Bool)
     func setPlacementLocationTransform(value: Transform)

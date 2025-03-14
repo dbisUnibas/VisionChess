@@ -15,7 +15,7 @@ struct VisionChessWindow: Scene {
             NavigationStack {
                 MainView()
             }
-            .frame(width: 900, height: 600)
+            .frame(width: 900, height: 620)
             .nameAlert()
         }
         .windowResizability(.contentSize)

@@ -18,15 +18,15 @@ struct GameTemplate: SpatialTemplate {
     var elements: [any SpatialTemplateElement] {
         
         let playerSeats: [any SpatialTemplateElement] = [
-            .seat(position: .app.offsetBy(x: -1, z: 4), role: Role.white),
-            .seat(position: .app.offsetBy(x: 1, z: 4), role: Role.black)
+            .seat(position: .app.offsetBy(x: -0.5, z: 1), direction: .lookingAt(.app.offsetBy(x: 0, z: 1)), role: Role.white),
+            .seat(position: .app.offsetBy(x: 0.5, z: 1), direction: .lookingAt(.app.offsetBy(x: 0, z: 1)), role: Role.black)
         ]
         
         let spectatorSeats: [any SpatialTemplateElement] = [
-            .seat(position: .app.offsetBy(x: 4, z: 4)),
-            .seat(position: .app.offsetBy(x: 4, z: 4)),
-            .seat(position: .app.offsetBy(x: -4, z: 4)),
-            .seat(position: .app.offsetBy(x: -4, z: 4))
+            .seat(position: .app.offsetBy(x: 0.5, z: 1.5), direction: .lookingAt(.app.offsetBy(x: 0, z: 1))),
+            .seat(position: .app.offsetBy(x: -0.25, z: 1.5), direction: .lookingAt(.app.offsetBy(x: 0, z: 1))),
+            .seat(position: .app.offsetBy(x: 0.25, z: 1.5), direction: .lookingAt(.app.offsetBy(x: 0, z: 1))),
+            .seat(position: .app.offsetBy(x: 0.5, z: 1.5), direction: .lookingAt(.app.offsetBy(x: 0, z: 1)))
         ]
         
         return playerSeats + spectatorSeats

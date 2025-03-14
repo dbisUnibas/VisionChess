@@ -44,15 +44,27 @@ struct GameView: View {
             Task {
                 let cursor = try await ModelEntity(named: "PlacementCursor")
                 appModel.activeController?.placementLocation.addChild(cursor)
+                print("Added cursor")
             }
             
             appModel.viewModel?.prepare(withContent: content, andScene: scene)
             
         } update: { content, attachments in
-            if ((appModel.sessionController?.game.stage == .inSetup || appModel.activeController?.game.stage == .inSetup)
-                && !content.entities.contains(where: {$0 == appModel.activeController?.contentEntity})) {
+            if (appModel.activeController?.game.stage == .inSetup)
+                && !content.entities.contains(where: {$0 == appModel.activeController?.contentEntity}) {
                 if let contentEntity = appModel.activeController?.contentEntity {
                     content.add(contentEntity)
+                    
+#if targetEnvironment(simulator)
+                    if let activeController = appModel.activeController {
+                        if appModel.sessionController != nil {
+                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: true))
+                        } else {
+                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false))
+                        }
+                        activeController.startGame(opponentStrength: activeController.opponentStregth)
+                    }
+#endif
                 }
             }
             
@@ -66,7 +78,7 @@ struct GameView: View {
                 .onEnded { value in
                     if let activeController = appModel.activeController {
                         if (activeController.game.stage == .inSetup) {
-                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white))
+                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false))
                             activeController.startGame(opponentStrength: activeController.opponentStregth)
                         }
                     }
@@ -103,30 +115,20 @@ struct GameView: View {
                     sourceTransform = nil
                     value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = true
                     
-                    if appModel.activeController?.currentTargetField.isEmpty ?? true || appModel.activeController?.game.stage != .inGame(.duringPlayersTurn) {
+                    if appModel.activeController?.game.stage != .inGame(.duringPlayersTurn) {
                         return
                     }
                     
-                    let fieldEntity = appModel.activeController?.currentTargetField.last!
-                    if let fieldEntity = fieldEntity {
-                        appModel.activeController?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!) { success in
-                            if success {
-                                fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
-                            } else {
-                                if let initialField = appModel.activeController?.getFieldEntityFromChessPieceEntity(value.entity) {
-                                    appModel.activeController?.animateMove(piece: value.entity, field: initialField)
-                                    initialField.components[OpacityComponent.self]?.opacity = 0.4
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        initialField.components[OpacityComponent.self]?.opacity = 0.0
-                                        
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                            initialField.components[OpacityComponent.self]?.opacity = 0.4
-                                            
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                                initialField.components[OpacityComponent.self]?.opacity = 0.0
-                                            }
-                                        }
-                                    }
+                    if appModel.activeController?.currentTargetField.isEmpty ?? true {
+                        appModel.activeController?.movePieceToLastKnownPosition(piece: value.entity)
+                    } else {
+                        let fieldEntity = appModel.activeController?.currentTargetField.last!
+                        if let fieldEntity = fieldEntity {
+                            appModel.activeController?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!) { success in
+                                if success {
+                                    fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
+                                } else {
+                                    appModel.activeController?.movePieceToLastKnownPosition(piece: value.entity)
                                 }
                             }
                         }

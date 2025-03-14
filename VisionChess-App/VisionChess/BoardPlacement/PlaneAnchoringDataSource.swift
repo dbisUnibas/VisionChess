@@ -27,7 +27,7 @@ class ModelDataSource: PlaneAnchoringDataSource {
                 
                 if let uuid = model.worldAnchorID {
                     self.modelsMap[uuid] = model
-                    model.loadContent(side: .white)
+                    model.loadContent(side: .white, isSpatial: false)
                     print("Loaded \(uuid)")
                 }
             }
@@ -44,9 +44,9 @@ class ModelDataSource: PlaneAnchoringDataSource {
     }
     
     @MainActor
-    func insert(side: PlayerModel.Side) -> PersistedModel {
+    func insert(side: PlayerModel.Side, isSpatial: Bool) -> PersistedModel {
         
-        let newModel = PersistedModel(side: side)
+        let newModel = PersistedModel(side: side, isSpatial: isSpatial)
         context.insert(newModel)
         
         return newModel
