@@ -3,6 +3,7 @@ package de.timbachmann.api.routes
 import de.timbachmann.api.engine.Client
 import de.timbachmann.api.model.request.GameRequest
 import de.timbachmann.api.model.request.MoveRequest
+import de.timbachmann.api.model.response.MoveResponse
 import de.timbachmann.api.repository.interfaces.GameRepositoryInterface
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -140,20 +141,20 @@ fun Route.gameRouting() {
                 client.initUci(level)
                 val moveSucceeded = client.move(moveRequest.move, currentPosition)
                 if (moveSucceeded) {
-                    client.getCurrentPosition()?.let { position ->
-                        game.gameState = position.gameState
-                        game.checkers = position.checkers
-                    } ?: return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
+                    client.getCurrentPosition()?.let { newPosition ->
+                        game.gameState = newPosition.gameState
+                        game.checkers = newPosition.checkers
 
-                    game.moves = game.moves.plus(moveRequest.move)
-                    val updated = repository.updateOne(game.id, game)
+                        game.moves = game.moves.plus(moveRequest.move)
+                        val updated = repository.updateOne(game.id, game)
 
-                    if (!updated.wasAcknowledged()) {
+                        if (!updated.wasAcknowledged()) {
+                            client.close()
+                            return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
+                        }
                         client.close()
-                        return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
-                    }
-                    client.close()
-                    return@post call.respond(HttpStatusCode.Created, "Move {${moveRequest.move}} succeeded.")
+                        return@post call.respond(HttpStatusCode.Created, MoveResponse(moveSucceeded = true, newGameState = newPosition))
+                    } ?: return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
                 }
                 return@post call.respondText("Move {${moveRequest.move}} not valid for state {${game.gameState}}", status = HttpStatusCode.BadRequest)
             } ?:return@post call.respondText("No game found for id $gameId", status = HttpStatusCode.NotFound)

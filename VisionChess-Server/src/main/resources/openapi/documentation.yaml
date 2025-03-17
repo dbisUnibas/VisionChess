@@ -284,10 +284,13 @@ paths:
           content:
             '*/*':
               schema:
-                type: "string"
+                $ref: "#/components/schemas/MoveResponse"
               examples:
                 Example#1:
-                  value: ""
+                  description: ""
+                  value:
+                    moveSucceeded: true
+                    newGameState: "null"
         "404":
           description: "Not Found"
           content:
@@ -662,6 +665,28 @@ components:
           type: "string"
       required:
       - "move"
+    GameState:
+      type: "object"
+      properties:
+        gameState:
+          type: "string"
+        checkers:
+          type: "array"
+          items:
+            type: "string"
+      required:
+      - "gameState"
+      - "checkers"
+    MoveResponse:
+      type: "object"
+      properties:
+        moveSucceeded:
+          type: "boolean"
+        newGameState:
+          $ref: "#/components/schemas/GameState"
+      required:
+      - "moveSucceeded"
+      - "newGameState"
     UserSessionResponse:
       type: "object"
       properties:
