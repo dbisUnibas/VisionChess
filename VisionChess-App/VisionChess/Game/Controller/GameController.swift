@@ -14,41 +14,17 @@ import RealityKit
 @Observable @MainActor
 final class GameController: GameControllerProtocol {
     var opponentStregth: GameModel.OpponentStrength = .medium
-    
     var currentTargetField: [Entity] = []
     var currentlyCapturedPieces: [ChessPiece] = []
     var currentlyMovingChessPiece: Entity? = nil
     var currentlyMovingChessPieceCollisionSubscription: EventSubscription? = nil
     var currentlyMovingChessPieceCollisionSubscriptionEnd: EventSubscription? = nil
-    
     var contentEntity = Entity()
     var deviceLocation: Entity = .init()
     var raycastOrigin: Entity = .init()
     var placementLocation: Entity = .init()
-    
     var fieldEntities: [ChessField: Entity] = [:]
     var pieceEntities: [ChessPiece: Entity] = [:]
-    
-    init() {
-        contentEntity.addChild(placementLocation)
-        deviceLocation.addChild(raycastOrigin)
-        
-        // Angle raycasts 15 degrees down.
-        let raycastDownwardAngle = 15.0 * (Float.pi / 180)
-        raycastOrigin.orientation = simd_quatf(angle: -raycastDownwardAngle, axis: [1.0, 0.0, 0.0])
-    }
-    
-
-    /// When the user is gazing at a valid plane target, insert the placement cursor
-    var planeToProjectOnFound = false {
-        didSet {
-            if planeToProjectOnFound {
-                contentEntity.addChild(placementLocation)
-            } else {
-                placementLocation.removeFromParent()
-            }
-        }
-    }
     
     var game: GameModel {
         get {
@@ -67,6 +43,26 @@ final class GameController: GameControllerProtocol {
         didSet {
             gameStateChanged()
         }
+    }
+    
+    /// When the user is gazing at a valid plane target, insert the placement cursor
+    var planeToProjectOnFound = false {
+        didSet {
+            if planeToProjectOnFound {
+                contentEntity.addChild(placementLocation)
+            } else {
+                placementLocation.removeFromParent()
+            }
+        }
+    }
+    
+    init() {
+        contentEntity.addChild(placementLocation)
+        deviceLocation.addChild(raycastOrigin)
+        
+        // Angle raycasts 15 degrees down.
+        let raycastDownwardAngle = 15.0 * (Float.pi / 180)
+        raycastOrigin.orientation = simd_quatf(angle: -raycastDownwardAngle, axis: [1.0, 0.0, 0.0])
     }
     
     func setPlaneToProjectOnFound(value: Bool) {
@@ -122,15 +118,7 @@ final class GameController: GameControllerProtocol {
     func beginTurn() {
         game.stage = .inGame(.duringPlayersTurn)
         
-        if !game.checkers.isEmpty {
-            game.checkers.forEach { checker in
-                let checkerFieldEntity = self.fieldEntities[checker]
-                
-                if let checkerFieldEntity = checkerFieldEntity {
-                    checkerFieldEntity.components[OpacityComponent.self]?.opacity = 1
-                }
-            }
-        }
+        highlightCheck()
         
         if (game.currentSide != localPlayer.side) {
             self.getBestMove() { move in
@@ -168,6 +156,7 @@ final class GameController: GameControllerProtocol {
                 }
             }
         } else {
+            self.localPlayer.isPlaying = true
             self.getBestMove { move in
                 if let move = move {
                     let move = move.split(separator: ",")[0]
@@ -218,6 +207,10 @@ final class GameController: GameControllerProtocol {
         game.currentSide = game.currentSide == .white ? .black : .white
         
         print(game.currentSide)
+        
+        if game.currentSide != localPlayer.side {
+            localPlayer.isPlaying = false
+        }
         self.beginTurn()
     }
     
@@ -236,23 +229,6 @@ final class GameController: GameControllerProtocol {
         if game.stage == .modeSelection {
 //            localPlayer.isPlaying = false
 //            localPlayer.score = 0
-        }
-    }
-    
-    func updateGameState() {
-        guard let gameId = game.gameId else {
-            return
-        }
-        GamesAPI.gamesIdGet(id: gameId) { response, error in
-            guard error == nil else {
-                print("Error fetching game state: \(error!.localizedDescription)")
-                return
-            }
-            print(response ?? "")
-            self.game.gameStateFen = response?.gameState ?? self.game.gameStateFen
-            self.game.moveHistory = response?.moves ?? self.game.moveHistory
-            self.game.checkers = response?.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
-            self.endTurn()
         }
     }
     
@@ -335,8 +311,12 @@ final class GameController: GameControllerProtocol {
                     
                     self.removeDefeatedPieces(at: to)
                     
-                    self.updateGameState()
-                    print(response ?? "")
+                    self.game.gameStateFen = response?.newGameState.gameState ?? self.game.gameStateFen
+                    self.game.moveHistory = response?.newGameState.moves ?? self.game.moveHistory
+                    self.game.checkers = response?.newGameState.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
+                    self.endTurn()
+                    
+                    print("Move \(from)\(to) successfully executed")
                     completion(true)
                 }
             } else {
@@ -454,7 +434,6 @@ final class GameController: GameControllerProtocol {
         }
     }
 
-
     func activateInput() {
         guard let color = localPlayer.side?.rawValue else { return }
         let localColorPieces = ChessPiece.allCases.filter { $0.rawValue.contains(color) }
@@ -462,6 +441,35 @@ final class GameController: GameControllerProtocol {
         for piece in localColorPieces {
             if let entity = self.pieceEntities[piece]{
                 entity.components.set(InputTargetComponent())
+            }
+        }
+    }
+    
+    func highlightCheck() {
+        if !game.checkers.isEmpty {
+            game.checkers.forEach { checker in
+                let checkerFieldEntity = self.fieldEntities[checker]
+                let checkerPiece = self.game.lastKnownPosition.first(where: {$0.value == checker})
+                if let checkerPiece = checkerPiece {
+                    var kingField: ChessField? = nil
+                    
+                    if checkerPiece.key.rawValue.contains(PlayerModel.Side.white.rawValue) {
+                        kingField = self.game.lastKnownPosition[ChessPiece.blackKing]
+                    } else {
+                        kingField = self.game.lastKnownPosition[ChessPiece.whiteKing]
+                    }
+                    
+                    if let kingField = kingField {
+                        var kingFieldEntity = self.fieldEntities[kingField]
+                        if let kingFieldEntity = kingFieldEntity {
+                            kingFieldEntity.components[OpacityComponent.self]?.opacity = 1
+                        }
+                    }
+                }
+                
+                if let checkerFieldEntity = checkerFieldEntity {
+                    checkerFieldEntity.components[OpacityComponent.self]?.opacity = 1
+                }
             }
         }
     }

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		22095BBF2D82273E00F5F1DD /* OpenAPIClient in Frameworks */ = {isa = PBXBuildFile; productRef = 22095BBE2D82273E00F5F1DD /* OpenAPIClient */; };
 		2234087D2D76284E00A0806C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2234087C2D76284E00A0806C /* Settings.bundle */; };
+		227BDD462D882A09003D45BE /* OpenAPIClient in Frameworks */ = {isa = PBXBuildFile; productRef = 227BDD452D882A09003D45BE /* OpenAPIClient */; };
 		22C1B38C2D35083C00C5C076 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 22C1B38B2D35083C00C5C076 /* RealityKitContent */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22095BBF2D82273E00F5F1DD /* OpenAPIClient in Frameworks */,
+				227BDD462D882A09003D45BE /* OpenAPIClient in Frameworks */,
 				22C1B38C2D35083C00C5C076 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,7 +99,7 @@
 			name = VisionChess;
 			packageProductDependencies = (
 				22C1B38B2D35083C00C5C076 /* RealityKitContent */,
-				22095BBE2D82273E00F5F1DD /* OpenAPIClient */,
+				227BDD452D882A09003D45BE /* OpenAPIClient */,
 			);
 			productName = VisionChess;
 			productReference = 22C1B3862D35083C00C5C076 /* VisionChess.app */;
@@ -130,7 +130,7 @@
 			mainGroup = 22C1B37D2D35083C00C5C076;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				22095BBD2D82273E00F5F1DD /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */,
+				227BDD442D882A09003D45BE /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 22C1B3872D35083C00C5C076 /* Products */;
@@ -171,7 +171,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = VisionChess/VisionChess.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 883GXF926S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -202,7 +202,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = VisionChess/VisionChess.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 883GXF926S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -369,14 +369,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		22095BBD2D82273E00F5F1DD /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */ = {
+		227BDD442D882A09003D45BE /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient";
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		22095BBE2D82273E00F5F1DD /* OpenAPIClient */ = {
+		227BDD452D882A09003D45BE /* OpenAPIClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OpenAPIClient;
 		};

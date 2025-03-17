@@ -24,6 +24,7 @@ struct GamePlayingView: View {
                     TeamStatusView(team: .black)
                 }
             }
+            .scrollDisabled(true)
             .frame(maxWidth: .infinity)
         }
         .padding()
@@ -93,29 +94,58 @@ struct TeamStatusView: View {
         .sorted(using: KeyPathComparator(\.id))
     }
     
+    var localPlayer: PlayerModel? {
+        guard let activeController = appModel.activeController else {
+            return nil
+        }
+        
+        return activeController.localPlayer
+    }
+    
     var body: some View {
         Section(team.name) {
             ForEach(players) { player in
-                if player.isPlaying {
-                    LabeledContent(player.name, value: String(player.score))
-                        .foregroundStyle(.green)
-                        .bold()
-                } else {
-                    LabeledContent(player.name, value: String(player.score))
-                }
-            }
-        
-            HStack(spacing: 5) {
-                Text("Moves:")
-                ForEach(appModel.activeController?.game.moveHistory.enumerated().filter({team == .white ? $0.offset % 2 == 1 : $0.offset % 2 == 0}).map({$0.element}) ?? [], id: \.self) { move in
-                    Text(move)
-                }
-            }
-            
-            HStack {
-                Text("Captured Pieces:")
-                ForEach(Array(appModel.activeController?.getDefeatedPieces(side: team.name.lowercased()).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
-                    Model3D(named: model)
+                HStack(alignment: .top) {
+                    VStack(alignment: .center) {
+                        if player.name == "Stockfish" {
+                            Image("stockfishLogo")
+                                .resizable()
+                                .frame(width: 86, height: 86)
+                        } else {
+                            Image(systemName: "person.fill")
+                                .resizable()
+                                .frame(width: 64, height: 64)
+                                .padding(11)
+                        }
+                        
+                        if player.isPlaying || (player.name == "Stockfish" && localPlayer?.isPlaying == false) {
+                            Text(player.name)
+                                .foregroundStyle(.green)
+                                .bold()
+                        } else {
+                            Text(player.name)
+                        }
+                    }.padding()
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Moves")
+                            .bold()
+                        List {
+                            ForEach(appModel.activeController?.game.moveHistory.enumerated().filter({team == .white ? $0.offset % 2 == 0 : $0.offset % 2 == 1}).map({$0.element}) ?? [], id: \.self) { move in
+                                Text(move)
+                            }
+                        }
+                    }.padding()
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Captured Pieces")
+                            .bold()
+                        List {
+                            ForEach(Array(appModel.activeController?.getDefeatedPieces(side: team.name.lowercased()).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
+                                Model3D(named: model)
+                            }
+                        }
+                    }.padding()
                 }
             }
         }

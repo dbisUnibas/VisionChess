@@ -18,22 +18,26 @@ final class SessionController: GameControllerProtocol {
     let systemCoordinator: SystemCoordinator
 
     var opponentStregth: GameModel.OpponentStrength = .medium
-    
     var currentTargetField: [Entity] = []
     var currentlyCapturedPieces: [ChessPiece] = []
     var currentlyMovingChessPiece: Entity? = nil
     var currentlyMovingChessPieceCollisionSubscription: EventSubscription? = nil
     var currentlyMovingChessPieceCollisionSubscriptionEnd: EventSubscription? = nil
-    
     var contentEntity = Entity()
     var deviceLocation: Entity = .init()
     var raycastOrigin: Entity = .init()
     var placementLocation: Entity = .init()
-    
     var fieldEntities: [ChessField: Entity] = [:]
     var pieceEntities: [ChessPiece: Entity] = [:]
     var lastAppliedPosition: [ChessPiece: ChessField] = initialPosition
     
+    var currentPlayer: PlayerModel? {
+        players.values.first(where: \.isPlaying)
+    }
+    
+    var activeTeam: PlayerModel.Side? {
+        return currentPlayer?.side
+    }
     
     var game: GameModel {
         get {
@@ -116,6 +120,18 @@ final class SessionController: GameControllerProtocol {
         raycastOrigin.orientation = simd_quatf(angle: -raycastDownwardAngle, axis: [1.0, 0.0, 0.0])
     }
     
+    func setPlaneToProjectOnFound(value: Bool) {
+        planeToProjectOnFound = value
+    }
+    
+    func setPlacementLocationTransform(value: Transform) {
+        placementLocation.transform = value
+    }
+    
+    func setCurrentlyMovingChessPiece(entity: Entity) {
+        currentlyMovingChessPiece = entity
+    }
+    
     func updateSpatialTemplatePreference() {
         switch game.stage {
             case .modeSelection:
@@ -183,22 +199,34 @@ final class SessionController: GameControllerProtocol {
         game.stage = .inSetup
     }
     
-    func startGame() {
+    func startGame(opponentStrength: GameModel.OpponentStrength) {
         game.stage = .inGame(.beforePlayersTurn)
+        
+        Task {
+            await self.findAllFieldEntities()
+            await self.findAllPieceEntities()
+            
+            let deviceId = UIDevice.current.identifierForVendor?.uuidString
+            if let deviceId = deviceId {
+                let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.gameMode!.description.uppercased())!, opponentStrength: opponentStrength.level)
+                GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
+                    if let error = error {
+                        print("Error: \(error.localizedDescription)")
+                        return
+                    }
+                    print(response ?? "response")
+                    
+                    self.game.gameId = response
+                    self.beginTurn()
+                })
+            }
+        }
     }
     
     func beginTurn() {
         game.stage = .inGame(.duringPlayersTurn)
         
-        if !game.checkers.isEmpty {
-            game.checkers.forEach { checker in
-                let checkerFieldEntity = self.fieldEntities[checker]
-                
-                if let checkerFieldEntity = checkerFieldEntity {
-                    checkerFieldEntity.components[OpacityComponent.self]?.opacity = 1
-                }
-            }
-        }
+        highlightCheck()
         
         if (game.currentSide == localPlayer.side && localPlayer.isPlaying) {
             self.activateInput()
@@ -257,15 +285,15 @@ final class SessionController: GameControllerProtocol {
         }
     }
     
+    func setWinner(side: PlayerModel.Side) {
+        game.winner = side
+        game.stage = .gameOver
+    }
+    
     func endGame() {
         game.stage = .modeSelection
         game.gameStateFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
         game.currentSide = .white
-    }
-    
-    func setWinner(side: PlayerModel.Side) {
-        game.winner = side
-        game.stage = .gameOver
     }
     
     func gameStateChanged() {
@@ -286,15 +314,6 @@ final class SessionController: GameControllerProtocol {
         }
     }
     
-    var currentPlayer: PlayerModel? {
-        players.values.first(where: \.isPlaying)
-    }
-    
-    var activeTeam: PlayerModel.Side? {
-        return currentPlayer?.side
-    }
-    
-    
     func updateBoard() {
         let unappliedMoves = getUnappliedMoves()
         for move in unappliedMoves {
@@ -310,7 +329,6 @@ final class SessionController: GameControllerProtocol {
         self.lastAppliedPosition = self.game.lastKnownPosition
     }
     
-    
     func getUnappliedMoves() -> [ChessPiece: ChessField] {
         return self.game.lastKnownPosition
             .filter { piece, field in self.lastAppliedPosition[piece] != field }
@@ -320,49 +338,6 @@ final class SessionController: GameControllerProtocol {
             .reduce(into: [ChessPiece: ChessField]()) { dict, pair in
                 dict[pair.key] = pair.value
             }
-    }
-    
-    // GameControllerProtocol
-    
-    func startGame(opponentStrength: GameModel.OpponentStrength) {
-        game.stage = .inGame(.beforePlayersTurn)
-        
-        Task {
-            await self.findAllFieldEntities()
-            await self.findAllPieceEntities()
-            
-            let deviceId = UIDevice.current.identifierForVendor?.uuidString
-            if let deviceId = deviceId {
-                let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.gameMode!.description.uppercased())!, opponentStrength: opponentStrength.level)
-                GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        return
-                    }
-                    print(response ?? "response")
-                    
-                    self.game.gameId = response
-                    self.beginTurn()
-                })
-            }
-        }
-    }
-    
-    func updateGameState() {
-        guard let gameId = game.gameId else {
-            return
-        }
-        GamesAPI.gamesIdGet(id: gameId) { response, error in
-            guard error == nil else {
-                print("Error fetching game state: \(error!.localizedDescription)")
-                return
-            }
-            print(response ?? "")
-            self.game.gameStateFen = response?.gameState ?? self.game.gameStateFen
-            self.game.moveHistory = response?.moves ?? self.game.moveHistory
-            self.game.checkers = response?.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
-            self.endTurn()
-        }
     }
     
     func pieceAt(field: String) -> ChessPieceFen? {
@@ -445,8 +420,12 @@ final class SessionController: GameControllerProtocol {
                     
                     self.removeDefeatedPieces(at: to)
                     
-                    self.updateGameState()
-                    print(response ?? "")
+                    self.game.gameStateFen = response?.newGameState.gameState ?? self.game.gameStateFen
+                    self.game.moveHistory = response?.newGameState.moves ?? self.game.moveHistory
+                    self.game.checkers = response?.newGameState.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
+                    self.endTurn()
+                    
+                    print("Move \(from)\(to) successfully executed")
                     completion(true)
                 }
             } else {
@@ -564,7 +543,6 @@ final class SessionController: GameControllerProtocol {
         }
     }
 
-
     func activateInput() {
         guard let color = localPlayer.side?.rawValue else { return }
         let localColorPieces = ChessPiece.allCases.filter { $0.rawValue.contains(color) }
@@ -576,66 +554,41 @@ final class SessionController: GameControllerProtocol {
         }
     }
     
-    func handleCollisions(content: RealityViewContent) {
-        if let currentChessPiece = currentlyMovingChessPiece {
-            if (currentlyMovingChessPieceCollisionSubscription == nil) {
-                let subscription = content.subscribe(to: CollisionEvents.Began.self, on: currentChessPiece) { collisionEvent in
-                    print("Collision with \(collisionEvent.entityB.name)")
+    func highlightCheck() {
+        if !game.checkers.isEmpty {
+            game.checkers.forEach { checker in
+                let checkerFieldEntity = self.fieldEntities[checker]
+                let checkerPiece = self.game.lastKnownPosition.first(where: {$0.value == checker})
+                if let checkerPiece = checkerPiece {
+                    var kingField: ChessField? = nil
                     
-                    if self.isValidChessField(field: collisionEvent.entityB.name) {
-                        self.currentTargetField.append(collisionEvent.entityB)
-                        collisionEvent.entityB.components[OpacityComponent.self]?.opacity = 0.4
-                        
-                    } else if self.isValidChessPiece(piece: currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA.name : collisionEvent.entityB.name) {
-                        print("Chess Piece Collision")
-                        
-                        let targetPieceEntity = currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA : collisionEvent.entityB
-                        let currentTargetPiece = ChessPiece(rawValue: targetPieceEntity.name)!
-                        
-                        if (currentChessPiece.name.hasPrefix("white") && targetPieceEntity.name.hasPrefix("black"))
-                            || (currentChessPiece.name.hasPrefix("black") && targetPieceEntity.name.hasPrefix("white")) {
-                            
-                            self.currentlyCapturedPieces.append(currentTargetPiece)
+                    if checkerPiece.key.rawValue.contains(PlayerModel.Side.white.rawValue) {
+                        kingField = self.game.lastKnownPosition[ChessPiece.blackKing]
+                    } else {
+                        kingField = self.game.lastKnownPosition[ChessPiece.whiteKing]
+                    }
+                    
+                    if let kingField = kingField {
+                        var kingFieldEntity = self.fieldEntities[kingField]
+                        if let kingFieldEntity = kingFieldEntity {
+                            kingFieldEntity.components[OpacityComponent.self]?.opacity = 1
                         }
-                        targetPieceEntity.components.remove(PhysicsBodyComponent.self)
                     }
                 }
                 
-                let subscriptionEnd = content.subscribe(to: CollisionEvents.Ended.self, on: currentChessPiece) { collisionEvent in
-                    if ChessField(rawValue: collisionEvent.entityB.name) != nil {
-                        self.currentTargetField.removeAll(where: {$0.name == collisionEvent.entityB.name})
-                        collisionEvent.entityB.components[OpacityComponent.self]?.opacity = 0.0
-                        
-                        print("Collision with \(collisionEvent.entityB.name) ended.")
-                        
-                    } else if self.isValidChessPiece(piece: currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA.name : collisionEvent.entityB.name) {
-                        print("Chess Piece Collision ended")
-                        
-                        let targetPieceEntity = currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA : collisionEvent.entityB
-                        
-                        self.currentlyCapturedPieces.removeAll(where: { $0 == ChessPiece(rawValue: targetPieceEntity.name)! })
-                        targetPieceEntity.components.set(PhysicsBodyComponent())
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.currentlyMovingChessPieceCollisionSubscription = subscription
-                    self.currentlyMovingChessPieceCollisionSubscriptionEnd = subscriptionEnd
+                if let checkerFieldEntity = checkerFieldEntity {
+                    checkerFieldEntity.components[OpacityComponent.self]?.opacity = 1
                 }
             }
         }
     }
     
-    func setPlaneToProjectOnFound(value: Bool) {
-        planeToProjectOnFound = value
-    }
-    
-    func setPlacementLocationTransform(value: Transform) {
-        placementLocation.transform = value
-    }
-    
-    func setCurrentlyMovingChessPiece(entity: Entity) {
-        currentlyMovingChessPiece = entity
+    func hideAllFieldEntities() {
+        for chessField in ChessField.allCases {
+            if let entity = self.fieldEntities[chessField] {
+                entity.components[OpacityComponent.self]?.opacity = 0.0
+            }
+        }
     }
     
     func findAllFieldEntities() async {
@@ -697,12 +650,53 @@ final class SessionController: GameControllerProtocol {
         }
     }
     
-    func hideAllFieldEntities() {
-        for chessField in ChessField.allCases {
-            if let entity = self.fieldEntities[chessField] {
-                entity.components[OpacityComponent.self]?.opacity = 0.0
+    func handleCollisions(content: RealityViewContent) {
+        if let currentChessPiece = currentlyMovingChessPiece {
+            if (currentlyMovingChessPieceCollisionSubscription == nil) {
+                let subscription = content.subscribe(to: CollisionEvents.Began.self, on: currentChessPiece) { collisionEvent in
+                    print("Collision with \(collisionEvent.entityB.name)")
+                    
+                    if self.isValidChessField(field: collisionEvent.entityB.name) {
+                        self.currentTargetField.append(collisionEvent.entityB)
+                        collisionEvent.entityB.components[OpacityComponent.self]?.opacity = 0.4
+                        
+                    } else if self.isValidChessPiece(piece: currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA.name : collisionEvent.entityB.name) {
+                        print("Chess Piece Collision")
+                        
+                        let targetPieceEntity = currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA : collisionEvent.entityB
+                        let currentTargetPiece = ChessPiece(rawValue: targetPieceEntity.name)!
+                        
+                        if (currentChessPiece.name.hasPrefix("white") && targetPieceEntity.name.hasPrefix("black"))
+                            || (currentChessPiece.name.hasPrefix("black") && targetPieceEntity.name.hasPrefix("white")) {
+                            
+                            self.currentlyCapturedPieces.append(currentTargetPiece)
+                        }
+                        targetPieceEntity.components.remove(PhysicsBodyComponent.self)
+                    }
+                }
+                
+                let subscriptionEnd = content.subscribe(to: CollisionEvents.Ended.self, on: currentChessPiece) { collisionEvent in
+                    if ChessField(rawValue: collisionEvent.entityB.name) != nil {
+                        self.currentTargetField.removeAll(where: {$0.name == collisionEvent.entityB.name})
+                        collisionEvent.entityB.components[OpacityComponent.self]?.opacity = 0.0
+                        
+                        print("Collision with \(collisionEvent.entityB.name) ended.")
+                        
+                    } else if self.isValidChessPiece(piece: currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA.name : collisionEvent.entityB.name) {
+                        print("Chess Piece Collision ended")
+                        
+                        let targetPieceEntity = currentChessPiece.name == collisionEvent.entityB.name ? collisionEvent.entityA : collisionEvent.entityB
+                        
+                        self.currentlyCapturedPieces.removeAll(where: { $0 == ChessPiece(rawValue: targetPieceEntity.name)! })
+                        targetPieceEntity.components.set(PhysicsBodyComponent())
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.currentlyMovingChessPieceCollisionSubscription = subscription
+                    self.currentlyMovingChessPieceCollisionSubscriptionEnd = subscriptionEnd
+                }
             }
         }
     }
-    
 }

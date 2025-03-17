@@ -33,7 +33,6 @@ protocol GameControllerProtocol {
     func endGame()
     func setWinner(side: PlayerModel.Side)
     func gameStateChanged()
-    func updateGameState()
     func pieceAt(field: String) -> ChessPieceFen?
     func getFieldEntityFromChessPieceEntity(_ chessPieceEntity: Entity) -> Entity?
     func getBestMove(completion: @escaping (String?) -> Void)
@@ -46,6 +45,8 @@ protocol GameControllerProtocol {
     func isValidChessPiece(piece: String) -> Bool
     func deactivateInput()
     func activateInput()
+    func highlightCheck()
+    
     func movePieceToLastKnownPosition(piece: Entity)
     func handleCollisions(content: RealityViewContent)
     func setPlaneToProjectOnFound(value: Bool)
