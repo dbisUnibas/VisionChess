@@ -42,9 +42,19 @@ struct GameView: View {
             }
             
             Task {
-                let cursor = try await ModelEntity(named: "PlacementCursor")
-                appModel.activeController?.placementLocation.addChild(cursor)
-                print("Added cursor")
+                switch appModel.activeController?.game.mode {
+                    case .virtual, .physical:
+                        let cursor = try await ModelEntity(named: "PlacementCursor")
+                        appModel.activeController?.placementLocation.addChild(cursor)
+                        print("Added cursor")
+                    case .mixed:
+                        let cursor = try await ModelEntity(named: "pointer")
+                        appModel.activeController?.placementLocation.addChild(cursor)
+                        print("Added cursor")
+                    case .none:
+                        print("Game mode not set")
+                }
+                
             }
             
             appModel.viewModel?.prepare(withContent: content, andScene: scene)
@@ -58,11 +68,11 @@ struct GameView: View {
 #if targetEnvironment(simulator)
                     if let activeController = appModel.activeController {
                         if appModel.sessionController != nil {
-                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: true))
+                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: true, isPointer: 0))
                         } else {
-                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false))
+                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 0))
                         }
-                        activeController.startGame(opponentStrength: activeController.opponentStregth)
+                        activeController.startGame(opponentStrength: activeController.opponentStrength)
                     }
 #endif
                 }
@@ -78,8 +88,19 @@ struct GameView: View {
                 .onEnded { value in
                     if let activeController = appModel.activeController {
                         if (activeController.game.stage == .inSetup) {
-                            appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false))
-                            activeController.startGame(opponentStrength: activeController.opponentStregth)
+                            if activeController.game.mode == .mixed {
+                                if appModel.viewModel?.pointersPlaced == 0 {
+                                    appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 1))
+                                } else {
+                                    appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 2))
+                                }
+                            } else {
+                                appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 0))
+                            }
+                            
+                            if appModel.viewModel?.pointersPlaced == 1 || activeController.game.mode != .mixed {
+                                activeController.startGame(opponentStrength: activeController.opponentStrength)
+                            }
                         }
                     }
                 }

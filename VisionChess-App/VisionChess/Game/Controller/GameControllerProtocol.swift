@@ -10,7 +10,7 @@ import SwiftUI
 
 @MainActor
 protocol GameControllerProtocol {
-    var opponentStregth: GameModel.OpponentStrength { get set }
+    var opponentStrength: GameModel.OpponentStrength { get set }
     var currentTargetField: [Entity] { get set }
     var currentlyMovingChessPiece: Entity? { get set }
     var currentlyMovingChessPieceCollisionSubscription: EventSubscription? { get set }
@@ -52,4 +52,6 @@ protocol GameControllerProtocol {
     func setPlaneToProjectOnFound(value: Bool)
     func setPlacementLocationTransform(value: Transform)
     func setCurrentlyMovingChessPiece(entity: Entity)
+    
+    func startBoardConstruction() async
 }

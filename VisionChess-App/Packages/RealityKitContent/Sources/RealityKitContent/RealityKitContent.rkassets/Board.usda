@@ -9,7 +9,7 @@ def "board_entity" (
     references = @Models/board.usdz@
 )
 {
-    reorder nameChildren = ["Geom", "Materials", "pieces_transform", "tiles_transform", "ui_right_transform", "ui_left_transform", "ui_bottom_transform"]
+    reorder nameChildren = ["Geom", "Materials", "tiles_transform_1", "pieces_transform", "tiles_transform", "ui_right_transform", "ui_left_transform", "ui_bottom_transform"]
     rel material:binding = </board_entity/Materials/main> (
         bindMaterialAs = "weakerThanDescendants"
     )

@@ -25,7 +25,7 @@ struct TeamSelectionView: View {
                 OpponentStrengthSelector(selectedStrength: $selectedStrength)
                     .padding(24)
                     .onChange(of: selectedStrength) { oldValue, newValue in
-                        appModel.gameController?.opponentStregth = newValue
+                        appModel.gameController?.opponentStrength = newValue
                     }
             }
             

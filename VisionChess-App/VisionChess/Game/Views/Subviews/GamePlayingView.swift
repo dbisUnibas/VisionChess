@@ -94,6 +94,23 @@ struct TeamStatusView: View {
         .sorted(using: KeyPathComparator(\.id))
     }
     
+    var body: some View {
+        Section(team.name) {
+            ForEach(players) { player in
+                HStack(alignment: .top) {
+                    PlayerView(player: player)
+                    MovesView(team: team)
+                    CapturedPiecesView(team: team)
+                }
+            }
+        }
+    }
+}
+
+struct PlayerView: View {
+    @Environment(AppModel.self) var appModel
+    let player: PlayerModel
+    
     var localPlayer: PlayerModel? {
         guard let activeController = appModel.activeController else {
             return nil
@@ -103,51 +120,65 @@ struct TeamStatusView: View {
     }
     
     var body: some View {
-        Section(team.name) {
-            ForEach(players) { player in
-                HStack(alignment: .top) {
-                    VStack(alignment: .center) {
-                        if player.name == "Stockfish" {
-                            Image("stockfishLogo")
-                                .resizable()
-                                .frame(width: 86, height: 86)
-                        } else {
-                            Image(systemName: "person.fill")
-                                .resizable()
-                                .frame(width: 64, height: 64)
-                                .padding(11)
-                        }
-                        
-                        if player.isPlaying || (player.name == "Stockfish" && localPlayer?.isPlaying == false) {
-                            Text(player.name)
-                                .foregroundStyle(.green)
-                                .bold()
-                        } else {
-                            Text(player.name)
-                        }
-                    }.padding()
-                    
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Moves")
-                            .bold()
-                        List {
-                            ForEach(appModel.activeController?.game.moveHistory.enumerated().filter({team == .white ? $0.offset % 2 == 0 : $0.offset % 2 == 1}).map({$0.element}) ?? [], id: \.self) { move in
-                                Text(move)
-                            }
-                        }
-                    }.padding()
-                    
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Captured Pieces")
-                            .bold()
-                        List {
-                            ForEach(Array(appModel.activeController?.getDefeatedPieces(side: team.name.lowercased()).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
-                                Model3D(named: model)
-                            }
-                        }
-                    }.padding()
+        VStack(alignment: .center, spacing: 5) {
+            // Player Image
+            Group {
+                if player.name == "Stockfish" {
+                    Image("stockfishLogo")
+                        .resizable()
+                        .frame(width: 86, height: 86)
+                } else {
+                    Image(systemName: "person.fill")
+                        .resizable()
+                        .frame(width: 64, height: 64)
+                        .padding(11)
                 }
             }
+            
+            // Player Name & Status
+            let playerDisplayName = player.name == "Stockfish" ? "\(player.name) \n\(appModel.activeController?.opponentStrength.rawValue ?? "")" : player.name
+            let isActive = player.isPlaying || (player.name == "Stockfish" && localPlayer?.isPlaying == false)
+
+            Text(playerDisplayName)
+                .foregroundStyle(isActive ? .green : .primary)
+                .bold(isActive)
+                .multilineTextAlignment(.center)
         }
+        .padding()
+    }
+}
+
+
+struct CapturedPiecesView: View {
+    @Environment(AppModel.self) var appModel
+    let team: PlayerModel.Side
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text("Captured Pieces")
+                .bold()
+            HStack {
+                ForEach(Array(appModel.activeController?.getDefeatedPieces(side: team.name.lowercased()).enumerated() ?? [].enumerated()), id: \.offset) { index, model in
+                    Model3D(named: model)
+                }
+            }
+        }.padding()
+    }
+}
+
+struct MovesView: View {
+    @Environment(AppModel.self) var appModel
+    let team: PlayerModel.Side
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text("Moves")
+                .bold()
+            List {
+                ForEach(appModel.activeController?.game.moveHistory.enumerated().filter({team == .white ? $0.offset % 2 == 0 : $0.offset % 2 == 1}).map({$0.element}) ?? [], id: \.self) { move in
+                    Text(move)
+                }
+            }
+        }.padding()
     }
 }

@@ -9,11 +9,12 @@ import Observation
 import Foundation
 import SwiftUI
 import OpenAPIClient
+import RealityKitContent
 import RealityKit
 
 @Observable @MainActor
 final class GameController: GameControllerProtocol {
-    var opponentStregth: GameModel.OpponentStrength = .medium
+    var opponentStrength: GameModel.OpponentStrength = .medium
     var currentTargetField: [Entity] = []
     var currentlyCapturedPieces: [ChessPiece] = []
     var currentlyMovingChessPiece: Entity? = nil
@@ -95,12 +96,15 @@ final class GameController: GameControllerProtocol {
         game.stage = .inGame(.beforePlayersTurn)
         
         Task {
+            if game.mode == .mixed {
+                await self.startBoardConstruction()
+            }
             await self.findAllFieldEntities()
             await self.findAllPieceEntities()
             
             let deviceId = UIDevice.current.identifierForVendor?.uuidString
             if let deviceId = deviceId {
-                let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.gameMode!.description.uppercased())!, opponentStrength: opponentStrength.level)
+                let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: opponentStrength.level)
                 GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
                     if let error = error {
                         print("Error: \(error.localizedDescription)")
@@ -346,7 +350,7 @@ final class GameController: GameControllerProtocol {
         await piece.moveAsync(to: finalTransform, relativeTo: piece.parent!, duration: 1.0, timingFunction: .linear)
                 
         // Step 3: Move down slightly for a landing effect
-        let downTransform = Transform(translation: SIMD3(0, -0.05, 0))
+        let downTransform = Transform(translation: SIMD3(0, -0.049, 0))
         await piece.moveAsync(to: downTransform, relativeTo: piece, duration: 0.5, timingFunction: .easeOut)
         
         // Step 4: Restore gravity
@@ -588,6 +592,77 @@ final class GameController: GameControllerProtocol {
                     self.currentlyMovingChessPieceCollisionSubscriptionEnd = subscriptionEnd
                 }
             }
+        }
+    }
+    
+    func startBoardConstruction() async {
+        print("Construction started...")
+        await waitForEntities(named: ["Pointer1", "Pointer2"])
+        
+        guard let pointer1Entity = contentEntity.findEntity(named: "Pointer1"),
+              let pointer2Entity = contentEntity.findEntity(named: "Pointer2") else {
+            print("Pointers not found")
+            return
+        }
+        
+        // Get world positions of the pointers
+        let position1 = pointer1Entity.position(relativeTo: nil)
+        let position2 = pointer2Entity.position(relativeTo: nil)
+        
+        // Compute the direction vector (Pointer1 -> Pointer2)
+        let direction = normalize(position2 - position1)
+        
+        // Compute the midpoint
+        let midpoint = SIMD3<Float>(
+            (position1.x + position2.x) / 2,
+            position1.y, // Same Y-axis value
+            (position1.z + position2.z) / 2
+        )
+        
+        print(midpoint)
+        
+        // Compute the distance in the XZ plane
+        let dx = position2.x - position1.x
+        let dz = position2.z - position1.z
+        let distance = sqrt(dx * dx + dz * dz)  // Euclidean distance in XZ plane
+        
+        print(distance)
+        
+        // Chessboard original size
+        let originalSize: Float = 0.45255 // 32cmx32cm diagonally
+        
+        // Compute the scale factor to fit the distance
+        let scaleFactor = distance / originalSize
+        
+        print(scaleFactor)
+        
+        // Load chessboard model (assuming it exists in assets)
+        guard let chessboardModel = try? await Entity(named: "Board-Mixed", in: realityKitContentBundle) else {
+            print("Chessboard model not found")
+            return
+        }
+        
+        // Apply scaling
+        chessboardModel.setScale(SIMD3<Float>(scaleFactor, scaleFactor, scaleFactor), relativeTo: chessboardModel) // Scale only in X and Z
+        
+        // Define the default right vector (chessboard's local X-axis)
+        let defaultRightVector = SIMD3<Float>(1, 0, 0) // Default X-axis in model space
+
+        // Compute rotation to align chessboard's X-axis with the direction vector
+        let rotationQuaternion = simd_quatf(from: defaultRightVector, to: SIMD3<Float>(direction.x, 0, direction.z))
+
+        // Apply rotation to align the board
+        chessboardModel.orientation = rotationQuaternion
+        
+        // Set position at midpoint
+        chessboardModel.position = midpoint
+        
+        // Add to scene
+        contentEntity.addChild(chessboardModel)
+        
+        let transform = chessboardModel.findEntity(named: localPlayer.side?.rawValue ?? "")
+        transform?.children.forEach {piece in
+            piece.components.set(HoverEffectComponent())
         }
     }
 }

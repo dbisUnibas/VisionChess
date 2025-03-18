@@ -1,0 +1,192 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "Reality Composer Pro Version 2.0 (448.60.4)"
+    }
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "Root"
+{
+    reorder nameChildren = ["pointer", "board"]
+    def Xform "Transform" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (-0.01099045, 2.6202749e-9, -1.4399145e-11)
+        }
+    )
+    {
+        quatf xformOp:orient = (0.9999849, -0.0054951976, 1.3101572e-9, 0)
+        float3 xformOp:translate = (0.00083854795, 0.04512974, 0.005946228)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def "Push_Pin" (
+            active = true
+            customData = {
+                float3 rotationEulerHint = (-0.7504916, -4.4703484e-8, -0.61086535)
+            }
+            references = @Push_Pin.usdz@
+        )
+        {
+            quatf xformOp:orient = (0.88735497, -0.34953845, 0.11020903, -0.279782)
+            float3 xformOp:scale = (0.0002, 0.0002, 0.0002)
+            float3 xformOp:translate = (-0.013935266, -0.017589316, 0.01568544)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            over "Meshes"
+            {
+                over "Sketchfab_model"
+                {
+                    over "b255e506f173411b9f11c30c50afae74_fbx"
+                    {
+                        over "RootNode"
+                        {
+                            over "Pin"
+                            {
+                                over "Needle"
+                                {
+                                    over "Needle_2"
+                                    {
+                                        over "Needle_2_Chrome_0"
+                                        {
+                                            over "Needle_2_Chrome_0"
+                                            {
+                                                def RealityKitComponent "InputTarget"
+                                                {
+                                                    uniform token info:id = "RealityKit.InputTarget"
+                                                }
+
+                                                def RealityKitComponent "Collider"
+                                                {
+                                                    uint group = 1
+                                                    uniform token info:id = "RealityKit.Collider"
+                                                    uint mask = 4294967295
+                                                    token type = "Default"
+
+                                                    def RealityKitStruct "Shape"
+                                                    {
+                                                        float3 extent = (50, 1117.6735, 50)
+                                                        token shapeType = "Box"
+
+                                                        def RealityKitStruct "pose"
+                                                        {
+                                                            float3 position = (0, 558.83673, 0)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        over "Needle_2_Recession_0"
+                                        {
+                                            over "Needle_2_Recession_0"
+                                            {
+                                                def RealityKitComponent "InputTarget"
+                                                {
+                                                    uniform token info:id = "RealityKit.InputTarget"
+                                                }
+
+                                                def RealityKitComponent "Collider"
+                                                {
+                                                    uint group = 1
+                                                    uniform token info:id = "RealityKit.Collider"
+                                                    uint mask = 4294967295
+                                                    token type = "Default"
+
+                                                    def RealityKitStruct "Shape"
+                                                    {
+                                                        float3 extent = (45.984722, 68.04065, 45.984722)
+                                                        token shapeType = "Box"
+
+                                                        def RealityKitStruct "pose"
+                                                        {
+                                                            float3 position = (0, 236.74197, 0)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                over "Ball_Holder"
+                                {
+                                    over "Ball_Holder_2"
+                                    {
+                                        over "Ball_Holder_2_Chrome_0"
+                                        {
+                                            over "Ball_Holder_2_Chrome_0"
+                                            {
+                                                def RealityKitComponent "InputTarget"
+                                                {
+                                                    uniform token info:id = "RealityKit.InputTarget"
+                                                }
+
+                                                def RealityKitComponent "Collider"
+                                                {
+                                                    uint group = 1
+                                                    uniform token info:id = "RealityKit.Collider"
+                                                    uint mask = 4294967295
+                                                    token type = "Default"
+
+                                                    def RealityKitStruct "Shape"
+                                                    {
+                                                        float3 extent = (76.740875, 38.366642, 76.740875)
+                                                        token shapeType = "Box"
+
+                                                        def RealityKitStruct "pose"
+                                                        {
+                                                            float3 position = (0, -20.316679, 0)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                over "Ball"
+                                {
+                                    over "Sphere"
+                                    {
+                                        over "Sphere__0"
+                                        {
+                                            over "Sphere__0"
+                                            {
+                                                def RealityKitComponent "InputTarget"
+                                                {
+                                                    uniform token info:id = "RealityKit.InputTarget"
+                                                }
+
+                                                def RealityKitComponent "Collider"
+                                                {
+                                                    uint group = 1
+                                                    uniform token info:id = "RealityKit.Collider"
+                                                    uint mask = 4294967295
+                                                    token type = "Default"
+
+                                                    def RealityKitStruct "Shape"
+                                                    {
+                                                        float3 extent = (220, 220, 220)
+                                                        token shapeType = "Box"
+
+                                                        def RealityKitStruct "pose"
+                                                        {
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

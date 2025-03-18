@@ -44,6 +44,7 @@ class GameViewModel {
     var deviceAnchorPresent = false
     var planeAnchorsPresent = false
     var boardPlaced: Bool = false
+    var pointersPlaced: Int = 0
     private var worldAnchors: [UUID:WorldAnchor] = [:]
     static private let placedObjectsOffsetOnPlanes: Float = 0.0001
     var dataSource: PlaneAnchoringDataSource?
@@ -242,76 +243,111 @@ class GameViewModel {
 
     func placeBoard(_ entity: AnchorableEntity) {
         
-        if let activeController = appModel?.sessionController {
-#if targetEnvironment(simulator)
-            entity.renderContent?.position = activeController.placementLocation.position
-            entity.renderContent?.orientation = activeController.placementLocation.orientation
-            
-            Task {
-                let anchorId = UUID()
-                dataSource?.insertInstance(entity, id: anchorId)
-                if let contentToRender = dataSource?.renderContentForAnchor(anchorId) {
-                    contentToRender.position = .init(x: 0, y: 0.88, z: 1)
-                    contentToRender.orientation = .init()
-                    contentToRender.isEnabled = true
-                    activeController.contentEntity.addChild(contentToRender)
+        if let activeController = appModel?.activeController, activeController.game.mode == .mixed {
+            if pointersPlaced == 0 {
+                entity.renderContent?.position = activeController.placementLocation.position
+                entity.renderContent?.orientation = activeController.placementLocation.orientation
+                
+                Task {
+                    let anchorId = UUID()
+                    dataSource?.insertInstance(entity, id: anchorId)
+                    if let contentToRender = dataSource?.renderContentForAnchor(anchorId) {
+                        contentToRender.position = activeController.placementLocation.position
+                        contentToRender.orientation = activeController.placementLocation.orientation
+                        contentToRender.isEnabled = true
+                        activeController.contentEntity.addChild(contentToRender)
+                    }
+                    
+                    print("Pointer1 placed!")
+                    pointersPlaced += 1
+                }
+            } else {
+                entity.renderContent?.position = activeController.placementLocation.position
+                entity.renderContent?.orientation = activeController.placementLocation.orientation
+                
+                Task {
+                    let newWorldAnchor = await attachEntityToWorldAnchor(entity)
+                    if let existingWorldAnchorID = newWorldAnchor?.id {
+                        worldAnchors[existingWorldAnchorID] = newWorldAnchor
+                    }
+                    print("Pointer2 placed!")
+                    pointersPlaced += 1
+                    activeController.placementLocation.removeFromParent()
+                    boardPlaced = true
+                }
+            }
+        } else {
+            if let activeController = appModel?.sessionController {
+    #if targetEnvironment(simulator)
+                entity.renderContent?.position = activeController.placementLocation.position
+                entity.renderContent?.orientation = activeController.placementLocation.orientation
+                
+                Task {
+                    let anchorId = UUID()
+                    dataSource?.insertInstance(entity, id: anchorId)
+                    if let contentToRender = dataSource?.renderContentForAnchor(anchorId) {
+                        contentToRender.position = .init(x: 0, y: 0.88, z: 1)
+                        contentToRender.orientation = .init()
+                        contentToRender.isEnabled = true
+                        activeController.contentEntity.addChild(contentToRender)
+                    }
+                    
+                    print("Board placed!")
+                    boardPlaced = true
+                    activeController.placementLocation.removeFromParent()
+                }
+    #else
+                entity.renderContent?.position = activeController.placementLocation.position
+                entity.renderContent?.orientation = activeController.placementLocation.orientation
+                
+                Task {
+                    let newWorldAnchor = await attachEntityToWorldAnchor(entity)
+                    if let existingWorldAnchorID = newWorldAnchor?.id {
+                        worldAnchors[existingWorldAnchorID] = newWorldAnchor
+                    }
+                    print("Board placed!")
+                    boardPlaced = true
+                    activeController.placementLocation.removeFromParent()
                 }
                 
-                print("Board placed!")
-                boardPlaced = true
-                activeController.placementLocation.removeFromParent()
+    #endif
             }
-#else
-            entity.renderContent?.position = activeController.placementLocation.position
-            entity.renderContent?.orientation = activeController.placementLocation.orientation
-            
-            Task {
-                let newWorldAnchor = await attachEntityToWorldAnchor(entity)
-                if let existingWorldAnchorID = newWorldAnchor?.id {
-                    worldAnchors[existingWorldAnchorID] = newWorldAnchor
-                }
-                print("Board placed!")
-                boardPlaced = true
-                activeController.placementLocation.removeFromParent()
-            }
-            
-#endif
-        }
-        if let activeController = appModel?.gameController {
+            if let activeController = appModel?.gameController {
 
-#if targetEnvironment(simulator)
-            entity.renderContent?.position = activeController.placementLocation.position
-            entity.renderContent?.orientation = activeController.placementLocation.orientation
-            
-            Task {
-                let anchorId = UUID()
-                dataSource?.insertInstance(entity, id: anchorId)
-                if let contentToRender = dataSource?.renderContentForAnchor(anchorId) {
-                    contentToRender.position = .init(x: 0, y: 0.88, z: -0.5)
-                    contentToRender.orientation = .init()
-                    contentToRender.isEnabled = true
-                    activeController.contentEntity.addChild(contentToRender)
-                }
+    #if targetEnvironment(simulator)
+                entity.renderContent?.position = activeController.placementLocation.position
+                entity.renderContent?.orientation = activeController.placementLocation.orientation
                 
-                print("Board placed!")
-                boardPlaced = true
-                activeController.placementLocation.removeFromParent()
-            }
-#else
-            entity.renderContent?.position = activeController.placementLocation.position
-            entity.renderContent?.orientation = activeController.placementLocation.orientation
-            
-            Task {
-                let newWorldAnchor = await attachEntityToWorldAnchor(entity)
-                if let existingWorldAnchorID = newWorldAnchor?.id {
-                    worldAnchors[existingWorldAnchorID] = newWorldAnchor
+                Task {
+                    let anchorId = UUID()
+                    dataSource?.insertInstance(entity, id: anchorId)
+                    if let contentToRender = dataSource?.renderContentForAnchor(anchorId) {
+                        contentToRender.position = .init(x: 0, y: 0.88, z: -0.5)
+                        contentToRender.orientation = .init()
+                        contentToRender.isEnabled = true
+                        activeController.contentEntity.addChild(contentToRender)
+                    }
+                    
+                    print("Board placed!")
+                    boardPlaced = true
+                    activeController.placementLocation.removeFromParent()
                 }
-                print("Board placed!")
-                boardPlaced = true
-                activeController.placementLocation.removeFromParent()
-            }
-#endif
+    #else
+                entity.renderContent?.position = activeController.placementLocation.position
+                entity.renderContent?.orientation = activeController.placementLocation.orientation
+                
+                Task {
+                    let newWorldAnchor = await attachEntityToWorldAnchor(entity)
+                    if let existingWorldAnchorID = newWorldAnchor?.id {
+                        worldAnchors[existingWorldAnchorID] = newWorldAnchor
+                    }
+                    print("Board placed!")
+                    boardPlaced = true
+                    activeController.placementLocation.removeFromParent()
+                }
+    #endif
 
+            }
         }
     }
 

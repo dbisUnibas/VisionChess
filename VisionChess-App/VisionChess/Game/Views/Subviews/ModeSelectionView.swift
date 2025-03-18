@@ -16,7 +16,7 @@ struct ModeSelectionView: View {
             Section {
                 HStack(alignment: .center, spacing: 32) {
                     //ModeButton(title: "Physical Game", mode: GameModel.GameMode.physical, appModel: appModel).disabled(true)
-                    ModeButton(title: "Physical Board", mode: GameModel.GameMode.mixed, appModel: appModel).disabled(true)
+                    ModeButton(title: "Physical Board", mode: GameModel.GameMode.mixed, appModel: appModel)
                     ModeButton(title: "Virtual Board", mode: GameModel.GameMode.virtual, appModel: appModel)
                 }
             } header: {
