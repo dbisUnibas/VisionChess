@@ -13,9 +13,6 @@ struct TeamSelectionTemplate: SpatialTemplate {
         case black
     }
     
-    /// An array of seating positions the game uses to position spatial Personas during the team-selection stage.
-    ///
-    /// The game fills the seats with participants based on the order of the array's elements.
     let elements: [any SpatialTemplateElement] = [
         .seat(position: .app.offsetBy(x: -1.5, z: 3), role: Role.white),
         
@@ -25,6 +22,6 @@ struct TeamSelectionTemplate: SpatialTemplate {
         .seat(position: .app.offsetBy(x: 1, z: 3)),
         .seat(position: .app.offsetBy(x: -1, z: 3)),
         
-            .seat(position: .app.offsetBy(x: 1.5, z: 3), role: Role.black)
+        .seat(position: .app.offsetBy(x: 1.5, z: 3), role: Role.black)
     ]
 }

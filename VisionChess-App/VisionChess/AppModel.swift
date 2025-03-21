@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Maintains app-wide state
 @Observable @MainActor
 class AppModel {
     var sessionController: SessionController?

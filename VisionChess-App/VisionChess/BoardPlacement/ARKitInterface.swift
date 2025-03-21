@@ -1,7 +1,8 @@
 //
 //  ARKitInterface.swift
+//  VisionChess
 //
-//  Created by Danilo Campos on 2/17/24.
+//  Created by Tim Bachmann on 12.03.2025.
 //
 
 //Encapsulates interactions with ARKitSession

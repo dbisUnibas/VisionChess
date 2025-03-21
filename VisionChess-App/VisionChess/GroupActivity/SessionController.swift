@@ -288,19 +288,45 @@ final class SessionController: GameControllerProtocol {
         
         let nextSide: PlayerModel.Side = game.currentSide == .white ? .black : .white
         print(nextSide)
+        
+        
+        localPlayer.isPlaying = false
         game.currentSide = nextSide
         game.stage = .inGame(.afterPlayersTurn)
+        
     }
     
     func setWinner(side: PlayerModel.Side) {
+        currentTargetField = []
+        currentlyMovingChessPiece = nil
+        currentlyCapturedPieces = []
+        currentlyMovingChessPieceCollisionSubscription?.cancel()
+        currentlyMovingChessPieceCollisionSubscription = nil
+        currentlyMovingChessPieceCollisionSubscriptionEnd?.cancel()
+        currentlyMovingChessPieceCollisionSubscriptionEnd = nil
+        deactivateInput()
+        hideAllFieldEntities()
+        
         game.winner = side
         game.stage = .gameOver
     }
     
     func endGame() {
-        game.stage = .modeSelection
+        currentTargetField = []
+        currentlyMovingChessPiece = nil
+        currentlyCapturedPieces = []
+        currentlyMovingChessPieceCollisionSubscription?.cancel()
+        currentlyMovingChessPieceCollisionSubscription = nil
+        currentlyMovingChessPieceCollisionSubscriptionEnd?.cancel()
+        currentlyMovingChessPieceCollisionSubscriptionEnd = nil
+        deactivateInput()
+        hideAllFieldEntities()
+        
         game.gameStateFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
         game.currentSide = .white
+        game.lastKnownPosition = initialPosition
+        lastAppliedPosition = initialPosition
+        game.stage = .modeSelection
     }
     
     func gameStateChanged() {
@@ -327,22 +353,38 @@ final class SessionController: GameControllerProtocol {
     func updateBoard() {
         if game.currentSide != localPlayer.side {
             print("Update Board")
+            
             let unappliedMoves = getUnappliedMoves()
-            for move in unappliedMoves {
-                if let pieceEntity = pieceEntities[move.key] {
-                    if move.value == .defeated {
+            
+            for (piece, destination) in unappliedMoves {
+                guard let pieceEntity = pieceEntities[piece] else { continue }
+
+                switch destination {
+                    case .defeated:
                         pieceEntity.removeFromParent()
-                    } else {
-                        if let fieldEntity = fieldEntities[move.value] {
+                    
+                    case let targetField where piece.rawValue.hasPrefix("blackPawn") && targetField.rawValue.hasSuffix("1"):
+                        Task {
+                            await self.promotePawn(pawn: piece, to: .blackQueen)
+                        }
+                        
+                    case let targetField where piece.rawValue.hasPrefix("whitePawn") && targetField.rawValue.hasSuffix("8"):
+                        Task {
+                            await self.promotePawn(pawn: piece, to: .whiteQueen)
+                        }
+                        
+                    default:
+                        if let fieldEntity = fieldEntities[destination] {
                             Task {
                                 await self.animateMove(piece: pieceEntity, field: fieldEntity)
                             }
                         }
                     }
-                }
             }
+            
             self.lastAppliedPosition = self.game.lastKnownPosition
         }
+
         if game.currentSide == localPlayer.side && game.stage == .inGame(.afterPlayersTurn) {
             print("Begin Turn")
             currentTargetField = []
@@ -373,98 +415,109 @@ final class SessionController: GameControllerProtocol {
             completion(false)
             return
         }
-        var promotedPieceVar = promotedPiece
-        
-        let from = game.lastKnownPosition[piece]
-        if let from = from {
-            if from != to {
-                var moveRequest: MoveRequest
-                
-                if promotedPieceVar == nil && ((piece.rawValue.hasPrefix("blackPawn") && to.rawValue.suffix(1) == "1") || (piece.rawValue.hasPrefix("whitePawn") && to.rawValue.suffix(1) == "8")) {
-                    promotedPieceVar = piece.rawValue.hasPrefix(PlayerModel.Side.white.rawValue) ? .whiteQueen : .blackQueen
-                    moveRequest = MoveRequest(move: "\(from)\(to)\(promotedPieceVar?.rawValue ?? "")")
-                } else if promotedPiece != nil {
-                    moveRequest = MoveRequest(move: "\(from)\(to)\(promotedPieceVar?.rawValue ?? "")")
-                } else {
-                    moveRequest = MoveRequest(move: "\(from)\(to)")
-                }
-                
-                GamesAPI.gamesIdMovePost(id: gameId, moveRequest: moveRequest) { response, error in
-                    guard error == nil else {
-                        print("Error fetching best move: \(error!.localizedDescription)")
-                        completion(false)
-                        return
-                    }
-                    print("Move \(from)\(to) successfully executed")
-                    
-                    if let promotedPieceVar = promotedPieceVar {
-                        Task {
-                            await self.promotePawn(pawn: piece, to: promotedPieceVar)
-                        }
-                    }
-                    
-                    self.lastAppliedPosition[piece] = to
-                    self.game.lastKnownPosition[piece] = to
-                    
-                    if piece == .blackKing || piece == .whiteKing {
-                        let castlingMove = CastlingMove(rawValue: "\(from)\(to)")
-                        switch castlingMove {
-                            case .kingsideBlack:
-                                if let blackRook = self.pieceEntities[.blackRookH], let fieldF8 = self.fieldEntities[.f8] {
-                                    Task {
-                                        await self.animateMove(piece: blackRook, field: fieldF8)
-                                    }
-                                    self.lastAppliedPosition[.blackRookH] = .f8
-                                    self.game.lastKnownPosition[.blackRookH] = .f8
-                                }
-                                break
-                            case .kingsideWhite:
-                                if let whiteRook = self.pieceEntities[.whiteRookH], let fieldF1 = self.fieldEntities[.f1] {
-                                    Task {
-                                        await self.animateMove(piece: whiteRook, field: fieldF1)
-                                    }
-                                    self.lastAppliedPosition[.whiteRookH] = .f1
-                                    self.game.lastKnownPosition[.whiteRookH] = .f1
-                                }
-                                break
-                            case .queensideBlack:
-                                if let blackRook = self.pieceEntities[.blackRookA], let fieldD8 = self.fieldEntities[.d8] {
-                                    Task {
-                                        await self.animateMove(piece: blackRook, field: fieldD8)
-                                    }
-                                    self.lastAppliedPosition[.blackRookA] = .d8
-                                    self.game.lastKnownPosition[.blackRookA] = .d8
-                                }
-                                break
-                            case .queensideWhite:
-                                if let whiteRook = self.pieceEntities[.whiteRookA], let fieldD1 = self.fieldEntities[.d1] {
-                                    Task {
-                                        await self.animateMove(piece: whiteRook, field: fieldD1)
-                                    }
-                                    self.lastAppliedPosition[.whiteRookA] = .d1
-                                    self.game.lastKnownPosition[.whiteRookA] = .d1
-                                }
-                                break
-                            case .none:
-                                break
-                        }
-                    }
-                    
-                    self.removeDefeatedPieces(at: to)
-                    
-                    self.game.gameStateFen = response?.newGameState.gameState ?? self.game.gameStateFen
-                    self.game.moveHistory = response?.newGameState.moves ?? self.game.moveHistory
-                    self.game.checkers = response?.newGameState.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
-                    self.endTurn()
-                    completion(true)
-                }
-            } else {
-                completion(false)
-            }
-        } else {
+
+        guard let from = game.lastKnownPosition[piece], from != to else {
             completion(false)
+            return
+        }
+
+        var promotedPieceVar = promotedPiece
+        if promotedPieceVar == nil, let autoPromoted = getAutoPromotion(for: piece, to: to) {
+            promotedPieceVar = autoPromoted
+        }
+
+        let moveRequest = MoveRequest(move: "\(from)\(to)\(promotedPieceVar?.rawValue ?? "")")
+
+        GamesAPI.gamesIdMovePost(id: gameId, moveRequest: moveRequest) { response, error in
+            guard error == nil else {
+                print("Error performing move: \(error!.localizedDescription)")
+                completion(false)
+                return
+            }
+
+            print("Move \(from)\(to) successfully executed")
+            
+            // Update piece position
+            self.lastAppliedPosition[piece] = to
+            self.game.lastKnownPosition[piece] = to
+
+            // Handle promotion
+            if let promoted = promotedPieceVar {
+                Task {
+                    await self.promotePawn(pawn: piece, to: promoted)
+                }
+            }
+
+            // Handle castling
+            self.handleCastlingIfNeeded(for: piece, from: from, to: to)
+
+            // Handle en passant
+            self.handleEnPassantIfNeeded(for: piece, to: to)
+
+            // Remove captured piece if any
+            self.removeDefeatedPieces(at: to)
+
+            // Update game state from server
+            self.updateGameState(with: response)
+
+            self.endTurn()
+            completion(true)
         }
     }
+
+    
+    private func getAutoPromotion(for piece: ChessPiece, to field: ChessField) -> ChessPieceFen? {
+        if piece.rawValue.hasPrefix("whitePawn") && field.rawValue.hasSuffix("8") {
+            return .whiteQueen
+        } else if piece.rawValue.hasPrefix("blackPawn") && field.rawValue.hasSuffix("1") {
+            return .blackQueen
+        }
+        return nil
+    }
+
+    private func handleCastlingIfNeeded(for piece: ChessPiece, from: ChessField, to: ChessField) {
+        guard (piece == .whiteKing || piece == .blackKing),
+              let castlingMove = CastlingMove(rawValue: "\(from)\(to)"),
+              let info = castlingMap[castlingMove],
+              let rookEntity = self.pieceEntities[info.rookPiece],
+              let fieldEntity = self.fieldEntities[info.targetField] else { return }
+
+        Task {
+            await self.animateMove(piece: rookEntity, field: fieldEntity)
+        }
+        self.lastAppliedPosition[info.rookPiece] = info.targetField
+        self.game.lastKnownPosition[info.rookPiece] = info.targetField
+    }
+
+    private func handleEnPassantIfNeeded(for piece: ChessPiece, to: ChessField) {
+        guard let enPassant = self.isEnPassantPossible(), to.rawValue == enPassant else { return }
+
+        print("En passant target: \(enPassant)")
+
+        let isWhite = piece.rawValue.hasPrefix("whitePawn")
+        let isBlack = piece.rawValue.hasPrefix("blackPawn")
+        let rank = enPassant.suffix(1)
+        let file = enPassant.prefix(1)
+
+        let expectedRank = isWhite ? "6" : isBlack ? "3" : nil
+        let captureRank = isWhite ? "5" : isBlack ? "4" : nil
+
+        if let expectedRank = expectedRank, let captureRank = captureRank {
+            if rank == expectedRank, let captureSquare = ChessField(rawValue: "\(file)\(captureRank)") {
+                if let targetPiece = self.game.lastKnownPosition.first(where: { $0.value == captureSquare })?.key {
+                    self.currentlyCapturedPieces.append(targetPiece)
+                    self.removeDefeatedPieces(at: captureSquare)
+                }
+            }
+        }
+    }
+
+    private func updateGameState(with response: MoveResponse?) {
+        self.game.gameStateFen = response?.newGameState.gameState ?? self.game.gameStateFen
+        self.game.moveHistory = response?.newGameState.moves ?? self.game.moveHistory
+        self.game.checkers = response?.newGameState.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
+    }
+
     
     func movePieceToLastKnownPosition(piece: Entity) {
         currentTargetField = []
@@ -604,6 +657,7 @@ final class SessionController: GameControllerProtocol {
         if let pawnEntity = pieceEntities[pawn], let promotedPieceEntity = promotedPieceEntity {
             if let piecesTransform = contentEntity.findEntity(named: side.rawValue.lowercased()) {
                 
+                promotedPieceEntity.components = pawnEntity.components
                 promotedPieceEntity.setScale(.init(x: 1.4, y: 1.4, z: 1.4), relativeTo: nil)
                 promotedPieceEntity.position = pawnEntity.position
                 pawnEntity.removeFromParent()

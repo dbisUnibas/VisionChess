@@ -1,5 +1,9 @@
-
-//Purpose: Tracks plane anchors and creates entities corresponding to real world surfaces
+//
+//  PlaneAnchorHandler.swift
+//  VisionChess
+//
+//  Created by Tim Bachmann on 12.03.2025.
+//
 
 import Foundation
 import ARKit

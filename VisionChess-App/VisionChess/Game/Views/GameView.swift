@@ -35,7 +35,7 @@ struct GameView: View {
                 dataSource.removeAll()
             }
             
-            let cameraFeedVisualizationEntity = appModel.viewModel?.cameraFeedVisualizationEntity
+            //let cameraFeedVisualizationEntity = appModel.viewModel?.cameraFeedVisualizationEntity
             
             guard let scene else {
                 return

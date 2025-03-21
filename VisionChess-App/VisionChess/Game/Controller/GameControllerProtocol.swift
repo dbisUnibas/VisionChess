@@ -335,5 +335,14 @@ extension GameControllerProtocol {
         return game.lastKnownPosition.first { $0.value == field }?.key
     }
     
-    
+    func isEnPassantPossible() -> String? {
+        let components = game.gameStateFen.split(separator: " ")
+        guard components.count >= 4 else {
+            return nil
+        }
+
+        let enPassantField = String(components[3])
+        return enPassantField != "-" ? enPassantField : nil
+    }
+
 }

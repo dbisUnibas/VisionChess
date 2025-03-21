@@ -149,7 +149,7 @@ struct MetalCameraView: UIViewRepresentable {
             let lanczos = MPSImageLanczosScale(device: device)
 
             // Prepare the scale transform
-            let scaleTransform = MPSScaleTransform(
+            _ = MPSScaleTransform(
                 scaleX: Double(destinationTexture.width) / Double(sourceTexture.width),
                 scaleY: Double(destinationTexture.height) / Double(sourceTexture.height),
                 translateX: 0.0,

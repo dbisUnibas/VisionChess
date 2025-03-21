@@ -1,8 +1,8 @@
 //
-//  PlaneAnchoringDataSource.swift
-//  Phasecrafter
+//  ModelDataSource.swift
+//  VisionChess
 //
-//  Created by Danilo Campos on 2/22/24.
+//  Created by Tim Bachmann on 12.03.2025.
 //
 
 import Foundation

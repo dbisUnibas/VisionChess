@@ -259,3 +259,15 @@ enum CastlingMove: String, CaseIterable, Codable {
     case queensideWhite = "e1c1"
     case queensideBlack = "e8c8"
 }
+
+struct CastlingInfo {
+    let rookPiece: ChessPiece
+    let targetField: ChessField
+}
+
+let castlingMap: [CastlingMove: CastlingInfo] = [
+    .kingsideBlack: .init(rookPiece: .blackRookH, targetField: .f8),
+    .kingsideWhite: .init(rookPiece: .whiteRookH, targetField: .f1),
+    .queensideBlack: .init(rookPiece: .blackRookA, targetField: .d8),
+    .queensideWhite: .init(rookPiece: .whiteRookA, targetField: .d1)
+]

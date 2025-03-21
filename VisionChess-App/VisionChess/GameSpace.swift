@@ -44,11 +44,6 @@ struct GameSpace: Scene {
         .onChange(of: appModel.gameController?.game.stage, updateImmersiveSpaceState)
     }
     
-    /// Opens or dismisses the app's immersive space based on the game's current and previous states.
-    ///
-    /// - Parameters:
-    ///     - oldActivityStage: The app's previous activity stage.
-    ///     - newActivityStage: The app's current stage.
     func updateImmersiveSpaceState(
         oldActivityStage: GameModel.ActivityStage?,
         newActivityStage: GameModel.ActivityStage?

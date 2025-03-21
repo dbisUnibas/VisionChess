@@ -1,8 +1,8 @@
 //
 //  PersistedModel.swift
-//  PlanePlopperDemo
+//  VisionChess
 //
-//  Created by Danilo Campos on 2/28/24.
+//  Created by Tim Bachmann on 12.03.2025.
 //
 
 import Foundation

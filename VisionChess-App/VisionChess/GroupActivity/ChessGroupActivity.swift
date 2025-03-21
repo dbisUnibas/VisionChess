@@ -15,7 +15,7 @@ struct ChessGroupActivity: GroupActivity, Transferable, Sendable {
 
     var metadata: GroupActivityMetadata {
         var metadata = GroupActivityMetadata()
-        metadata.title = "VisionChess SharePlay"
+        metadata.title = "VisionChess"
         metadata.subtitle = "Let's play together!"
         metadata.previewImage = UIImage(systemName: "shareplay")?.cgImage
         metadata.type = .generic
