@@ -17,7 +17,7 @@ struct GameOverView: View {
     
     var body: some View {
         VStack(spacing: 24) {
-            if (appModel.activeController?.game.winner != nil && appModel.activeController?.game.winner == appModel.activeController?.localPlayer.side) || true {
+            if (appModel.activeController?.game.winner != nil && appModel.activeController?.game.winner == appModel.activeController?.localPlayer.side) {
                 
                 Text("Checkmate 🎉")
                     .font(.system(size: 42, weight: .heavy))

@@ -87,20 +87,20 @@ struct GameView: View {
                 .targetedToAnyEntity()
                 .onEnded { value in
                     if let activeController = appModel.activeController {
-                        if (activeController.game.stage == .inSetup) {
-                            if activeController.game.mode == .mixed {
-                                if appModel.viewModel?.pointersPlaced == 0 {
-                                    appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 1))
-                                } else {
-                                    appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 2))
-                                }
+                        if activeController.game.mode == .mixed {
+                            if appModel.viewModel?.pointersPlaced == 0 {
+                                appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 1))
                             } else {
+                                appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 2))
+                            }
+                        } else {
+                            if activeController.pieceEntities.count == 0 {
                                 appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 0))
                             }
-                            
-                            if appModel.viewModel?.pointersPlaced == 1 || activeController.game.mode != .mixed {
-                                activeController.startGame(opponentStrength: activeController.opponentStrength)
-                            }
+                        }
+                        
+                        if (appModel.viewModel?.pointersPlaced == 1 || activeController.game.mode != .mixed) && activeController.pieceEntities.count == 0 {
+                            activeController.startGame(opponentStrength: activeController.opponentStrength)
                         }
                     }
                 }
@@ -141,15 +141,20 @@ struct GameView: View {
                     }
                     
                     if appModel.activeController?.currentTargetField.isEmpty ?? true {
+                        print("Return piece to initial position")
                         appModel.activeController?.movePieceToLastKnownPosition(piece: value.entity)
                     } else {
                         let fieldEntity = appModel.activeController?.currentTargetField.last!
                         if let fieldEntity = fieldEntity {
-                            appModel.activeController?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!) { success in
+                            
+                            
+                            print("Move piece to field")
+                            appModel.activeController?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!, promotedPiece: nil) { success in
                                 if success {
                                     fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
                                 } else {
                                     appModel.activeController?.movePieceToLastKnownPosition(piece: value.entity)
+                                    print("Return piece to initial position")
                                 }
                             }
                         }

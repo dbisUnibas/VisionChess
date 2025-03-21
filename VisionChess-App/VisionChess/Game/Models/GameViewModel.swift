@@ -286,7 +286,7 @@ class GameViewModel {
                     let anchorId = UUID()
                     dataSource?.insertInstance(entity, id: anchorId)
                     if let contentToRender = dataSource?.renderContentForAnchor(anchorId) {
-                        contentToRender.position = .init(x: 0, y: 0.88, z: 1)
+                        contentToRender.position = .init(x: 0, y: 0.88, z: 0.5)
                         contentToRender.orientation = .init()
                         contentToRender.isEnabled = true
                         activeController.contentEntity.addChild(contentToRender)

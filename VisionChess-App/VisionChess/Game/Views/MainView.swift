@@ -14,22 +14,9 @@ struct MainView: View {
     var body: some View {
         Group {
             // Select the appropriate view for each stage in the game.
-            switch appModel.sessionController?.game.stage {
+            switch appModel.activeController?.game.stage {
                 case .none:
-                    switch appModel.gameController?.game.stage {
-                    case .none:
-                        WelcomeView()
-                    case .modeSelection:
-                        ModeSelectionView()
-                    case .sideSelection:
-                        TeamSelectionView()
-                    case .inSetup:
-                        BoardSetupView()
-                    case .inGame:
-                        GamePlayingView()
-                    case .gameOver:
-                        GameOverView()
-                    }
+                    WelcomeView()
                 case .modeSelection:
                     ModeSelectionView()
                 case .sideSelection:

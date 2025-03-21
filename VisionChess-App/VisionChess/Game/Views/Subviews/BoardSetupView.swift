@@ -17,26 +17,29 @@ struct BoardSetupView: View {
             if appModel.activeController?.game.mode == .mixed {
                 VStack(spacing: 24) {
                     Text("Place two markers on opposite corners of your board's fields.")
-                        .font(.title)
+                        .font(.largeTitle)
+                        .multilineTextAlignment(.center)
                     
                     Text("Look at a your board and pinch to place a marker.")
-                        .font(.subheadline)
+                        .font(.title)
                 }
                 
                 Image("markerInstructions")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 86, height: 86)
+                    .frame(width: 152, height: 152)
             } else {
                 Text("Look at a flat surface and pinch to place the board.")
-                    .font(.title)
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.center)
                 
                 Image(systemName: "arrow.down.to.line.square")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 64, height: 64)
+                    .frame(width: 124, height: 124)
             }
         }
+        .frame(width: 900, height: 600)
         .padding()
         .visionChessToolbar()
         .toolbar {

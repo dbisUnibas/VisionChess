@@ -36,6 +36,7 @@ struct TeamSelectionView: View {
             .tint(.green)
             .disabled(whiteAndBlackSidesAreEmpty)
         }
+        .frame(width: 900)
         .padding()
         .visionChessToolbar()
         .toolbar {

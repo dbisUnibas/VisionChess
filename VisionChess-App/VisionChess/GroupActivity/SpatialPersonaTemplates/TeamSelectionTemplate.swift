@@ -17,21 +17,14 @@ struct TeamSelectionTemplate: SpatialTemplate {
     ///
     /// The game fills the seats with participants based on the order of the array's elements.
     let elements: [any SpatialTemplateElement] = [
-        // Blue team:
-        .seat(position: .app.offsetBy(x: -2.5, z: 3.5), role: Role.white),
-        .seat(position: .app.offsetBy(x: -3.0, z: 3.0), role: Role.white),
-        .seat(position: .app.offsetBy(x: -3.5, z: 2.5), role: Role.white),
+        .seat(position: .app.offsetBy(x: -1.5, z: 3), role: Role.white),
         
-        // Starting positions:
-        .seat(position: .app.offsetBy(x: 0, z: 4)),
-        .seat(position: .app.offsetBy(x: 1, z: 4)),
-        .seat(position: .app.offsetBy(x: -1, z: 4)),
-        .seat(position: .app.offsetBy(x: 2, z: 4)),
-        .seat(position: .app.offsetBy(x: -2, z: 4)),
+        .seat(position: .app.offsetBy(x: 0, z: 3)),
+        .seat(position: .app.offsetBy(x: 0.5, z: 3)),
+        .seat(position: .app.offsetBy(x: -0.5, z: 3)),
+        .seat(position: .app.offsetBy(x: 1, z: 3)),
+        .seat(position: .app.offsetBy(x: -1, z: 3)),
         
-        // Red team:
-        .seat(position: .app.offsetBy(x: 2.5, z: 3.5), role: Role.black),
-        .seat(position: .app.offsetBy(x: 3.0, z: 3.0), role: Role.black),
-        .seat(position: .app.offsetBy(x: 3.5, z: 2.5), role: Role.black)
+            .seat(position: .app.offsetBy(x: 1.5, z: 3), role: Role.black)
     ]
 }

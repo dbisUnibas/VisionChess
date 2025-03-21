@@ -25,6 +25,7 @@ struct ModeSelectionView: View {
                 Text("Select the mode you'd like to play in.")
             }
         }
+        .frame(width: 900)
         .visionChessToolbar()
         .toolbar {
             if appModel.gameController != nil {

@@ -836,6 +836,28 @@
     ],
     "BF6BE29A-C957-4926-8979-1C0CDB57FF76" : [
       {
+        "date" : 764067563.983133,
+        "title" : "Untitled",
+        "transform" : [
+          0.9994884,
+          7.432064e-10,
+          0.031981777,
+          0,
+          0.0067256703,
+          0.9776376,
+          -0.21018939,
+          0,
+          -0.03126659,
+          0.21029694,
+          0.97713745,
+          0,
+          0.0014251461,
+          0.089054644,
+          0.4506514,
+          1
+        ]
+      },
+      {
         "date" : 763509988.984294,
         "title" : "Untitled",
         "transform" : [
@@ -1150,5 +1172,5 @@
   "sceneViewportBackgroundColors" : {
 
   },
-  "selectedSceneRelativePath" : "Board-Mixed.usda"
+  "selectedSceneRelativePath" : "Board.usda"
 }

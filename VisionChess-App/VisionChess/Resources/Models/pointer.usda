@@ -188,5 +188,10 @@ def Xform "Root"
             }
         }
     }
+
+    def RealityKitComponent "HierarchicalFade"
+    {
+        uniform token info:id = "RealityKit.HierarchicalFade"
+    }
 }
 

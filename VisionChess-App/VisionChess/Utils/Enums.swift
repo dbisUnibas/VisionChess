@@ -144,6 +144,25 @@ enum ChessPieceFen: String, CaseIterable {
     case whitePawn = "P"
 }
 
+extension ChessPieceFen: CustomStringConvertible {
+    var description: String {
+        switch self {
+            case .blackKing: return "blackKing"
+            case .blackQueen: return "blackQueen"
+            case .blackBishop: return "blackBishop"
+            case .blackKnight: return "blackKnight"
+            case .blackRook: return "blackRook"
+            case .blackPawn: return "blackPawn"
+            case .whiteKing: return "whiteKing"
+            case .whiteQueen: return "whiteQueen"
+            case .whiteBishop: return "whiteBishop"
+            case .whiteKnight: return "whiteKnight"
+            case .whiteRook: return "whiteRook"
+            case .whitePawn: return "whitePawn"
+        }
+    }
+}
+
 let initialPosition: [ChessPiece: ChessField] = [
     .blackKing: .e8,
     .blackQueen: .d8,
@@ -232,4 +251,11 @@ enum GameAudioResource {
     case pop
     case ping
     case highscore
+}
+
+enum CastlingMove: String, CaseIterable, Codable {
+    case kingsideWhite = "e1g1"
+    case kingsideBlack = "e8g8"
+    case queensideWhite = "e1c1"
+    case queensideBlack = "e8c8"
 }

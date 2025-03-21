@@ -136,7 +136,7 @@ final class SessionController: GameControllerProtocol {
     func updateSpatialTemplatePreference() {
         switch game.stage {
             case .modeSelection:
-                systemCoordinator.configuration.spatialTemplatePreference = .sideBySide
+                systemCoordinator.configuration.spatialTemplatePreference = .custom(TeamSelectionTemplate())
             case .sideSelection:
                 systemCoordinator.configuration.spatialTemplatePreference = .custom(TeamSelectionTemplate())
             case .inSetup:
@@ -201,65 +201,76 @@ final class SessionController: GameControllerProtocol {
     }
     
     func startGame(opponentStrength: GameModel.OpponentStrength) {
-        game.stage = .inGame(.beforePlayersTurn)
-        
         Task {
+            print("Start Game")
             await self.findAllFieldEntities()
             await self.findAllPieceEntities()
             
-            let deviceId = UIDevice.current.identifierForVendor?.uuidString
-            if let deviceId = deviceId {
-                let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: opponentStrength.level)
-                GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        return
-                    }
-                    print(response ?? "response")
-                    
-                    self.game.gameId = response
-                    self.beginTurn()
-                })
-            }
-        }
-    }
-    
-    func beginTurn() {
-        game.stage = .inGame(.duringPlayersTurn)
-        
-        highlightCheck()
-        
-        if (game.currentSide == localPlayer.side && localPlayer.isPlaying) {
-            self.activateInput()
-            
-            self.getBestMove { move in
-                if let move = move {
-                    let move = move.split(separator: ",")[0]
-                    guard move != "(none)" else {
-                        // Checkmate
-                        self.setWinner(side: self.game.currentSide == .white ? .black : .white)
-                        return
-                    }
-                    
-                    let from = ChessField(rawValue: String(move.prefix(2)))
-                    let to = ChessField(rawValue: String(move.suffix(2)))
-                    
-                    if let from = from, let to = to {
-                        let chessFieldFromEntity = self.fieldEntities[from]
-                        let chessFieldToEntity = self.fieldEntities[to]
-                        
-                        if let chessFieldToEntity = chessFieldToEntity, let chessFieldFromEntity = chessFieldFromEntity {
-                            chessFieldFromEntity.components[OpacityComponent.self]?.opacity = 0.4
-                            chessFieldToEntity.components[OpacityComponent.self]?.opacity = 0.4
+            if game.currentSide == localPlayer.side {
+                let deviceId = UIDevice.current.identifierForVendor?.uuidString
+                if let deviceId = deviceId {
+                    let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: opponentStrength.level)
+                    GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
+                        if let error = error {
+                            print("Error: \(error.localizedDescription)")
+                            return
                         }
-                    }
+                        print(response ?? "response")
+                        
+                        self.game.stage = .inGame(.beforePlayersTurn)
+                        self.localPlayer.isPlaying = true
+                        self.game.gameId = response
+                        self.beginTurn()
+                    })
                 }
             }
         }
     }
     
+    func beginTurn() {
+        guard localPlayer.isPlaying else {
+            return
+        }
+        
+        game.stage = .inGame(.duringPlayersTurn)
+        
+        highlightCheck()
+        
+        print("Begin Turn")
+        
+        self.activateInput()
+        
+        self.getBestMove { move in
+            if let move = move {
+                let move = move.split(separator: ",")[0]
+                guard move != "(none)" else {
+                    // Checkmate
+                    self.setWinner(side: self.game.currentSide == .white ? .black : .white)
+                    return
+                }
+                
+                let from = ChessField(rawValue: String(move.prefix(2)))
+                // Get characters at index 2 and 3 (3rd and 4th characters)
+                let startIndex = move.index(move.startIndex, offsetBy: 2)
+                let endIndex = move.index(startIndex, offsetBy: 2)
+                let to = ChessField(rawValue: String(move[startIndex..<endIndex]))
+                
+                if let from = from, let to = to {
+                    let chessFieldFromEntity = self.fieldEntities[from]
+                    let chessFieldToEntity = self.fieldEntities[to]
+                    
+                    if let chessFieldToEntity = chessFieldToEntity, let chessFieldFromEntity = chessFieldFromEntity {
+                        chessFieldFromEntity.components[OpacityComponent.self]?.opacity = 0.4
+                        chessFieldToEntity.components[OpacityComponent.self]?.opacity = 0.4
+                    }
+                }
+            }
+        }
+        
+    }
+    
     func endTurn() {
-        guard game.stage.isInGame, localPlayer.isPlaying else {
+        guard localPlayer.isPlaying else {
             return
         }
         
@@ -275,15 +286,10 @@ final class SessionController: GameControllerProtocol {
         
         // self.setWinner(side: self.game.currentSide)
         
-        game.stage = .inGame(.beforePlayersTurn)
-        game.currentSide = game.currentSide == .white ? .black : .white
-        
-        print(game.currentSide)
-        self.beginTurn()
-        
-        if game.currentSide != localPlayer.side {
-            localPlayer.isPlaying = false
-        }
+        let nextSide: PlayerModel.Side = game.currentSide == .white ? .black : .white
+        print(nextSide)
+        game.currentSide = nextSide
+        game.stage = .inGame(.afterPlayersTurn)
     }
     
     func setWinner(side: PlayerModel.Side) {
@@ -306,7 +312,10 @@ final class SessionController: GameControllerProtocol {
         updateSpatialTemplatePreference()
         updateCurrentPlayer()
         updateLocalParticipantRole()
-        updateBoard()
+        
+        if game.stage.isInGame {
+            updateBoard()
+        }
     }
     
     func updateCurrentPlayer() {
@@ -316,18 +325,36 @@ final class SessionController: GameControllerProtocol {
     }
     
     func updateBoard() {
-        let unappliedMoves = getUnappliedMoves()
-        for move in unappliedMoves {
-            if let fieldEntity = fieldEntities[move.value], let pieceEntity = pieceEntities[move.key] {
-                if move.value == .defeated {
-                    pieceEntity.removeFromParent()
-                }
-                Task {
-                    await self.animateMove(piece: pieceEntity, field: fieldEntity)
+        if game.currentSide != localPlayer.side {
+            print("Update Board")
+            let unappliedMoves = getUnappliedMoves()
+            for move in unappliedMoves {
+                if let pieceEntity = pieceEntities[move.key] {
+                    if move.value == .defeated {
+                        pieceEntity.removeFromParent()
+                    } else {
+                        if let fieldEntity = fieldEntities[move.value] {
+                            Task {
+                                await self.animateMove(piece: pieceEntity, field: fieldEntity)
+                            }
+                        }
+                    }
                 }
             }
+            self.lastAppliedPosition = self.game.lastKnownPosition
         }
-        self.lastAppliedPosition = self.game.lastKnownPosition
+        if game.currentSide == localPlayer.side && game.stage == .inGame(.afterPlayersTurn) {
+            print("Begin Turn")
+            currentTargetField = []
+            currentlyMovingChessPiece = nil
+            currentlyCapturedPieces = []
+            currentlyMovingChessPieceCollisionSubscription?.cancel()
+            currentlyMovingChessPieceCollisionSubscription = nil
+            currentlyMovingChessPieceCollisionSubscriptionEnd?.cancel()
+            currentlyMovingChessPieceCollisionSubscriptionEnd = nil
+            hideAllFieldEntities()
+            self.beginTurn()
+        }
     }
     
     func getUnappliedMoves() -> [ChessPiece: ChessField] {
@@ -341,73 +368,26 @@ final class SessionController: GameControllerProtocol {
             }
     }
     
-    func pieceAt(field: String) -> ChessPieceFen? {
-        let parts = game.gameStateFen.split(separator: " ")
-        guard let boardState = parts.first else { return nil }
-        
-        let ranks = boardState.split(separator: "/")
-        guard ranks.count == 8 else { return nil }
-        
-        let file = field.first!
-        let rank = field.last!
-        
-        guard let rankIndex = "87654321".firstIndex(of: rank),
-              let fileIndex = "abcdefgh".firstIndex(of: file) else { return nil }
-        
-        let row = ranks[rankIndex.utf16Offset(in: "87654321")]
-        
-        var expandedRow = ""
-        for char in row {
-            if let digit = char.wholeNumberValue {
-                expandedRow += String(repeating: ".", count: digit)
-            } else {
-                expandedRow.append(char)
-            }
-        }
-        
-        let fileOffset = fileIndex.utf16Offset(in: "abcdefgh")
-        let expandedIndex = expandedRow.index(expandedRow.startIndex, offsetBy: fileOffset)
-        let pieceChar = expandedRow[expandedIndex]
-        
-        return ChessPieceFen(rawValue: String(pieceChar))
-    }
-    
-    func getFieldEntityFromChessPieceEntity(_ chessPieceEntity: Entity) -> Entity? {
-        let chessPiece = ChessPiece(rawValue: chessPieceEntity.name)
-        
-        if let chessPiece = chessPiece, let field = game.lastKnownPosition[chessPiece] {
-            return self.fieldEntities[field]
-        } else {
-            return nil
-        }
-    }
-    
-    func getBestMove(completion: @escaping (String?) -> Void) {
-        guard let gameId = game.gameId else {
-            completion(nil)
-            return
-        }
-        
-        GamesAPI.gamesIdBestMoveGet(id: gameId) { response, error in
-            guard error == nil else {
-                print("Error fetching best move: \(error!.localizedDescription)")
-                completion(nil)
-                return
-            }
-            print(response ?? "")
-            completion(response)
-        }
-    }
-    
-    func move(piece: ChessPiece, to: ChessField, completion: @escaping (Bool) -> Void) {
+    func move(piece: ChessPiece, to: ChessField, promotedPiece: ChessPieceFen?, completion: @escaping (Bool) -> Void) {
         guard let gameId = game.gameId else {
             completion(false)
             return
         }
+        var promotedPieceVar = promotedPiece
+        
         let from = game.lastKnownPosition[piece]
         if let from = from {
             if from != to {
-                let moveRequest = MoveRequest(move: "\(from)\(to)")
+                var moveRequest: MoveRequest
+                
+                if promotedPieceVar == nil && ((piece.rawValue.hasPrefix("blackPawn") && to.rawValue.suffix(1) == "1") || (piece.rawValue.hasPrefix("whitePawn") && to.rawValue.suffix(1) == "8")) {
+                    promotedPieceVar = piece.rawValue.hasPrefix(PlayerModel.Side.white.rawValue) ? .whiteQueen : .blackQueen
+                    moveRequest = MoveRequest(move: "\(from)\(to)\(promotedPieceVar?.rawValue ?? "")")
+                } else if promotedPiece != nil {
+                    moveRequest = MoveRequest(move: "\(from)\(to)\(promotedPieceVar?.rawValue ?? "")")
+                } else {
+                    moveRequest = MoveRequest(move: "\(from)\(to)")
+                }
                 
                 GamesAPI.gamesIdMovePost(id: gameId, moveRequest: moveRequest) { response, error in
                     guard error == nil else {
@@ -415,9 +395,60 @@ final class SessionController: GameControllerProtocol {
                         completion(false)
                         return
                     }
+                    print("Move \(from)\(to) successfully executed")
+                    
+                    if let promotedPieceVar = promotedPieceVar {
+                        Task {
+                            await self.promotePawn(pawn: piece, to: promotedPieceVar)
+                        }
+                    }
                     
                     self.lastAppliedPosition[piece] = to
                     self.game.lastKnownPosition[piece] = to
+                    
+                    if piece == .blackKing || piece == .whiteKing {
+                        let castlingMove = CastlingMove(rawValue: "\(from)\(to)")
+                        switch castlingMove {
+                            case .kingsideBlack:
+                                if let blackRook = self.pieceEntities[.blackRookH], let fieldF8 = self.fieldEntities[.f8] {
+                                    Task {
+                                        await self.animateMove(piece: blackRook, field: fieldF8)
+                                    }
+                                    self.lastAppliedPosition[.blackRookH] = .f8
+                                    self.game.lastKnownPosition[.blackRookH] = .f8
+                                }
+                                break
+                            case .kingsideWhite:
+                                if let whiteRook = self.pieceEntities[.whiteRookH], let fieldF1 = self.fieldEntities[.f1] {
+                                    Task {
+                                        await self.animateMove(piece: whiteRook, field: fieldF1)
+                                    }
+                                    self.lastAppliedPosition[.whiteRookH] = .f1
+                                    self.game.lastKnownPosition[.whiteRookH] = .f1
+                                }
+                                break
+                            case .queensideBlack:
+                                if let blackRook = self.pieceEntities[.blackRookA], let fieldD8 = self.fieldEntities[.d8] {
+                                    Task {
+                                        await self.animateMove(piece: blackRook, field: fieldD8)
+                                    }
+                                    self.lastAppliedPosition[.blackRookA] = .d8
+                                    self.game.lastKnownPosition[.blackRookA] = .d8
+                                }
+                                break
+                            case .queensideWhite:
+                                if let whiteRook = self.pieceEntities[.whiteRookA], let fieldD1 = self.fieldEntities[.d1] {
+                                    Task {
+                                        await self.animateMove(piece: whiteRook, field: fieldD1)
+                                    }
+                                    self.lastAppliedPosition[.whiteRookA] = .d1
+                                    self.game.lastKnownPosition[.whiteRookA] = .d1
+                                }
+                                break
+                            case .none:
+                                break
+                        }
+                    }
                     
                     self.removeDefeatedPieces(at: to)
                     
@@ -425,69 +456,26 @@ final class SessionController: GameControllerProtocol {
                     self.game.moveHistory = response?.newGameState.moves ?? self.game.moveHistory
                     self.game.checkers = response?.newGameState.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
                     self.endTurn()
-                    
-                    print("Move \(from)\(to) successfully executed")
                     completion(true)
                 }
             } else {
-                completion(true)
+                completion(false)
             }
         } else {
-            completion(true)
+            completion(false)
         }
-    }
-    
-    func getPieceByField(field: ChessField) -> ChessPiece? {
-        return game.lastKnownPosition.first { $0.value == field }?.key
-    }
-    
-    func animateMove(piece: Entity, field: Entity) async {
-        piece.components[PhysicsBodyComponent.self]?.isAffectedByGravity = false
-
-        // Step 1: Move up slightly
-        let upTransform = Transform(translation: SIMD3(0, 0.05, 0))
-        await piece.moveAsync(to: upTransform, relativeTo: piece, duration: 0.5, timingFunction: .easeIn)
-        let finalTranslation = field.transform.translation + SIMD3(0, 0.05, 0)
-        
-        // Step 2: Move to the target field
-        let finalTransform = Transform(scale: piece.transform.scale,
-                                       rotation: piece.transform.rotation,
-                                       translation: finalTranslation)
-        await piece.moveAsync(to: finalTransform, relativeTo: piece.parent!, duration: 1.0, timingFunction: .linear)
-                
-        // Step 3: Move down slightly for a landing effect
-        let downTransform = Transform(translation: SIMD3(0, -0.049, 0))
-        await piece.moveAsync(to: downTransform, relativeTo: piece, duration: 0.5, timingFunction: .easeOut)
-        
-        // Step 4: Restore gravity
-        piece.components[PhysicsBodyComponent.self]?.isAffectedByGravity = true
-        field.components[OpacityComponent.self]?.opacity = 0.0
-    }
-    
-    func getDefeatedPieces(side: String) -> [String] {
-        var defeatedPieces: [String] = []
-        
-        game.lastKnownPosition.forEach { piece, field in
-            if field == ChessField.defeated && piece.rawValue.hasPrefix(side) {
-                if piece == ChessPiece.whiteQueen && piece == ChessPiece.blackQueen {
-                    if let model = chessPieceToModel[piece.rawValue] {
-                        defeatedPieces.append(model)
-                    }
-                } else {
-                    if let model = chessPieceToModel[String(piece.rawValue.dropLast())] {
-                        defeatedPieces.append(model)
-                    }
-                }
-            }
-        }
-        return defeatedPieces
-    }
-    
-    func moveCube(entity: Entity, to: SIMD3<Float>) {
-        entity.setPosition(to, relativeTo: nil)
     }
     
     func movePieceToLastKnownPosition(piece: Entity) {
+        currentTargetField = []
+        currentlyMovingChessPiece = nil
+        currentlyCapturedPieces = []
+        currentlyMovingChessPieceCollisionSubscription?.cancel()
+        currentlyMovingChessPieceCollisionSubscription = nil
+        currentlyMovingChessPieceCollisionSubscriptionEnd?.cancel()
+        currentlyMovingChessPieceCollisionSubscriptionEnd = nil
+        hideAllFieldEntities()
+        
         if let initialField = getFieldEntityFromChessPieceEntity(piece) {
             Task {
                 await animateMove(piece: piece, field: initialField)
@@ -506,22 +494,6 @@ final class SessionController: GameControllerProtocol {
             }
         }
     }
-
-    func isValidChessField(field: String) -> Bool {
-        let validFiles = "abcdefgh"
-        let validRanks = "12345678"
-        
-        guard field.count == 2 else { return false }
-        
-        let file = field.first!
-        let rank = field.last!
-        
-        return validFiles.contains(file) && validRanks.contains(rank)
-    }
-
-    func isValidChessPiece(piece: String) -> Bool {
-        return ChessPiece(rawValue: piece) != nil
-    }
     
     func removeDefeatedPieces(at: ChessField) {
         for defeatedPiece in self.currentlyCapturedPieces {
@@ -529,65 +501,6 @@ final class SessionController: GameControllerProtocol {
                 print("Removing piece \(defeatedPiece)")
                 self.game.lastKnownPosition[defeatedPiece] = .defeated
                 self.pieceEntities[defeatedPiece]?.removeFromParent()
-            }
-        }
-    }
-    
-    func deactivateInput() {
-        guard let color = localPlayer.side?.rawValue else { return }
-        let localColorPieces = ChessPiece.allCases.filter { $0.rawValue.contains(color) }
-
-        for piece in localColorPieces {
-            if let entity = self.pieceEntities[piece]{
-                entity.components.remove(InputTargetComponent.self)
-            }
-        }
-    }
-
-    func activateInput() {
-        guard let color = localPlayer.side?.rawValue else { return }
-        let localColorPieces = ChessPiece.allCases.filter { $0.rawValue.contains(color) }
-
-        for piece in localColorPieces {
-            if let entity = self.pieceEntities[piece]{
-                entity.components.set(InputTargetComponent())
-            }
-        }
-    }
-    
-    func highlightCheck() {
-        if !game.checkers.isEmpty {
-            game.checkers.forEach { checker in
-                let checkerFieldEntity = self.fieldEntities[checker]
-                let checkerPiece = self.game.lastKnownPosition.first(where: {$0.value == checker})
-                if let checkerPiece = checkerPiece {
-                    var kingField: ChessField? = nil
-                    
-                    if checkerPiece.key.rawValue.contains(PlayerModel.Side.white.rawValue) {
-                        kingField = self.game.lastKnownPosition[ChessPiece.blackKing]
-                    } else {
-                        kingField = self.game.lastKnownPosition[ChessPiece.whiteKing]
-                    }
-                    
-                    if let kingField = kingField {
-                        var kingFieldEntity = self.fieldEntities[kingField]
-                        if let kingFieldEntity = kingFieldEntity {
-                            kingFieldEntity.components[OpacityComponent.self]?.opacity = 1
-                        }
-                    }
-                }
-                
-                if let checkerFieldEntity = checkerFieldEntity {
-                    checkerFieldEntity.components[OpacityComponent.self]?.opacity = 1
-                }
-            }
-        }
-    }
-    
-    func hideAllFieldEntities() {
-        for chessField in ChessField.allCases {
-            if let entity = self.fieldEntities[chessField] {
-                entity.components[OpacityComponent.self]?.opacity = 0.0
             }
         }
     }
@@ -620,35 +533,13 @@ final class SessionController: GameControllerProtocol {
         if let whitePieces = contentEntity.findEntity(named: "white") {
             for entity in whitePieces.children {
                 if let piece = ChessPiece(rawValue: entity.name) {
-                    print(piece)
                     pieceEntities[piece] = entity
                 }
             }
         }
         
+        print("Chess piece entities found: \(pieceEntities.count)")
         self.pieceEntities = pieceEntities
-    }
-    
-    private func waitForEntities(named entityNames: [String], timeout: TimeInterval = 10.0) async {
-        let startTime = Date()
-        
-        while true {
-            // Check if all entities are found
-            let foundEntities = entityNames.compactMap { contentEntity.findEntity(named: $0) }
-            
-            if foundEntities.count == entityNames.count {
-                return // All required entities found, exit the loop
-            }
-
-            // Timeout handling to prevent infinite loop
-            if Date().timeIntervalSince(startTime) > timeout {
-                print("Timeout waiting for entities: \(entityNames)")
-                return
-            }
-
-            // Wait for a short period before checking again
-            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms delay
-        }
     }
     
     func handleCollisions(content: RealityViewContent) {
@@ -701,74 +592,25 @@ final class SessionController: GameControllerProtocol {
         }
     }
     
-    func startBoardConstruction() async {
-        print("Construction started...")
-        await waitForEntities(named: ["Pointer1", "Pointer2"])
+    func promotePawn(pawn: ChessPiece, to promotedPiece: ChessPieceFen) async {
+        let side: PlayerModel.Side = pawn.rawValue.hasPrefix(PlayerModel.Side.white.rawValue) ? .white : .black
         
-        guard let pointer1Entity = contentEntity.findEntity(named: "Pointer1"),
-              let pointer2Entity = contentEntity.findEntity(named: "Pointer2") else {
-            print("Pointers not found")
-            return
+        var promotedPieceEntity: Entity?
+        
+        if let model = chessPieceToModel[promotedPiece.description] {
+            promotedPieceEntity = try? await Entity(named: model)
         }
-        
-        // Get world positions of the pointers
-        let position1 = pointer1Entity.position(relativeTo: nil)
-        let position2 = pointer2Entity.position(relativeTo: nil)
-        
-        // Compute the direction vector (Pointer1 -> Pointer2)
-        let direction = normalize(position2 - position1)
-        
-        // Compute the midpoint
-        let midpoint = SIMD3<Float>(
-            (position1.x + position2.x) / 2,
-            position1.y, // Same Y-axis value
-            (position1.z + position2.z) / 2
-        )
-        
-        print(midpoint)
-        
-        // Compute the distance in the XZ plane
-        let dx = position2.x - position1.x
-        let dz = position2.z - position1.z
-        let distance = sqrt(dx * dx + dz * dz)  // Euclidean distance in XZ plane
-        
-        print(distance)
-        
-        // Chessboard original size
-        let originalSize: Float = 0.45255 // 32cmx32cm diagonally
-        
-        // Compute the scale factor to fit the distance
-        let scaleFactor = distance / originalSize
-        
-        print(scaleFactor)
-        
-        // Load chessboard model (assuming it exists in assets)
-        guard let chessboardModel = try? await Entity(named: "Board-Mixed", in: realityKitContentBundle) else {
-            print("Chessboard model not found")
-            return
-        }
-        
-        // Apply scaling
-        chessboardModel.setScale(SIMD3<Float>(scaleFactor, scaleFactor, scaleFactor), relativeTo: chessboardModel) // Scale only in X and Z
-        
-        // Define the default right vector (chessboard's local X-axis)
-        let defaultRightVector = SIMD3<Float>(1, 0, 0) // Default X-axis in model space
 
-        // Compute rotation to align chessboard's X-axis with the direction vector
-        let rotationQuaternion = simd_quatf(from: defaultRightVector, to: SIMD3<Float>(direction.x, 0, direction.z))
+        if let pawnEntity = pieceEntities[pawn], let promotedPieceEntity = promotedPieceEntity {
+            if let piecesTransform = contentEntity.findEntity(named: side.rawValue.lowercased()) {
+                
+                promotedPieceEntity.setScale(.init(x: 1.4, y: 1.4, z: 1.4), relativeTo: nil)
+                promotedPieceEntity.position = pawnEntity.position
+                pawnEntity.removeFromParent()
+                piecesTransform.addChild(promotedPieceEntity)
 
-        // Apply rotation to align the board
-        chessboardModel.orientation = rotationQuaternion
-        
-        // Set position at midpoint
-        chessboardModel.position = midpoint
-        
-        // Add to scene
-        contentEntity.addChild(chessboardModel)
-        
-        let transform = chessboardModel.findEntity(named: localPlayer.side?.rawValue ?? "")
-        transform?.children.forEach {piece in
-            piece.components.set(HoverEffectComponent())
+                pieceEntities[pawn] = promotedPieceEntity
+            }
         }
     }
 }

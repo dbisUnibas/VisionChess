@@ -81,6 +81,6 @@ struct SharePlayButton_Previews: PreviewProvider {
     static let appModel = AppModel()
 
     static var previews: some View {
-        SharePlayButton("Test", activity: ChessGroupActivity())
+        SharePlayButton("Play together!", activity: ChessGroupActivity())
     }
 }
