@@ -11,6 +11,7 @@ import RealityKit
 import SwiftUI
 import RealityKitContent
 import OpenAPIClient
+import AVFoundation
 
 @Observable @MainActor
 final class SessionController: GameControllerProtocol {
@@ -18,7 +19,7 @@ final class SessionController: GameControllerProtocol {
     let messenger: GroupSessionMessenger
     let systemCoordinator: SystemCoordinator
 
-    var opponentStrength: GameModel.OpponentStrength = .medium
+    var opponentStrength: GameModel.OpponentStrength = .hard
     var currentTargetField: [Entity] = []
     var currentlyCapturedPieces: [ChessPiece] = []
     var currentlyMovingChessPiece: Entity? = nil
@@ -31,6 +32,8 @@ final class SessionController: GameControllerProtocol {
     var fieldEntities: [ChessField: Entity] = [:]
     var pieceEntities: [ChessPiece: Entity] = [:]
     var lastAppliedPosition: [ChessPiece: ChessField] = initialPosition
+    
+    private var sfxPlayer: AVAudioPlayer?
     
     var currentPlayer: PlayerModel? {
         players.values.first(where: \.isPlaying)
@@ -224,6 +227,7 @@ final class SessionController: GameControllerProtocol {
                     })
                 }
             }
+            self.playSoundEffect(SFX.boom)
         }
     }
     
@@ -262,6 +266,8 @@ final class SessionController: GameControllerProtocol {
                     if let chessFieldToEntity = chessFieldToEntity, let chessFieldFromEntity = chessFieldFromEntity {
                         chessFieldFromEntity.components[OpacityComponent.self]?.opacity = 0.4
                         chessFieldToEntity.components[OpacityComponent.self]?.opacity = 0.4
+                        
+                        self.playSoundEffect(SFX.notify)
                     }
                 }
             }
@@ -382,6 +388,7 @@ final class SessionController: GameControllerProtocol {
                     }
             }
             
+            self.highlightCheck()
             self.lastAppliedPosition = self.game.lastKnownPosition
         }
 
@@ -552,6 +559,8 @@ final class SessionController: GameControllerProtocol {
         for defeatedPiece in self.currentlyCapturedPieces {
             if self.game.lastKnownPosition[defeatedPiece] == at {
                 print("Removing piece \(defeatedPiece)")
+                
+                self.playSoundEffect(SFX.capture)
                 self.game.lastKnownPosition[defeatedPiece] = .defeated
                 self.pieceEntities[defeatedPiece]?.removeFromParent()
             }
@@ -617,6 +626,9 @@ final class SessionController: GameControllerProtocol {
                             self.currentlyCapturedPieces.append(currentTargetPiece)
                         }
                         targetPieceEntity.components.remove(PhysicsBodyComponent.self)
+                        
+                    } else if collisionEvent.entityB.name == "mesh" || collisionEvent.entityB.name.hasPrefix("Plane")  {
+                        self.playSoundEffect(SFX.moveSelf)
                     }
                 }
                 
@@ -665,6 +677,21 @@ final class SessionController: GameControllerProtocol {
 
                 pieceEntities[pawn] = promotedPieceEntity
             }
+        }
+    }
+    
+    func playSoundEffect(_ name: SFX) {
+        guard let url = Bundle.main.url(forResource: name.rawValue, withExtension: "mp3") else {
+            print("❌ SFX file not found: \(name)")
+            return
+        }
+
+        do {
+            sfxPlayer = try AVAudioPlayer(contentsOf: url)
+            sfxPlayer?.volume = 1.5
+            sfxPlayer?.play()
+        } catch {
+            print("❌ Error playing sound effect: \(error)")
         }
     }
 }

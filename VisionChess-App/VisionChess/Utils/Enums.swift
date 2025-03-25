@@ -271,3 +271,16 @@ let castlingMap: [CastlingMove: CastlingInfo] = [
     .queensideBlack: .init(rookPiece: .blackRookA, targetField: .d8),
     .queensideWhite: .init(rookPiece: .whiteRookA, targetField: .d1)
 ]
+
+enum SFX: String, Codable {
+    case boom = "boom"
+    case capture = "capture"
+    case castle = "castle"
+    case lose = "game-lose"
+    case win = "game-win"
+    case check = "move-check"
+    case moveOpponent = "move-opponent"
+    case moveSelf = "move-self"
+    case notify = "notify"
+    case promotion = "promote"
+}

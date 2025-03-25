@@ -44,6 +44,8 @@ protocol GameControllerProtocol {
     func setPlaneToProjectOnFound(value: Bool)
     func setPlacementLocationTransform(value: Transform)
     func setCurrentlyMovingChessPiece(entity: Entity)
+    
+    func playSoundEffect(_ name: SFX)
 }
 
 extension GameControllerProtocol {
@@ -218,6 +220,7 @@ extension GameControllerProtocol {
     
     func highlightCheck() {
         if !game.checkers.isEmpty {
+            self.playSoundEffect(SFX.check)
             game.checkers.forEach { checker in
                 let checkerFieldEntity = self.fieldEntities[checker]
                 let checkerPiece = self.game.lastKnownPosition.first(where: {$0.value == checker})
@@ -323,7 +326,7 @@ extension GameControllerProtocol {
         await piece.moveAsync(to: finalTransform, relativeTo: piece.parent!, duration: 1.0, timingFunction: .linear)
                 
         // Step 3: Move down slightly for a landing effect
-        let downTransform = Transform(translation: SIMD3(0, -0.049, 0))
+        let downTransform = Transform(translation: SIMD3(0, -0.03, 0))
         await piece.moveAsync(to: downTransform, relativeTo: piece, duration: 0.5, timingFunction: .easeOut)
         
         // Step 4: Restore gravity

@@ -84,6 +84,15 @@ struct GameOverView: View {
         .animation(.spring(duration: 1.2), value: didAppear)
         .onAppear {
             didAppear = true
+            
+            if let activeController = appModel.activeController {
+                if activeController.localPlayer.side == activeController.game.winner {
+                    activeController.playSoundEffect(SFX.win)
+                } else {
+                    activeController.playSoundEffect(SFX.lose)
+                }
+            }
+            
         }
         .padding()
         .visionChessToolbar()

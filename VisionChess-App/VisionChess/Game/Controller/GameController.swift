@@ -11,6 +11,7 @@ import SwiftUI
 import OpenAPIClient
 import RealityKitContent
 import RealityKit
+import AVFoundation
 
 @Observable @MainActor
 final class GameController: GameControllerProtocol {
@@ -26,6 +27,8 @@ final class GameController: GameControllerProtocol {
     var placementLocation: Entity = .init()
     var fieldEntities: [ChessField: Entity] = [:]
     var pieceEntities: [ChessPiece: Entity] = [:]
+    
+    private var sfxPlayer: AVAudioPlayer?
     
     var game: GameModel {
         get {
@@ -114,6 +117,7 @@ final class GameController: GameControllerProtocol {
                     
                     self.game.gameId = response
                     self.beginTurn()
+                    self.playSoundEffect(SFX.boom)
                 })
             }
         }
@@ -175,6 +179,8 @@ final class GameController: GameControllerProtocol {
                         return
                     }
                     
+                    self.activateInput()
+                    
                     let from = ChessField(rawValue: String(move.prefix(2)))
                     // Get characters at index 2 and 3 (3rd and 4th characters)
                     let startIndex = move.index(move.startIndex, offsetBy: 2)
@@ -189,7 +195,7 @@ final class GameController: GameControllerProtocol {
                             chessFieldFromEntity.components[OpacityComponent.self]?.opacity = 0.4
                             chessFieldToEntity.components[OpacityComponent.self]?.opacity = 0.4
                             
-                            self.activateInput()
+                            self.playSoundEffect(SFX.notify)
                         }
                     }
                 }
@@ -400,6 +406,8 @@ final class GameController: GameControllerProtocol {
         for defeatedPiece in self.currentlyCapturedPieces {
             if self.game.lastKnownPosition[defeatedPiece] == at {
                 print("Removing piece \(defeatedPiece)")
+                
+                self.playSoundEffect(SFX.capture)
                 self.game.lastKnownPosition[defeatedPiece] = .defeated
                 self.pieceEntities[defeatedPiece]?.removeFromParent()
             }
@@ -465,6 +473,8 @@ final class GameController: GameControllerProtocol {
                             self.currentlyCapturedPieces.append(currentTargetPiece)
                         }
                         targetPieceEntity.components.remove(PhysicsBodyComponent.self)
+                    } else if collisionEvent.entityB.name == "mesh" || collisionEvent.entityB.name.hasPrefix("Plane") {
+                        self.playSoundEffect(SFX.moveSelf)
                     }
                 }
                 
@@ -513,6 +523,21 @@ final class GameController: GameControllerProtocol {
 
                 pieceEntities[pawn] = promotedPieceEntity
             }
+        }
+    }
+    
+    func playSoundEffect(_ name: SFX) {
+        guard let url = Bundle.main.url(forResource: name.rawValue, withExtension: "mp3") else {
+            print("❌ SFX file not found: \(name)")
+            return
+        }
+
+        do {
+            sfxPlayer = try AVAudioPlayer(contentsOf: url)
+            sfxPlayer?.volume = 1.5
+            sfxPlayer?.play()
+        } catch {
+            print("❌ Error playing sound effect: \(error)")
         }
     }
 }

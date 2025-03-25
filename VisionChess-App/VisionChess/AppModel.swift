@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 @Observable @MainActor
 class AppModel {
@@ -31,4 +32,22 @@ class AppModel {
         self.viewModel = .init(appModel: self, dataSource: dataSource)
     }
     
+    // AUDIO
+    private var audioPlayer: AVAudioPlayer?
+
+    func playBackgroundMusic() {
+        guard let url = Bundle.main.url(forResource: "relaxing-piano", withExtension: "mp3") else {
+            print("Music file not found")
+            return
+        }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.numberOfLoops = -1
+            audioPlayer?.volume = 0.12
+            audioPlayer?.play()
+        } catch {
+            print("Audio playback error: \(error.localizedDescription)")
+        }
+    }
 }
