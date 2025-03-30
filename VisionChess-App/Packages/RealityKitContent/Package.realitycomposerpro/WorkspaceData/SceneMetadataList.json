@@ -64,39 +64,7 @@
       [
         "8F8677B0-6398-4665-828B-0C1E127215F9",
         "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model",
-        "b255e506f173411b9f11c30c50afae74_fbx",
-        "RootNode",
-        "Pin",
-        "Ball",
-        "Sphere"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model",
-        "b255e506f173411b9f11c30c50afae74_fbx"
+        "Transform"
       ],
       {
         "isExpanded" : true,
@@ -122,85 +90,13 @@
       [
         "8F8677B0-6398-4665-828B-0C1E127215F9",
         "Root",
-        "Transform"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
         "Transform",
         "Push_Pin",
         "Meshes",
         "Sketchfab_model",
         "b255e506f173411b9f11c30c50afae74_fbx",
         "RootNode",
-        "Pin",
-        "Ball"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model",
-        "b255e506f173411b9f11c30c50afae74_fbx",
-        "RootNode",
-        "Pin",
-        "Needle",
-        "Needle_2",
-        "Needle_2_Recession_0"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model",
-        "b255e506f173411b9f11c30c50afae74_fbx",
-        "RootNode"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model",
-        "b255e506f173411b9f11c30c50afae74_fbx",
-        "RootNode",
-        "Pin",
-        "Ball_Holder",
-        "Ball_Holder_2",
-        "Ball_Holder_2_Chrome_0"
+        "Pin"
       ],
       {
         "isExpanded" : true,
@@ -233,50 +129,8 @@
         "RootNode",
         "Pin",
         "Ball_Holder",
-        "Ball_Holder_2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model",
-        "b255e506f173411b9f11c30c50afae74_fbx",
-        "RootNode",
-        "Pin",
-        "Needle",
-        "Needle_2",
-        "Needle_2_Chrome_0"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin",
-        "Meshes",
-        "Sketchfab_model",
-        "b255e506f173411b9f11c30c50afae74_fbx",
-        "RootNode",
-        "Pin"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8F8677B0-6398-4665-828B-0C1E127215F9",
-        "Root",
-        "Transform",
-        "Push_Pin"
+        "Ball_Holder_2",
+        "Ball_Holder_2_Chrome_0"
       ],
       {
         "isExpanded" : true,
@@ -323,6 +177,152 @@
       {
         "isExpanded" : true,
         "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model",
+        "b255e506f173411b9f11c30c50afae74_fbx"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model",
+        "b255e506f173411b9f11c30c50afae74_fbx",
+        "RootNode",
+        "Pin",
+        "Needle",
+        "Needle_2",
+        "Needle_2_Chrome_0"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model",
+        "b255e506f173411b9f11c30c50afae74_fbx",
+        "RootNode"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model",
+        "b255e506f173411b9f11c30c50afae74_fbx",
+        "RootNode",
+        "Pin",
+        "Needle",
+        "Needle_2",
+        "Needle_2_Recession_0"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model",
+        "b255e506f173411b9f11c30c50afae74_fbx",
+        "RootNode",
+        "Pin",
+        "Ball",
+        "Sphere"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model",
+        "b255e506f173411b9f11c30c50afae74_fbx",
+        "RootNode",
+        "Pin",
+        "Ball_Holder",
+        "Ball_Holder_2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8F8677B0-6398-4665-828B-0C1E127215F9",
+        "Root",
+        "Transform",
+        "Push_Pin",
+        "Meshes",
+        "Sketchfab_model",
+        "b255e506f173411b9f11c30c50afae74_fbx",
+        "RootNode",
+        "Pin",
+        "Ball"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
       }
     ]
   },
@@ -362,37 +362,37 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
+        "g5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "e8"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "b1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
         "f8"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "d5"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "a5"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "c1"
       ],
       {
         "isExpanded" : true,
@@ -410,7 +410,9 @@
       },
       [
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity"
+        "board_entity",
+        "tiles_transform",
+        "b8"
       ],
       {
         "isExpanded" : true,
@@ -420,67 +422,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "f2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "e4"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "b6"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "h7"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "c7"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "g3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "g2"
+        "d5"
       ],
       {
         "isExpanded" : true,
@@ -500,7 +442,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "g4"
+        "f2"
       ],
       {
         "isExpanded" : true,
@@ -520,7 +462,116 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "a4"
+        "e5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "pieces_transform"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "c7"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "g6"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "g7"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "b2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "f4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "d4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "g2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "e1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "b7"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "a1"
       ],
       {
         "isExpanded" : true,
@@ -540,7 +591,15 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "h3"
+        "c6"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity"
       ],
       {
         "isExpanded" : true,
@@ -550,7 +609,97 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "c5"
+        "h7"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "a4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "f6"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "a7"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "g1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "c4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "b3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "h4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "d1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "h6"
       ],
       {
         "isExpanded" : true,
@@ -570,7 +719,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "e5"
+        "e7"
       ],
       {
         "isExpanded" : true,
@@ -580,7 +729,37 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "e2"
+        "h5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "b4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "a3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "d6"
       ],
       {
         "isExpanded" : true,
@@ -601,7 +780,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "e1"
+        "h2"
       ],
       {
         "isExpanded" : true,
@@ -611,87 +790,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "d7"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "f3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "d6"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "b7"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "e8"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "a3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "c6"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "g7"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "f4"
+        "b6"
       ],
       {
         "isExpanded" : true,
@@ -711,7 +810,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "g5"
+        "f5"
       ],
       {
         "isExpanded" : true,
@@ -721,7 +820,17 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "g6"
+        "c5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "c1"
       ],
       {
         "isExpanded" : true,
@@ -741,7 +850,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "b1"
+        "a8"
       ],
       {
         "isExpanded" : true,
@@ -751,7 +860,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "f5"
+        "e2"
       ],
       {
         "isExpanded" : true,
@@ -761,195 +870,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "b3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "h6"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "f6"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "d4"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "b8"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "c4"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "c8"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "g8"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "a2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "e7"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "f1"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "Geom"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "g1"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "b4"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "h2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "b2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "h8"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "h5"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "a7"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "pieces_transform"
+        "h1"
       ],
       {
         "isExpanded" : true,
@@ -969,26 +890,6 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "a8"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
-        "a1"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
-        "board_entity",
-        "tiles_transform",
         "c2"
       ],
       {
@@ -999,7 +900,47 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "d1"
+        "f3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "d7"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "a2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "e4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "f1"
       ],
       {
         "isExpanded" : true,
@@ -1019,7 +960,7 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "h4"
+        "g8"
       ],
       {
         "isExpanded" : true,
@@ -1029,7 +970,66 @@
         "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
         "board_entity",
         "tiles_transform",
-        "h1"
+        "g4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "a5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "h8"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "c8"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "h3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "Geom"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
+        "board_entity",
+        "tiles_transform",
+        "g3"
       ],
       {
         "isExpanded" : true,
@@ -1053,7 +1053,8 @@
     "objectMetadataList" : [
       [
         "C39645ED-A410-4F9B-BE67-4B95CECA7E4D",
-        "Transform"
+        "Transform",
+        "pieces_transform"
       ],
       {
         "isExpanded" : true,
@@ -1080,9 +1081,7 @@
       },
       [
         "C39645ED-A410-4F9B-BE67-4B95CECA7E4D",
-        "Transform",
-        "pieces_transform",
-        "white"
+        "Transform"
       ],
       {
         "isExpanded" : true,
@@ -1091,7 +1090,8 @@
       [
         "C39645ED-A410-4F9B-BE67-4B95CECA7E4D",
         "Transform",
-        "pieces_transform"
+        "pieces_transform",
+        "white"
       ],
       {
         "isExpanded" : true,
@@ -1152,6 +1152,27 @@
       [
         "EB9D7711-8D8D-45C3-9CF5-7BCD8759CB23",
         "Cube"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "F93380D8-3D8E-45A6-9681-96D586DDA733" : {
+    "objectMetadataList" : [
+      [
+        "F93380D8-3D8E-45A6-9681-96D586DDA733",
+        "Transform",
+        "pieces_transform"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "F93380D8-3D8E-45A6-9681-96D586DDA733",
+        "Transform"
       ],
       {
         "isExpanded" : true,

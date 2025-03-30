@@ -46,6 +46,9 @@ protocol GameControllerProtocol {
     func setCurrentlyMovingChessPiece(entity: Entity)
     
     func playSoundEffect(_ name: SFX)
+    
+    func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult)
+    var prediction: ChessPieceDetectionManager.ChessBoardPredictionResult? { get set}
 }
 
 extension GameControllerProtocol {
@@ -150,7 +153,7 @@ extension GameControllerProtocol {
         print(scaleFactor)
         
         // Load chessboard model (assuming it exists in assets)
-        guard let chessboardModel = try? await Entity(named: "Board-Mixed", in: realityKitContentBundle) else {
+        guard let chessboardModel = try? await Entity(named: "Board-Mixed-White", in: realityKitContentBundle) else {
             print("Chessboard model not found")
             return
         }

@@ -16,16 +16,41 @@ struct GamePlayingView: View {
     
     var body: some View {
         HStack {
-            List {
-                if teamHasPlayers(.white) {
-                    TeamStatusView(team: .white)
-                }
-                if teamHasPlayers(.black) {
-                    TeamStatusView(team: .black)
+//            List {
+//                if teamHasPlayers(.white) {
+//                    TeamStatusView(team: .white)
+//                }
+//                if teamHasPlayers(.black) {
+//                    TeamStatusView(team: .black)
+//                }
+//            }
+//            .scrollDisabled(true)
+//            .frame(maxWidth: .infinity)
+            appModel.gameController?.image?
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 500, height: 500)
+            
+//            VStack {
+//                ForEach(appModel.gameController?.fen ?? [], id: \.self) { fen in
+//                    Text(fen)
+//                }
+//            }
+            
+            var flatData: [String] {
+                appModel.gameController?.fen.flatMap { $0 } ?? []
+            }
+                
+            let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 8)
+            
+            LazyVGrid(columns: columns, spacing: 2) {
+                ForEach(flatData.indices, id: \.self) { index in
+                    Text(flatData[index])
+                        .frame(minWidth: 95, minHeight: 60)
+                        .border(Color.white)
                 }
             }
-            .scrollDisabled(true)
-            .frame(maxWidth: .infinity)
+            .padding()
         }
         .padding()
         .visionChessToolbar()

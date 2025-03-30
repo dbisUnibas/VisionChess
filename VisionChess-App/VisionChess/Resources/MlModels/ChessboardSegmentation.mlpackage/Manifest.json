@@ -1,0 +1,24 @@
+{
+    "fileFormatVersion": "1.0.0",
+    "itemInfoEntries": {
+        "6775DA11-6FC6-4DD1-9B05-FCDD1C2BF995": {
+            "author": "com.apple.CoreML",
+            "description": "External Metadata Overlay",
+            "name": "Metadata.json",
+            "path": "com.apple.CoreML/Metadata.json"
+        },
+        "A0B55516-B3A6-428B-9824-9F8AE776C353": {
+            "author": "com.apple.CoreML",
+            "description": "External FeatureDescription Overlay",
+            "name": "FeatureDescriptions.json",
+            "path": "com.apple.CoreML/FeatureDescriptions.json"
+        },
+        "E2DF7BE2-D299-4E74-9B9C-E523A728FF41": {
+            "author": "com.apple.CoreML",
+            "description": "CoreML Model Specification",
+            "name": "ChessboardSegmentation.mlmodel",
+            "path": "com.apple.CoreML/ChessboardSegmentation.mlmodel"
+        }
+    },
+    "rootModelIdentifier": "E2DF7BE2-D299-4E74-9B9C-E523A728FF41"
+}

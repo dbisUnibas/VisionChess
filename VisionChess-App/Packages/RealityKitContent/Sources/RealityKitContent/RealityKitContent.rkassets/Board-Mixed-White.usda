@@ -1,0 +1,3728 @@
+#usda 1.0
+(
+    defaultPrim = "Transform"
+)
+
+def Xform "Transform" (
+    active = true
+    customData = {
+        float3 rotationEulerHint = (0, 0.7894805, 0)
+    }
+)
+{
+    reorder nameChildren = ["Cube", "pieces_transform", "tiles_transform", "ui_right_transform", "ui_left_transform", "ui_bottom_transform", "main", "Tile_Material", "Material_White", "Material_Black"]
+    quatf xformOp:orient = (0.9230965, 0, 0.38456842, 0)
+    float3 xformOp:scale = (100, 100, 100)
+    float3 xformOp:translate = (0, 0, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+    def Xform "pieces_transform" (
+        active = true
+    )
+    {
+        reorder nameChildren = ["black", "white", "black_rook_1", "black_rook", "black_pawn_8", "black_pawn_7", "black_pawn_6", "black_pawn_5", "black_pawn_4", "black_pawn_3", "black_pawn_2", "black_pawn_1", "black_knight_1", "black_knight_2", "black_bishop_1", "black_bishop_2", "black_king", "black_queen"]
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (0, 0.001, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Xform "black" (
+            active = true
+        )
+        {
+            reorder nameChildren = ["blackRookA", "blackRookH", "blackPawnH", "blackPawnG", "blackPawnF", "blackPawnE", "blackPawnD", "blackPawnC", "blackPawnB", "blackPawnA", "blackKnightB", "blackKnightG", "blackBishopC", "blackBishopF", "blackKing", "blackQueen"]
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 1, 1)
+            float3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def "blackRookA" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-rook.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.137, 0, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013905812, 0.02577958, 0.013905821)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (1.0244548e-8, 0.012869786, -7.450581e-9)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackRookH" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-rook.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.137, 0, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013905812, 0.02577958, 0.013905821)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (1.0244548e-8, 0.012869786, -7.450581e-9)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnH" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                reorder nameChildren = ["Material_2", "pawn001_Material_0"]
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.137, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnG" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.09945919, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnF" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.061025277, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnE" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.020307124, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnD" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.017368738, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnC" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.056378208, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnB" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.09593935, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackPawnA" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.137, 0, -0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackKnightB" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                customData = {
+                    float3 rotationEulerHint = (0, -1.5707963, 0)
+                }
+                references = @Models/Pieces/black-knight.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (0.70830137, 0, -0.70591015, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.09535442, 0, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.015317435, 0.02971325, 0.013418974)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0.0001759869, 0.014856864, 0.000049758004)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackKnightG" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                customData = {
+                    float3 rotationEulerHint = (0, -1.5707963, 0)
+                }
+                references = @Models/Pieces/black-knight.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (0.70779145, 0, -0.70642143, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.09909076, 0, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.015317435, 0.02971325, 0.013418974)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0.0001759869, 0.014856864, 0.000049758004)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackBishopC" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-bishop.usdz@</Scene>
+            )
+            {
+                reorder nameChildren = ["black_queen", "bishop_w_cutout001_Material_0"]
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.055295184, 0, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013800049, 0.032436542, 0.013798526)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (-0.00013362872, 0.016130108, -0.000020570122)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackBishopF" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-bishop.usdz@</Scene>
+            )
+            {
+                reorder nameChildren = ["black_queen", "bishop_w_cutout001_Material_0"]
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.05993679, 0, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013800049, 0.032436542, 0.013798526)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (-0.00013362872, 0.016130108, -0.000020570122)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackKing" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-king.usdz@</Scene>
+            )
+            {
+                reorder nameChildren = ["Material_2", "king001_Material_0"]
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (0.02149, 0, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.016147131, 0.04094015, 0.01614713)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (3.7252903e-9, 0.020360075, 9.313226e-10)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+
+            def "blackQueen" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/black-queen.usdz@</Scene>
+            )
+            {
+                rel material:binding = </Transform/Material_Black> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:translate = (-0.018, 1.8626451e-9, -0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.015190849, 0.036797777, 0.01494555)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (-6.9849193e-10, 0.01846889, -1.1641532e-9)
+                        }
+                    }
+                }
+
+                def RealityKitComponent "RigidBody"
+                {
+                    uniform token info:id = "RealityKit.RigidBody"
+                    bool isCCDEnabled = 0
+                    bool lockRotationX = 1
+                    bool lockRotationY = 1
+                    bool lockRotationZ = 1
+
+                    def RealityKitStruct "massFrame"
+                    {
+                        def RealityKitStruct "m_pose"
+                        {
+                        }
+                    }
+
+                    def RealityKitStruct "material"
+                    {
+                        double staticFriction = 0.8
+                    }
+                }
+            }
+        }
+    }
+
+    def Xform "tiles_transform" (
+        active = true
+    )
+    {
+        reorder nameChildren = ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2", "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3", "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4", "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5", "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6", "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7", "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"]
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Cube "a1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            reorder nameChildren = ["DefaultMaterial_1", "DefaultMaterial", "Collider"]
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "a2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "a3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "a4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "a5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "a6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "a7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "a8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (140, 140)
+            int ui:nodegraph:node:stackingOrder = 7
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.13872787, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "b8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (120, 120)
+            int ui:nodegraph:node:stackingOrder = 6
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.09809891, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "c8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (100, 100)
+            int ui:nodegraph:node:stackingOrder = 5
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.058088183, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "d8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (80, 80)
+            int ui:nodegraph:node:stackingOrder = 4
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (-0.018541478, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "e8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.020537658, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "f8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.059954368, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "g8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (40, 40)
+            int ui:nodegraph:node:stackingOrder = 2
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.0997474, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h1" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, 0.13919128)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h2" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, 0.09950806)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h3" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, 0.05968989)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h4" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, 0.020003498)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h5" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, -0.01969356)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h6" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, -0.059804093)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h7" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, -0.10023025)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+
+        def Cube "h8" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Transform/Tile_Material> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 0.038
+            float2 ui:nodegraph:node:pos = (60, 60)
+            int ui:nodegraph:node:stackingOrder = 3
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 0.1, 1)
+            float3 xformOp:translate = (0.1401537, 0, -0.1405671)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Trigger"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.038, 3.8, 0.038)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                    }
+                }
+            }
+
+            def RealityKitComponent "HierarchicalFade"
+            {
+                uniform token info:id = "RealityKit.HierarchicalFade"
+                float opacity = 0
+            }
+        }
+    }
+
+    def Xform "ui_right_transform" (
+        active = true
+    )
+    {
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (0.3, 0.01, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Xform "ui_left_transform" (
+        active = true
+    )
+    {
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (-0.3, 0.01, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Xform "ui_bottom_transform" (
+        active = true
+    )
+    {
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (0, 0.01, 0.22)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Material "main" (
+        references = </board_entity/Materials/main>
+    )
+    {
+        token outputs:surface.connect = </Transform/main/surfaceShader.outputs:surface>
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+
+        def Shader "surfaceShader"
+        {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor.connect = </Transform/main/diffuseColor_texture.outputs:rgb>
+            color3f inputs:emissiveColor = (0, 0, 0)
+            float inputs:metallic = 0
+            normal3f inputs:normal = (1, 1, 1)
+            float inputs:occlusion = 1
+            float inputs:opacity = 1
+            float inputs:roughness = 1
+            token outputs:surface
+        }
+
+        def Shader "st_texCoordReader"
+        {
+            uniform token info:id = "UsdPrimvarReader_float2"
+            token inputs:varname = "st"
+            float2 outputs:result
+        }
+
+        def Shader "diffuseColor_texture"
+        {
+            uniform token info:id = "UsdUVTexture"
+            asset inputs:file
+            token inputs:magFilter = "linear"
+            token inputs:minFilter = "linear"
+            float2 inputs:st.connect = </Transform/main/st_texCoordReader.outputs:result>
+            token inputs:wrapS = "clamp"
+            token inputs:wrapT = "clamp"
+            float3 outputs:rgb
+        }
+    }
+
+    def "Tile_Material" (
+        active = true
+        references = @Models/PlacementCursor.usda@</Cube/DefaultMaterial>
+    )
+    {
+        over "DefaultSurfaceShader"
+        {
+            float inputs:opacity = 1
+            float inputs:opacityThreshold = 0.3
+        }
+    }
+
+    def "Material_White" (
+        active = true
+        references = @Models/Pieces/white-king.usdz@</Material_2>
+    )
+    {
+        token outputs:mtlx:surface
+        token outputs:realitykit:vertex
+    }
+
+    def "Material_Black" (
+        active = true
+        references = @Models/Pieces/black-king.usdz@</Material_2>
+    )
+    {
+        token outputs:mtlx:surface
+        token outputs:realitykit:vertex
+    }
+
+    def Cube "Cube" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Transform/Cube/DefaultMaterial>
+        double size = 0.01
+        float3 xformOp:scale = (32, 1, 32)
+        float3 xformOp:translate = (0, -0.0099, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            prepend token outputs:surface.connect = </Transform/Cube/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+
+        def RealityKitComponent "HierarchicalFade"
+        {
+            uniform token info:id = "RealityKit.HierarchicalFade"
+            float opacity = 0
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (0.01, 0.01, 0.01)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                }
+            }
+        }
+
+        def RealityKitComponent "RigidBody"
+        {
+            uniform token info:id = "RealityKit.RigidBody"
+            bool lockRotationX = 1
+            bool lockRotationY = 1
+            bool lockRotationZ = 1
+            bool lockTranslationX = 1
+            bool lockTranslationY = 1
+            bool lockTranslationZ = 1
+            token motionType = "Static"
+
+            def RealityKitStruct "massFrame"
+            {
+                def RealityKitStruct "m_pose"
+                {
+                }
+            }
+
+            def RealityKitStruct "material"
+            {
+            }
+        }
+    }
+}
+

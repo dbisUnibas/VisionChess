@@ -14,41 +14,27 @@ import GroupActivities
 
 @MainActor
 class GameViewModel {
-    let contentContainerEntity = Entity()
-    let cameraFeedVisualizationEntity: CameraFeedVisualizationEntity = {
-        CameraFeedVisualizationComponent.registerComponent()
-        return .init()
-    }()
-
-    var enableDebugging = false
-
-    private var content: RealityViewContent?
-    private weak var scene: RealityKit.Scene?
-    private(set) var predictions: [ChessPieceDetectionManager.PredictionResult]?
-    private(set) var error: Error?
-    private(set) var gameEntityResources: [GameEntityResource: ModelEntity] = [:]
-    private(set) var gameAudioResources: [GameAudioResource: AudioResource] = [:]
-    //    private(set) var currentPixelBuffer: CVPixelBuffer?
-
-    private var cameraFrameProvider: CameraFrameProvider?
-    private var sceneUpdateSubscription: EventSubscription?
+    var dataSource: PlaneAnchoringDataSource?
+    var appModel: AppModel?
+    
+    private(set) var currentPixelBuffer: CVPixelBuffer?
     private var objectDetectionManager: ChessPieceDetectionManager?
     private var objectDetectionPredictionSubscription: AnyCancellable?
-    private var scoreChangeSubscription: AnyCancellable?
-    private var ballVisualizationTimer: AnyCancellable?
 
-    let worldTracking = WorldTrackingProvider()
-    let planeDetection = PlaneDetectionProvider()
+    private let cameraFrameProvider = CameraFrameProvider()
+    private let worldTracking = WorldTrackingProvider()
+    private let planeDetection = PlaneDetectionProvider()
+    
     private var arInterface: ARKitInterface
     private var planeAnchorHandler: PlaneAnchorHandler?
+    private var worldAnchors: [UUID:WorldAnchor] = [:]
+    private let placedObjectsOffsetOnPlanes: Float = 0.0001
+    
     var deviceAnchorPresent = false
     var planeAnchorsPresent = false
     var boardPlaced: Bool = false
     var pointersPlaced: Int = 0
-    private var worldAnchors: [UUID:WorldAnchor] = [:]
-    static private let placedObjectsOffsetOnPlanes: Float = 0.0001
-    var dataSource: PlaneAnchoringDataSource?
-    var appModel: AppModel?
+    
 
     init(appModel: AppModel, dataSource: PlaneAnchoringDataSource) {
         print("Initializing GameViewModel")
@@ -60,30 +46,20 @@ class GameViewModel {
         }
         arInterface = .init()
         
-        //self.objectDetectionManager = .init()
+        self.objectDetectionManager = .init()
         
-        //        objectDetectionPredictionSubscription = objectDetectionManager?.predictionsSubject
-        //            .receive(on: DispatchQueue.main)
-        //            .throttle(for: .seconds(0.025), scheduler: RunLoop.main, latest: true)
-        //            .sink(receiveValue: { predictions in
-        //                self.predictions = predictions
-        //                self.gameManager.update(predictions: predictions)
-        //            })
+        objectDetectionPredictionSubscription = objectDetectionManager?.predictionsSubject
+            .receive(on: DispatchQueue.main)
+            .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: true)
+            .sink(receiveValue: { prediction in
+                self.appModel?.activeController?.update(prediction: prediction)
+            })
     }
 
-    func prepare(withContent content: RealityViewContent, andScene scene: RealityKit.Scene) {
-        self.content = content
-        self.scene = scene
-
-        contentContainerEntity.position = [0, 1.2, -1]
-        content.add(contentContainerEntity)
-        
-        #if !targetEnvironment(simulator)
+    func prepare() {
         Task {
             await runARKitSession()
         }
-        #endif
-        //runTrackingProviders()
     }
 
     func toggle(entity: Entity, isEnabled: Bool, animated: Bool = true) {
@@ -92,83 +68,35 @@ class GameViewModel {
         }
     }
 
-    func getEntityResource(ofKind kind: GameEntityResource) -> Entity {
-        guard let entity = gameEntityResources[kind] else {
-            fatalError("Entity Assets not yet loaded.")
-        }
-        return entity.clone(recursive: true)
-    }
-
-    private func runTrackingProviders() {
-    #if !targetEnvironment(simulator)
-        guard CameraFrameProvider.isSupported else {
-            print("CameraFrameProvider not supported.")
-            return
-        }
-        let formats = CameraVideoFormat.supportedVideoFormats(for: .main, cameraPositions: [.left])
-    #endif
-        
-        let authorizationTypes: [ARKitSession.AuthorizationType] = {
-    #if targetEnvironment(simulator)
-            return [.worldSensing]
-    #else
-            return [.cameraAccess, .worldSensing]
-    #endif
-        }()
-        
-        Task {
-            let _ = await arInterface.arkitSession.requestAuthorization(for: authorizationTypes)
-            let authorizationResult = await arInterface.arkitSession.queryAuthorization(for: authorizationTypes)
-            
-            for (authorizationType, authorizationStatus) in authorizationResult {
-                print("Authorization Status for: \(authorizationType): \(authorizationStatus)")
-                if authorizationStatus == .denied {
-                    print("Authorization denied")
+    func runARKitSession() async {
+        if let activeController = appModel?.activeController {
+            if activeController.game.mode == .mixed {
+                guard CameraFrameProvider.isSupported else {
+                    print("CameraFrameProvider not supported.")
                     return
                 }
-            }
-            
-            do {
-    #if !targetEnvironment(simulator)
-                let cameraFrameProvider = CameraFrameProvider()
-                self.cameraFrameProvider = cameraFrameProvider
+                let formats = CameraVideoFormat.supportedVideoFormats(for: .main, cameraPositions: [.left])
+                await arInterface.beginSession(world: worldTracking, plane: planeDetection, camera: cameraFrameProvider)
                 
-                try await arInterface.arkitSession.run([cameraFrameProvider, worldTracking])
-                
-                print("cameraFrameUpdates:")
-                if let updates = cameraFrameProvider.cameraFrameUpdates(for: formats[0]) {
+                if let updates = cameraFrameProvider.cameraFrameUpdates(for: formats.last!) {
                     for await update in updates {
                         guard
-                            // appModel?.sessionController?.game.stage.isInGame ?? false,
+                            appModel?.activeController?.localPlayer.isPlaying ?? false,
                             let mainCameraSample = update.sample(for: .left)
                         else {
                             continue
                         }
                         let currentPixelBuffer = mainCameraSample.pixelBuffer
-                        print("pixelBuffer")
-                        print(currentPixelBuffer)
-                        objectDetectionManager?.predictUsingVision(
+                        objectDetectionManager?.detectUsingVision(
                             pixelBuffer: currentPixelBuffer,
                             isARKitBuffer: true
                         )
-                        
-                        Task { @MainActor in
-                            cameraFeedVisualizationEntity.update(withCameraFramePixelBuffer: mainCameraSample.pixelBuffer)
-                        }
                     }
                 }
-    #else
-                try await arInterface.arkitSession.run([worldTracking])
-    #endif
-            } catch {
-                print("Error: \(error)")
-                self.error = error
+            } else {
+                await arInterface.beginSession(world: worldTracking, plane: planeDetection)
             }
         }
-    }
-
-    func runARKitSession() async {
-        await arInterface.beginSession(world: worldTracking, plane: planeDetection)
     }
 
     func processDeviceAnchorUpdates() async {
@@ -223,7 +151,7 @@ class GameViewModel {
                     if result.entity.components[CollisionComponent.self]?.filter.group != PlaneAnchor.verticalCollisionGroup {
                         // If the raycast hit a horizontal plane, use that result with a small, fixed offset.
                         originFromPointOnPlaneTransform = originFromUprightDeviceAnchorTransform
-                        originFromPointOnPlaneTransform?.translation = result.position + [0.0, Self.placedObjectsOffsetOnPlanes, 0.0]
+                        originFromPointOnPlaneTransform?.translation = result.position + [0.0, placedObjectsOffsetOnPlanes, 0.0]
                     }
                 }
                 

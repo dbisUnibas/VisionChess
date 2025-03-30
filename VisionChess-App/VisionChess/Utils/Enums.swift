@@ -283,4 +283,6 @@ enum SFX: String, Codable {
     case moveSelf = "move-self"
     case notify = "notify"
     case promotion = "promote"
+    case select = "select"
+    case pickUp = "pick-up"
 }

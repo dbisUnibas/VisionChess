@@ -7,7 +7,8 @@
     "winner_white.usda",
     "PlacementCursor.usda",
     "Board-Mixed.usda",
-    "pointer.usda"
+    "pointer.usda",
+    "Board-Mixed-White.usda"
   ],
   "recentIdentifiers" : {
     "2BF05EF6-17D8-4259-A76F-40923610CB89" : [
@@ -26,6 +27,9 @@
 
     ],
     "C39645ED-A410-4F9B-BE67-4B95CECA7E4D" : [
+
+    ],
+    "F93380D8-3D8E-45A6-9681-96D586DDA733" : [
 
     ]
   },
@@ -1167,10 +1171,34 @@
           1
         ]
       }
+    ],
+    "F93380D8-3D8E-45A6-9681-96D586DDA733" : [
+      {
+        "date" : 765028488.887449,
+        "title" : "Untitled",
+        "transform" : [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0.7071069,
+          -0.70710677,
+          0,
+          0,
+          0.70710677,
+          0.7071069,
+          0,
+          0,
+          0.28235453,
+          0.28235453,
+          1
+        ]
+      }
     ]
   },
   "sceneViewportBackgroundColors" : {
 
   },
-  "selectedSceneRelativePath" : "Board.usda"
+  "selectedSceneRelativePath" : "Board-Mixed-White.usda"
 }

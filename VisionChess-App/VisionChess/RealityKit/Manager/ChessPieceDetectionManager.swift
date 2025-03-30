@@ -12,7 +12,21 @@ import Combine
 
 class ChessPieceDetectionManager {
     
-    struct PredictionResult: Identifiable {
+    struct ChessBoardPredictionResult: Hashable, Identifiable {
+        let id: UUID
+        let p: VNCoreMLFeatureValueObservation
+        let var_1647: VNCoreMLFeatureValueObservation
+        let pieces: [PredictionResult]
+        
+        init(id: UUID = .init(), p: VNCoreMLFeatureValueObservation, var_1647: VNCoreMLFeatureValueObservation, pieces: [PredictionResult]) {
+            self.id = id
+            self.p = p
+            self.var_1647 = var_1647
+            self.pieces = pieces
+        }
+    }
+    
+    struct PredictionResult: Hashable, Identifiable {
         enum Label: String {
             case blackKing = "black-king"
             case blackQueen = "black-queen"
@@ -31,25 +45,34 @@ class ChessPieceDetectionManager {
         let id: UUID
         let label: Label
         let confidence: Float
+        let boundingBox: CGRect
         
-        var isBallInAir: Bool {
-            label == .whiteKing
-        }
-        
-        init(id: UUID = .init(), label: Label, confidence: Float) {
+        init(id: UUID = .init(), label: Label, confidence: Float, boundingBox: CGRect) {
             self.id = id
             self.label = label
             self.confidence = confidence
+            self.boundingBox = boundingBox
+        }
+        
+        func toString() -> String {
+            return "\(label): \(confidence): \(boundingBox)"
         }
     }
     
-    // MARK: - Vision Properties
-    var request: VNCoreMLRequest?
-    var visionModel: VNCoreMLModel?
-    var isInferencing = false
+    var requestDetection: VNCoreMLRequest?
+    var requestSegmentation: VNCoreMLRequest?
+    var visionModelDetection: VNCoreMLModel?
+    var visionModelSegmentation: VNCoreMLModel?
     
+    var lastExecutionDetection = Date()
+    var isInferencing = false
     let semaphore = DispatchSemaphore(value: 1)
-    var lastExecution = Date()
+    
+    lazy var objectSegmentationModel = {
+        let config = MLModelConfiguration()
+        config.computeUnits = .cpuAndNeuralEngine
+        return try? ChessboardSegmentation(configuration: config)
+    }()
     
     lazy var objectDectectionModel = {
         let config = MLModelConfiguration()
@@ -58,7 +81,7 @@ class ChessPieceDetectionManager {
     }()
     
     // MARK: - TableView Data
-    let predictionsSubject: PassthroughSubject<[PredictionResult], Never> = .init()
+    let predictionsSubject: PassthroughSubject<ChessBoardPredictionResult, Never> = .init()
     
     init() {
         setUpModel()
@@ -66,92 +89,77 @@ class ChessPieceDetectionManager {
     
     // MARK: - Setup Core ML
     func setUpModel() {
+        guard let objectSegmentationModel = objectSegmentationModel else { fatalError("Failed to load the model") }
+        if let visionModelSegmentation = try? VNCoreMLModel(for: objectSegmentationModel.model) {
+            self.visionModelSegmentation = visionModelSegmentation
+            // Create a VNCoreMLRequest that will handle the segmentation outputs.
+            requestSegmentation = VNCoreMLRequest(model: visionModelSegmentation)
+            requestSegmentation?.imageCropAndScaleOption = .scaleFill
+            requestDetection?.preferBackgroundProcessing = true
+        } else {
+            fatalError("Failed to create vision model")
+        }
+        
         guard let objectDectectionModel = objectDectectionModel else { fatalError("fail to load the model") }
-        if let visionModel = try? VNCoreMLModel(for: objectDectectionModel.model) {
-            self.visionModel = visionModel
-            request = VNCoreMLRequest(model: visionModel, completionHandler: visionRequestDidComplete)
-            request?.imageCropAndScaleOption = .scaleFill
+        if let visionModelDetection = try? VNCoreMLModel(for: objectDectectionModel.model) {
+            self.visionModelDetection = visionModelDetection
+            requestDetection = VNCoreMLRequest(model: visionModelDetection)
+            requestDetection?.imageCropAndScaleOption = .scaleFill
+            requestDetection?.preferBackgroundProcessing = true
         } else {
             fatalError("fail to create vision model")
         }
     }
+
     
-    func predictUsingVision(pixelBuffer: CVPixelBuffer, isARKitBuffer: Bool) {
-        guard !isInferencing else {
-            return
-        }
+    func detectUsingVision(pixelBuffer: CVPixelBuffer, isARKitBuffer: Bool) {
+        guard !isInferencing else { return }
+        guard let requestDetection = requestDetection, let requestSegmentation = requestSegmentation else { fatalError("Request is nil") }
         
-        print("predictUsingVision")
-        
-        guard let request = request else { fatalError() }
-        
-        // vision framework configures the input size of image following our model's input configuration automatically
         self.semaphore.wait()
-        let handler: VNImageRequestHandler
         
-        if isARKitBuffer {
-            //            handler = VNImageRequestHandler(
-            //                cvPixelBuffer: pixelBuffer,
-            //                orientation: .leftMirrored,
-            //                options: [:]
-            //            )
-            handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
+        // let requestHandler = VNImageRequestHandler(url: Bundle.main.url(forResource: "test", withExtension: "png")!, orientation: .up)
+        let requestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
+        
+        do {
+            try requestHandler.perform([requestDetection, requestSegmentation])
             
-            // TODO: Check why this is needed on visionOS
-            #if os(visionOS)
-            //            request.preferBackgroundProcessing = true
-            request.usesCPUOnly = true
-            #endif
-        } else {
-            handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
-        }
-        
-        try? handler.perform([request])
-    }
-    
-    // MARK: - Post-processing
-    func visionRequestDidComplete(request: VNRequest, error: Error?) {
-        if let error {
-            print("Prediction error: \(error)")
-            return
-        }
-        
-        print("prediction results: \(String(describing: request.results))")
-            
-            if let visionPredictions = request.results as? [VNRecognizedObjectObservation] {
-                let predictions = visionPredictions.compactMap{ observation -> PredictionResult? in
-                    guard let label = observation.labels.first else {
-                        return nil
-                    }
-                    let predictionResultLabel = PredictionResult.Label(rawValue: label.identifier)
-                    return PredictionResult(label: predictionResultLabel ?? PredictionResult.Label.blackBishop, confidence: observation.confidence)
-                }
-                DispatchQueue.main.async {
-                    if !predictions.isEmpty {
-                        self.predictionsSubject.send(predictions)
-                    }
-                    self.isInferencing = false
-                }
-            } else {
-                self.isInferencing = false
+            guard let resultsSegmentation = requestSegmentation.results,
+                  let resultsDetection = requestDetection.results as? [VNRecognizedObjectObservation]
+            else {
+                print("Error performing vision request!")
+                return
             }
-//        if let visionPredictions = request.results as? [VNClassificationObservation] {
-//            let predictions = visionPredictions.compactMap { observation -> PredictionResult? in
-//                guard let label = PredictionResult.Label(rawValue: observation.identifier) else {
-//                    return nil
-//                }
-//                return PredictionResult(label: label, confidence: observation.confidence)
-//            }
-//            DispatchQueue.main.async {
-//                if !predictions.isEmpty {
-//                    self.predictionsSubject.send(predictions)
-//                }
-//                self.isInferencing = false
-//            }
-//        } else {
-//            self.isInferencing = false
-//        }
-        self.semaphore.signal()
-        
+            
+            let result_0 = resultsSegmentation[0] as! VNCoreMLFeatureValueObservation
+            let result_1 = resultsSegmentation[1] as! VNCoreMLFeatureValueObservation
+            print(result_0.featureName)
+            print(result_1.featureName)
+            
+            let piecePredictions = resultsDetection.compactMap{ observation -> PredictionResult? in
+                guard let label = observation.labels.first else {
+                    return nil
+                }
+                if observation.confidence > 0.75, let predictionResultLabel = PredictionResult.Label(rawValue: label.identifier) {
+                    return PredictionResult(label: predictionResultLabel, confidence: observation.confidence, boundingBox: observation.boundingBox)
+                } else {
+                    return nil
+                }
+            }
+            
+            let prediction = ChessBoardPredictionResult(p: result_0, var_1647: result_1, pieces: piecePredictions)
+            
+            DispatchQueue.main.async {
+                if !piecePredictions.isEmpty {
+                    self.predictionsSubject.send(prediction)
+                }
+                self.isInferencing = false
+                self.semaphore.signal()
+            }
+        } catch {
+            print("Error performing vision request: \(error)")
+            semaphore.signal()
+            isInferencing = false
+        }
     }
 }

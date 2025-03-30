@@ -68,10 +68,14 @@ class ARKitInterface {
         }
     }
     
-    func beginSession(world: WorldTrackingProvider, plane: PlaneDetectionProvider ) async {
+    func beginSession(world: WorldTrackingProvider, plane: PlaneDetectionProvider, camera: CameraFrameProvider? = nil ) async {
         
         do {
-            try await arkitSession.run([world, plane])
+            if let camera = camera {
+                try await arkitSession.run([world, plane, camera])
+            } else {
+                try await arkitSession.run([world, plane])
+            }
         } catch {
             print("Session trigger error: " + error.localizedDescription)
             return
