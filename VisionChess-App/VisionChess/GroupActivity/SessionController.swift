@@ -32,7 +32,9 @@ final class SessionController: GameControllerProtocol {
     var fieldEntities: [ChessField: Entity] = [:]
     var pieceEntities: [ChessPiece: Entity] = [:]
     var lastAppliedPosition: [ChessPiece: ChessField] = initialPosition
-    var prediction: ChessPieceDetectionManager.ChessBoardPredictionResult?
+    var rawPrediction: ChessPieceDetectionManager.ChessBoardPredictionResult?
+    var currentMoveEstimate: String?
+    var moveRequestPending: Bool = false
     
     private var sfxPlayer: AVAudioPlayer?
     
@@ -698,23 +700,11 @@ final class SessionController: GameControllerProtocol {
     
     func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) {
         
-        let currentTimeStamp = Date()
         
-        // Check if the ball is currently detected in the air
-//        let isBallCurrentlyInAir: Bool = {
-//            guard let ballInAirPrediction = predictions.first(where: { $0.isBallInAir }) else {
-//                return false
-//            }
-//            return ballInAirPrediction.confidence > 0.65
-//        }()
-//
-//        let timeSinceLastCatch: TimeInterval? = {
-//            if let timestampOfLastCount {
-//                return currentTimeStamp.timeIntervalSince(timestampOfLastCount)
-//            }
-//            return nil
-//        }()
         
-//        print("timeSinceLastCatch: \(timeSinceLastCatch)")
+    }
+    
+    func applyPhysicalMove() {
+        
     }
 }

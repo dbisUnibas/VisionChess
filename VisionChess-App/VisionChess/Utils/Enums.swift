@@ -127,6 +127,14 @@ enum ChessField: String, CaseIterable, Codable {
     case h8
     
     case defeated
+    
+    static func fromArrayIndicies(x: Int, y: Int) -> ChessField? {
+        guard x >= 0 && x < 8 && y >= 0 && y < 8 else { return nil }
+        let xLetters: [String] = ["a", "b", "c", "d", "e", "f", "g", "h"]
+        let xLetter = xLetters[x]
+        let yString = String(8 - y)
+        return ChessField(rawValue: xLetter + yString)
+    }
 }
 
 enum ChessPieceFen: String, CaseIterable {
@@ -285,4 +293,16 @@ enum SFX: String, Codable {
     case promotion = "promote"
     case select = "select"
     case pickUp = "pick-up"
+}
+
+// Convert a specific ChessPiece to its generic Label.
+func label(for piece: ChessPiece) -> ChessPieceDetectionManager.PredictionResult.Label? {
+    let raw = piece.rawValue.lowercased()
+    if raw.contains("whitepawn") { return .whitePawn }
+    if raw.contains("whiteking") { return .whiteKing }
+    if raw.contains("whitequeen") { return .whiteQueen }
+    if raw.contains("whitebishop") { return .whiteBishop }
+    if raw.contains("whiteknight") { return .whiteKnight }
+    if raw.contains("whiterook") { return .whiteRook }
+    return nil
 }

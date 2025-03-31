@@ -11,46 +11,25 @@ import RealityKit
 struct GamePlayingView: View {
     @Environment(AppModel.self) var appModel
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
+    @Environment(\.supportsMultipleWindows) private var supportsMultipleWindows
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
     
     @State var showEndGameConfirmation: Bool = false
     
     var body: some View {
         HStack {
-//            List {
-//                if teamHasPlayers(.white) {
-//                    TeamStatusView(team: .white)
-//                }
-//                if teamHasPlayers(.black) {
-//                    TeamStatusView(team: .black)
-//                }
-//            }
-//            .scrollDisabled(true)
-//            .frame(maxWidth: .infinity)
-            appModel.gameController?.image?
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 500, height: 500)
-            
-//            VStack {
-//                ForEach(appModel.gameController?.fen ?? [], id: \.self) { fen in
-//                    Text(fen)
-//                }
-//            }
-            
-            var flatData: [String] {
-                appModel.gameController?.fen.flatMap { $0 } ?? []
-            }
-                
-            let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 8)
-            
-            LazyVGrid(columns: columns, spacing: 2) {
-                ForEach(flatData.indices, id: \.self) { index in
-                    Text(flatData[index])
-                        .frame(minWidth: 95, minHeight: 60)
-                        .border(Color.white)
+            List {
+                if teamHasPlayers(.white) {
+                    TeamStatusView(team: .white)
                 }
+                if teamHasPlayers(.black) {
+                    TeamStatusView(team: .black)
+                }
+                
             }
-            .padding()
+            .scrollDisabled(true)
+            .frame(maxWidth: .infinity)
         }
         .padding()
         .visionChessToolbar()
@@ -63,6 +42,12 @@ struct GamePlayingView: View {
                         }
                     }
                 }
+                
+                Button("Open New Window", systemImage: "text.and.command.macwindow") {
+                    openWindow(id: "moveWindow")
+                }
+                .opacity(supportsMultipleWindows ? 1 : 0)
+                
                 Button("End game", systemImage: "xmark") {
                     showEndGameConfirmation = true
                 }
@@ -72,6 +57,12 @@ struct GamePlayingView: View {
             Button("End game", role: .destructive) {
                 appModel.activeController?.endGame()
             }
+        }
+        .onAppear {
+            openWindow(id: "moveWindow")
+        }
+        .onDisappear {
+            dismissWindow(id: "moveWindow")
         }
     }
     

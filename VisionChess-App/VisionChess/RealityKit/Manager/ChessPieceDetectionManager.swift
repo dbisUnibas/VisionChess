@@ -133,14 +133,14 @@ class ChessPieceDetectionManager {
             
             let result_0 = resultsSegmentation[0] as! VNCoreMLFeatureValueObservation
             let result_1 = resultsSegmentation[1] as! VNCoreMLFeatureValueObservation
-            print(result_0.featureName)
-            print(result_1.featureName)
+//            print(result_0.featureName)
+//            print(result_1.featureName)
             
             let piecePredictions = resultsDetection.compactMap{ observation -> PredictionResult? in
                 guard let label = observation.labels.first else {
                     return nil
                 }
-                if observation.confidence > 0.75, let predictionResultLabel = PredictionResult.Label(rawValue: label.identifier) {
+                if observation.confidence > 0.6, let predictionResultLabel = PredictionResult.Label(rawValue: label.identifier) {
                     return PredictionResult(label: predictionResultLabel, confidence: observation.confidence, boundingBox: observation.boundingBox)
                 } else {
                     return nil

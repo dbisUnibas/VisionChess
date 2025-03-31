@@ -48,7 +48,10 @@ protocol GameControllerProtocol {
     func playSoundEffect(_ name: SFX)
     
     func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult)
-    var prediction: ChessPieceDetectionManager.ChessBoardPredictionResult? { get set}
+    var rawPrediction: ChessPieceDetectionManager.ChessBoardPredictionResult? { get set}
+    var currentMoveEstimate: String? { get set}
+    var moveRequestPending: Bool { get set}
+    func applyPhysicalMove()
 }
 
 extension GameControllerProtocol {
