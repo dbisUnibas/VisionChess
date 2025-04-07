@@ -59,10 +59,14 @@ struct GamePlayingView: View {
             }
         }
         .onAppear {
-            openWindow(id: "moveWindow")
+            if appModel.activeController?.game.mode == .mixed {
+                openWindow(id: "moveWindow")
+            }
         }
         .onDisappear {
-            dismissWindow(id: "moveWindow")
+            if appModel.activeController?.game.mode == .mixed {
+                dismissWindow(id: "moveWindow")
+            }
         }
     }
     

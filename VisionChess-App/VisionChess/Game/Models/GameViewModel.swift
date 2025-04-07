@@ -50,9 +50,11 @@ class GameViewModel {
         
         objectDetectionPredictionSubscription = objectDetectionManager?.predictionsSubject
             .receive(on: DispatchQueue.main)
-            .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: true)
+            .throttle(for: .seconds(0.5), scheduler: RunLoop.main, latest: true)
             .sink(receiveValue: { prediction in
-                self.appModel?.activeController?.update(prediction: prediction)
+                Task {
+                    await self.appModel?.activeController?.update(prediction: prediction)
+                }
             })
     }
 
@@ -82,11 +84,13 @@ class GameViewModel {
                     for await update in updates {
                         guard
                             appModel?.activeController?.localPlayer.isPlaying ?? false,
+                            objectDetectionManager?.isInferencing != true,
                             let mainCameraSample = update.sample(for: .left)
                         else {
                             continue
                         }
                         let currentPixelBuffer = mainCameraSample.pixelBuffer
+                        print("detect")
                         objectDetectionManager?.detectUsingVision(
                             pixelBuffer: currentPixelBuffer,
                             isARKitBuffer: true

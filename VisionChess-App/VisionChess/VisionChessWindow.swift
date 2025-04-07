@@ -18,7 +18,7 @@ struct VisionChessWindow: Scene {
             .frame(width: 900, height: 620)
             .nameAlert()
         }
-        .windowResizability(.contentMinSize)
+        .windowResizability(.contentSize)
         
         WindowGroup("Move Window", id: "moveWindow") {
             MoveView()

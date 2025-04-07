@@ -113,53 +113,56 @@ class ChessPieceDetectionManager {
 
     
     func detectUsingVision(pixelBuffer: CVPixelBuffer, isARKitBuffer: Bool) {
-        guard !isInferencing else { return }
-        guard let requestDetection = requestDetection, let requestSegmentation = requestSegmentation else { fatalError("Request is nil") }
-        
-        self.semaphore.wait()
-        
-        // let requestHandler = VNImageRequestHandler(url: Bundle.main.url(forResource: "test", withExtension: "png")!, orientation: .up)
-        let requestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
-        
-        do {
-            try requestHandler.perform([requestDetection, requestSegmentation])
+        DispatchQueue.global(qos: .background).async {
+            guard !self.isInferencing else { return }
+            self.isInferencing = true
             
-            guard let resultsSegmentation = requestSegmentation.results,
-                  let resultsDetection = requestDetection.results as? [VNRecognizedObjectObservation]
-            else {
-                print("Error performing vision request!")
-                return
-            }
+            guard let requestDetection = self.requestDetection, let requestSegmentation = self.requestSegmentation else { fatalError("Request is nil") }
             
-            let result_0 = resultsSegmentation[0] as! VNCoreMLFeatureValueObservation
-            let result_1 = resultsSegmentation[1] as! VNCoreMLFeatureValueObservation
-//            print(result_0.featureName)
-//            print(result_1.featureName)
+            self.semaphore.wait()
             
-            let piecePredictions = resultsDetection.compactMap{ observation -> PredictionResult? in
-                guard let label = observation.labels.first else {
-                    return nil
+            // let requestHandler = VNImageRequestHandler(url: Bundle.main.url(forResource: "test", withExtension: "png")!, orientation: .up)
+            let requestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
+            
+            do {
+                try requestHandler.perform([requestDetection, requestSegmentation])
+                
+                guard let resultsSegmentation = requestSegmentation.results,
+                      let resultsDetection = requestDetection.results as? [VNRecognizedObjectObservation]
+                else {
+                    print("Error performing vision request!")
+                    return
                 }
-                if observation.confidence > 0.6, let predictionResultLabel = PredictionResult.Label(rawValue: label.identifier) {
-                    return PredictionResult(label: predictionResultLabel, confidence: observation.confidence, boundingBox: observation.boundingBox)
-                } else {
-                    return nil
+                
+                let result_0 = resultsSegmentation[0] as! VNCoreMLFeatureValueObservation
+                let result_1 = resultsSegmentation[1] as! VNCoreMLFeatureValueObservation
+                
+                let piecePredictions = resultsDetection.compactMap{ observation -> PredictionResult? in
+                    guard let label = observation.labels.first else {
+                        return nil
+                    }
+                    if observation.confidence > 0.6, let predictionResultLabel = PredictionResult.Label(rawValue: label.identifier) {
+                        return PredictionResult(label: predictionResultLabel, confidence: observation.confidence, boundingBox: observation.boundingBox)
+                    } else {
+                        return nil
+                    }
                 }
-            }
-            
-            let prediction = ChessBoardPredictionResult(p: result_0, var_1647: result_1, pieces: piecePredictions)
-            
-            DispatchQueue.main.async {
-                if !piecePredictions.isEmpty {
-                    self.predictionsSubject.send(prediction)
+                
+                let prediction = ChessBoardPredictionResult(p: result_0, var_1647: result_1, pieces: piecePredictions)
+                
+                DispatchQueue.main.async {
+                    if !piecePredictions.isEmpty {
+                        self.predictionsSubject.send(prediction)
+                    }
+                    self.isInferencing = false
+                    self.semaphore.signal()
                 }
-                self.isInferencing = false
+                
+            } catch {
+                print("Error performing vision request: \(error)")
                 self.semaphore.signal()
+                self.isInferencing = false
             }
-        } catch {
-            print("Error performing vision request: \(error)")
-            semaphore.signal()
-            isInferencing = false
         }
     }
 }

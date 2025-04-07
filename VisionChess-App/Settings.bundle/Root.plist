@@ -14,7 +14,7 @@
 			<key>Key</key>
 			<string>app_base_url</string>
 			<key>DefaultValue</key>
-			<string>http://10.34.64.140:8090</string>
+			<string>https://visionchess.xreco-retrieval.ch</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>KeyboardType</key>

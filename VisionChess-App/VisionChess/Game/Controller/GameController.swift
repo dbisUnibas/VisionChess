@@ -30,6 +30,7 @@ final class GameController: GameControllerProtocol {
     var rawPrediction: ChessPieceDetectionManager.ChessBoardPredictionResult?
     var currentMoveEstimate: String?
     var moveRequestPending: Bool = false
+    var alert: String? = nil
     
     
     private var sfxPlayer: AVAudioPlayer?
@@ -149,7 +150,7 @@ final class GameController: GameControllerProtocol {
                     let endIndex = move.index(startIndex, offsetBy: 2)
                     let to = ChessField(rawValue: String(move[startIndex..<endIndex]))
                     
-                    let promotedPiece = ChessPieceFen(rawValue: String(move.suffix(1)))
+                    let promotedPiece = ChessPieceFen.fromLowerCased(moveNotation: String(move.suffix(1)), side: self.localPlayer.side == .black ? .white : .black)
                     
                     if let from = from, let to = to {
                         let pieceToMove = self.getPieceByField(field: from)
@@ -173,7 +174,8 @@ final class GameController: GameControllerProtocol {
                 }
             }
         } else {
-            self.localPlayer.isPlaying = true
+            self.currentMoveEstimate = nil
+            
             self.getBestMove { move in
                 if let move = move {
                     let move = move.split(separator: ",")[0]
@@ -183,6 +185,7 @@ final class GameController: GameControllerProtocol {
                         return
                     }
                     
+                    self.localPlayer.isPlaying = true
                     self.activateInput()
                     
                     let from = ChessField(rawValue: String(move.prefix(2)))
@@ -316,7 +319,7 @@ final class GameController: GameControllerProtocol {
             self.handleEnPassantIfNeeded(for: piece, to: to)
 
             // Remove captured piece if any
-            self.removeDefeatedPieces(at: to)
+            self.removeDefeatedPieces(updatedPiece: piece, at: to)
 
             // Update game state from server
             self.updateGameState(with: response)
@@ -338,12 +341,15 @@ final class GameController: GameControllerProtocol {
     private func handleCastlingIfNeeded(for piece: ChessPiece, from: ChessField, to: ChessField) {
         guard (piece == .whiteKing || piece == .blackKing),
               let castlingMove = CastlingMove(rawValue: "\(from)\(to)"),
-              let info = castlingMap[castlingMove],
+              let info = castlingMap[castlingMove] else { return }
+              
+        if let side = self.localPlayer.side?.rawValue,
               let rookEntity = self.pieceEntities[info.rookPiece],
-              let fieldEntity = self.fieldEntities[info.targetField] else { return }
-
-        Task {
-            await self.animateMove(piece: rookEntity, field: fieldEntity)
+              let fieldEntity = self.fieldEntities[info.targetField],
+              self.game.mode != .mixed || self.game.mode == .mixed && !piece.rawValue.hasPrefix(side) {
+            Task {
+                await self.animateMove(piece: rookEntity, field: fieldEntity)
+            }
         }
         self.game.lastKnownPosition[info.rookPiece] = info.targetField
     }
@@ -365,7 +371,7 @@ final class GameController: GameControllerProtocol {
             if rank == expectedRank, let captureSquare = ChessField(rawValue: "\(file)\(captureRank)") {
                 if let targetPiece = self.game.lastKnownPosition.first(where: { $0.value == captureSquare })?.key {
                     self.currentlyCapturedPieces.append(targetPiece)
-                    self.removeDefeatedPieces(at: captureSquare)
+                    self.removeDefeatedPieces(updatedPiece: piece, at: captureSquare)
                 }
             }
         }
@@ -405,15 +411,32 @@ final class GameController: GameControllerProtocol {
             }
         }
     }
+    
+    func resetAlert() {
+        self.alert = nil
+    }
 
-    func removeDefeatedPieces(at: ChessField) {
-        for defeatedPiece in self.currentlyCapturedPieces {
-            if self.game.lastKnownPosition[defeatedPiece] == at {
+    func removeDefeatedPieces(updatedPiece: ChessPiece, at: ChessField) {
+        if self.currentlyCapturedPieces.isEmpty {
+            if let defeatedPiece = self.game.lastKnownPosition.filter({$0.key != updatedPiece}).first(where: { $0.value == at })?.key {
                 print("Removing piece \(defeatedPiece)")
-                
                 self.playSoundEffect(SFX.capture)
                 self.game.lastKnownPosition[defeatedPiece] = .defeated
                 self.pieceEntities[defeatedPiece]?.removeFromParent()
+                
+                if let side = localPlayer.side?.rawValue, defeatedPiece.rawValue.contains(side) {
+                    self.alert = "Please remove your piece at \(at)!"
+                }
+            }
+        } else {
+            for defeatedPiece in self.currentlyCapturedPieces {
+                if self.game.lastKnownPosition[defeatedPiece] == at {
+                    print("Removing piece \(defeatedPiece)")
+                    
+                    self.playSoundEffect(SFX.capture)
+                    self.game.lastKnownPosition[defeatedPiece] = .defeated
+                    self.pieceEntities[defeatedPiece]?.removeFromParent()
+                }
             }
         }
     }
@@ -432,7 +455,14 @@ final class GameController: GameControllerProtocol {
 
     func findAllPieceEntities() async {
         // Wait until required entities are available
-        await waitForEntities(named: ["black", "white"])
+        var availableSides: [String] = []
+        if game.mode == .mixed {
+            availableSides.append(localPlayer.side?.rawValue == "white" ? "black" : "white")
+        } else {
+            availableSides.append(contentsOf: ["black", "white"])
+        }
+        
+        await waitForEntities(named: availableSides)
         
         var pieceEntities: [ChessPiece: Entity] = [:]
         
@@ -545,7 +575,7 @@ final class GameController: GameControllerProtocol {
         }
     }
     
-    func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) {
+    func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) async {
         let (boundingBox, bestMaskIdx) = getBoundingBox(feature: prediction.var_1647.featureValue.multiArrayValue!)
         
         let cornerPoints = getCornerPoints(boundingBox, masks: prediction.p.featureValue.multiArrayValue!, bestMaskIdx: bestMaskIdx)
@@ -568,10 +598,10 @@ final class GameController: GameControllerProtocol {
         ]
 
         // Final board representation: 8 rows of 8 columns (row-major, top to bottom)
-        var board = Array(repeating: Array(repeating: nil as String?, count: 8), count: 8)
+        //var board = Array(repeating: Array(repeating: nil as String?, count: 8), count: 8)
         var positionEstimate: [ChessField: ChessPieceDetectionManager.PredictionResult.Label] = [:]
         
-        if let perspectiveTransform = PerspectiveTransform(source: boardCorners, destination: destination) {
+        if let perspectiveTransform = PerspectiveTransform(source: boardCorners, destination: destination), let side = localPlayer.side {
             for piece in prediction.pieces {
                 let centerPoint = center(of: piece.boundingBox)
                 
@@ -587,7 +617,7 @@ final class GameController: GameControllerProtocol {
                 let boardX = min(max(Int(warped.x * 8), 0), 7)
                 let boardY = min(max(Int(warped.y * 8), 0), 7)
                 
-                let chessField = ChessField.fromArrayIndicies(x: boardX, y: boardY)
+                let chessField = ChessField.fromArrayIndicies(x: boardX, y: boardY, side: side)
                 
                 if let chessField = chessField, positionEstimate[chessField] == nil {
                     //print("Piece: \(piece.label.rawValue), BoardX: \(boardX), BoardY: \(boardY), chessField: \(chessField)")
@@ -598,61 +628,21 @@ final class GameController: GameControllerProtocol {
             print("Failed to compute perspective transform.")
         }
 
-        let move = detectWhiteMove(lastKnownPosition: game.lastKnownPosition, positionEstimate: positionEstimate)
+        let move = await detectPhysicalMove(lastKnownPosition: game.lastKnownPosition, positionEstimate: positionEstimate)
         
-        if let move = move {
-            self.currentMoveEstimate = move
-        }
-        print(move ?? "No move")
-    }
-    
-    func detectWhiteMove(
-        lastKnownPosition: [ChessPiece: ChessField],
-        positionEstimate: [ChessField: ChessPieceDetectionManager.PredictionResult.Label]
-    ) -> String? {
-        // Filter the last known state to white pieces.
-        let whitePositions = lastKnownPosition.filter { (piece, _) in
-            return piece.rawValue.lowercased().contains("white")
-        }
-        
-        // Invert the mapping for white pieces: ChessField -> ChessPiece.
-        var whiteMapping: [ChessField: ChessPiece] = [:]
-        for (piece, field) in whitePositions {
-            whiteMapping[field] = piece
-        }
-        
-        var sourceSquare: ChessField?
-        var destinationSquare: ChessField?
-        
-        // Detect the source square:
-        // The source square is a square that previously held a white piece but now is missing in the vision estimate.
-        for (field, _) in whiteMapping {
-            if positionEstimate[field] == nil {
-                sourceSquare = field
-                break
+        if let move = move, let gameId = game.gameId {
+            GamesAPI.gamesIdMoveValidMoveGet(id: gameId, move: move) { response, error in
+                guard error == nil else {
+                    print("Error validating move: \(move) - \(error!.localizedDescription)")
+                    return
+                }
+                
+                print(move)
+                self.currentMoveEstimate = move
             }
+        } else {
+            print("No move detected")
         }
-        
-        // Detect the destination square:
-        // The destination square is one that now shows a white piece (with the correct generic label)
-        // and was not previously occupied by any white piece.
-        for (field, _) in positionEstimate {
-            if whiteMapping[field] == nil {
-                destinationSquare = field
-                break
-            }
-        }
-        
-        // If both source and destination are found, verify that the white piece's generic label matches.
-        if let source = sourceSquare,
-           let destination = destinationSquare,
-           let movedPiece = whiteMapping[source],
-           let expectedLabel = label(for: movedPiece),
-           positionEstimate[destination] == expectedLabel {
-            return source.rawValue + destination.rawValue
-        }
-        
-        return nil
     }
     
     func applyPhysicalMove() {
@@ -666,14 +656,12 @@ final class GameController: GameControllerProtocol {
             let chessPiece = game.lastKnownPosition.first(where: {$0.value == from})?.key
             if let chessPiece = chessPiece, let to = to {
                 self.moveRequestPending = true
-                move(piece: chessPiece, to: to, promotedPiece: nil) {
-                    success in
-                        if success {
-                            self.moveRequestPending = false
-                        } else {
-                            self.moveRequestPending = false
-                            print("Return piece to initial position")
-                        }
+                move(piece: chessPiece, to: to, promotedPiece: nil) { success in
+                    if !success {
+                        print("Return piece to initial position")
+                    }
+                    self.moveRequestPending = false
+                    self.currentMoveEstimate = nil
                 }
             }
         }

@@ -1,14 +1,10 @@
 {
   "advancedEditorSelectedIdentifier" : "ProjectBrowser",
   "openSceneRelativePaths" : [
-    "Models\/PlacementCursor.usda",
-    "Board.usda",
-    "winner_black.usda",
-    "winner_white.usda",
-    "PlacementCursor.usda",
     "Board-Mixed.usda",
-    "pointer.usda",
-    "Board-Mixed-White.usda"
+    "Board-Mixed-White.usda",
+    "Board-Mixed-Black.usda",
+    "Board.usda"
   ],
   "recentIdentifiers" : {
     "2BF05EF6-17D8-4259-A76F-40923610CB89" : [
@@ -18,6 +14,9 @@
 
     ],
     "AF09ED6F-1707-48FD-8720-65B998362C09" : [
+
+    ],
+    "B08BF1FE-AE74-4445-8B56-6F387C6A7C35" : [
 
     ],
     "BE7A6AB0-9460-4747-9088-1FDCB99E5F09" : [
@@ -588,6 +587,30 @@
           0,
           1.0257357,
           1.0257357,
+          1
+        ]
+      }
+    ],
+    "B08BF1FE-AE74-4445-8B56-6F387C6A7C35" : [
+      {
+        "date" : 765628340.241354,
+        "title" : "Untitled",
+        "transform" : [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0.7071069,
+          -0.70710677,
+          0,
+          0,
+          0.70710677,
+          0.7071069,
+          0,
+          0,
+          0.29795924,
+          0.29795927,
           1
         ]
       }
@@ -1200,5 +1223,5 @@
   "sceneViewportBackgroundColors" : {
 
   },
-  "selectedSceneRelativePath" : "Board-Mixed-White.usda"
+  "selectedSceneRelativePath" : "Board-Mixed-Black.usda"
 }

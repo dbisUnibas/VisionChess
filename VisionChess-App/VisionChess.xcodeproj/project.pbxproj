@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2234087D2D76284E00A0806C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2234087C2D76284E00A0806C /* Settings.bundle */; };
-		227BDD462D882A09003D45BE /* OpenAPIClient in Frameworks */ = {isa = PBXBuildFile; productRef = 227BDD452D882A09003D45BE /* OpenAPIClient */; };
+		2279475D2D9BE6B4008A5F97 /* OpenAPIClient in Frameworks */ = {isa = PBXBuildFile; productRef = 2279475C2D9BE6B4008A5F97 /* OpenAPIClient */; };
 		22C1B38C2D35083C00C5C076 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 22C1B38B2D35083C00C5C076 /* RealityKitContent */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				227BDD462D882A09003D45BE /* OpenAPIClient in Frameworks */,
+				2279475D2D9BE6B4008A5F97 /* OpenAPIClient in Frameworks */,
 				22C1B38C2D35083C00C5C076 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,7 +99,7 @@
 			name = VisionChess;
 			packageProductDependencies = (
 				22C1B38B2D35083C00C5C076 /* RealityKitContent */,
-				227BDD452D882A09003D45BE /* OpenAPIClient */,
+				2279475C2D9BE6B4008A5F97 /* OpenAPIClient */,
 			);
 			productName = VisionChess;
 			productReference = 22C1B3862D35083C00C5C076 /* VisionChess.app */;
@@ -113,7 +113,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					22C1B3852D35083C00C5C076 = {
 						CreatedOnToolsVersion = 16.2;
@@ -131,7 +131,7 @@
 			mainGroup = 22C1B37D2D35083C00C5C076;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				227BDD442D882A09003D45BE /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */,
+				2279475B2D9BE6B4008A5F97 /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 22C1B3872D35083C00C5C076 /* Products */;
@@ -196,6 +196,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Debug;
 		};
@@ -229,6 +230,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Release;
 		};
@@ -375,14 +377,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		227BDD442D882A09003D45BE /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */ = {
+		2279475B2D9BE6B4008A5F97 /* XCLocalSwiftPackageReference "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../VisionChess-Server/src/main/resources/openapi/OpenAPIClient";
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		227BDD452D882A09003D45BE /* OpenAPIClient */ = {
+		2279475C2D9BE6B4008A5F97 /* OpenAPIClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OpenAPIClient;
 		};

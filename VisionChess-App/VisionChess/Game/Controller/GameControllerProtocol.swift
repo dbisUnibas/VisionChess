@@ -27,6 +27,7 @@ protocol GameControllerProtocol {
     var gameSyncStore: GameSyncStore { get set}
     var fieldEntities: [ChessField: Entity] { get set}
     var pieceEntities: [ChessPiece: Entity] { get set}
+    var alert: String? { get set}
     
     func enterTeamSelection(gameMode: GameModel.GameMode)
     func joinTeam(_ side: PlayerModel.Side?)
@@ -38,6 +39,7 @@ protocol GameControllerProtocol {
     func setWinner(side: PlayerModel.Side)
     func gameStateChanged()
     func move(piece: ChessPiece, to: ChessField, promotedPiece: ChessPieceFen?, completion: @escaping (Bool) -> Void)
+    func resetAlert()
     
     func movePieceToLastKnownPosition(piece: Entity)
     func handleCollisions(content: RealityViewContent)
@@ -47,7 +49,7 @@ protocol GameControllerProtocol {
     
     func playSoundEffect(_ name: SFX)
     
-    func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult)
+    func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) async
     var rawPrediction: ChessPieceDetectionManager.ChessBoardPredictionResult? { get set}
     var currentMoveEstimate: String? { get set}
     var moveRequestPending: Bool { get set}
@@ -155,8 +157,10 @@ extension GameControllerProtocol {
         
         print(scaleFactor)
         
+        let chessboardModelString = game.mode == .virtual ? "Board-Mixed" : (localPlayer.side == .white) ? "Board-Mixed-White" : "Board-Mixed-Black"
+        
         // Load chessboard model (assuming it exists in assets)
-        guard let chessboardModel = try? await Entity(named: "Board-Mixed-White", in: realityKitContentBundle) else {
+        guard let chessboardModel = try? await Entity(named: chessboardModelString, in: realityKitContentBundle) else {
             print("Chessboard model not found")
             return
         }
@@ -353,5 +357,118 @@ extension GameControllerProtocol {
         let enPassantField = String(components[3])
         return enPassantField != "-" ? enPassantField : nil
     }
+
+    func detectPhysicalMove(
+        lastKnownPosition: [ChessPiece: ChessField],
+        positionEstimate: [ChessField: ChessPieceDetectionManager.PredictionResult.Label]
+    ) async -> String? {
+        // Determine the local player's side (e.g., "white" or "black").
+        let side = localPlayer.side?.rawValue.lowercased() ?? "white"
+        
+        // Filter the last known state to include only pieces on the local player's side.
+        let filteredPositions = lastKnownPosition.filter { (piece, field) in
+            return piece.rawValue.lowercased().contains(side) && field != .defeated
+        }
+        
+        // Invert the mapping: from ChessPiece -> ChessField to ChessField -> ChessPiece.
+        var piecePositions: [ChessField: ChessPiece] = [:]
+        for (piece, field) in filteredPositions {
+            piecePositions[field] = piece
+        }
+        
+        var missingSquares: [ChessField] = []
+        var newSquares: [ChessField] = []
+        
+        // Determine which squares are now empty (i.e. missing) and which squares are newly occupied.
+        // Detect the source square:
+        // The source square is a square that previously held a white piece but now is missing in the vision estimate.
+        for (field, _) in piecePositions {
+            if positionEstimate[field] == nil {
+                missingSquares.append(field)
+            }
+        }
+        
+        // Detect the destination square:
+        // The destination square is one that now shows a white piece (with the correct generic label)
+        // and was not previously occupied by any white piece.
+        for (field, _) in positionEstimate {
+            if piecePositions[field] == nil {
+                newSquares.append(field)
+            }
+        }
+        
+        print(missingSquares)
+        print(newSquares)
+        
+        // --- Normal Move Detection ---
+        if missingSquares.count == 1 && newSquares.count == 1 {
+            let sourceSquare = missingSquares.first!
+            let destinationSquare = newSquares.first!
+            
+//            if let movedPiece = piecePositions[sourceSquare],
+//               let expectedLabel = label(for: movedPiece),
+//               positionEstimate[destinationSquare] == expectedLabel {
+//                return sourceSquare.rawValue + destinationSquare.rawValue
+//            }
+            return sourceSquare.rawValue + destinationSquare.rawValue
+        }
+        
+        // --- Castling Move Detection ---
+        // When castling, both the king and one rook move, so we expect two missing and two new squares.
+        else if missingSquares.count == 2 && newSquares.count == 2 {
+            var kingSource: ChessField?
+            var rookSource: ChessField?
+            
+            // Identify which missing squares belonged to the king and the rook.
+            for square in missingSquares {
+                if let piece = piecePositions[square] {
+                    // Use the enum's rawValue to determine the piece type.
+                    if piece.rawValue.lowercased().contains("king") {
+                        kingSource = square
+                    } else if piece.rawValue.lowercased().contains("rook") {
+                        rookSource = square
+                    }
+                }
+            }
+            
+            var kingDestination: ChessField?
+            var rookDestination: ChessField?
+            
+            // From the new squares, detect which now show a king or a rook.
+            for square in newSquares {
+                if let detectedLabel = positionEstimate[square] {
+                    // Compare with the expected labels for king and rook.
+                    if detectedLabel == label(for: .whiteKing) || detectedLabel == label(for: .blackKing) {
+                        kingDestination = square
+                    } else if detectedLabel == label(for: .whiteRookA) ||
+                              detectedLabel == label(for: .whiteRookH) ||
+                              detectedLabel == label(for: .blackRookA) ||
+                              detectedLabel == label(for: .blackRookH) {
+                        rookDestination = square
+                    }
+                }
+            }
+            
+            // If we have detected both king and rook moves, verify that the king moved two files.
+            if let kingSource = kingSource,
+               let kingDestination = kingDestination,
+               let _ = rookSource,
+               let _ = rookDestination {
+                // Assuming the ChessField raw values are like "e1", "g1", etc.
+                if let kingSourceFile = kingSource.rawValue.first,
+                   let kingDestFile = kingDestination.rawValue.first,
+                   abs(Int(kingDestFile.asciiValue!) - Int(kingSourceFile.asciiValue!)) == 2 {
+                    // Optionally: further checks can be added to verify that the rook has moved to its expected square.
+                    // For now, we simply return the king's move notation (e.g., "e1g1" for kingside castling).
+                    return kingSource.rawValue + kingDestination.rawValue
+                }
+            }
+            return nil
+        }
+        
+        
+        return nil
+    }
+
 
 }

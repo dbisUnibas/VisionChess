@@ -11,7 +11,7 @@ import RealityKitContent
 
 struct WelcomeView: View {
     @Environment(AppModel.self) var appModel
-    public var basePath = UserDefaults.standard.string(forKey: "app_base_url") ?? "http://10.34.64.140:8090"
+    public var basePath = UserDefaults.standard.string(forKey: "app_base_url") ?? "https://visionchess.xreco-retrieval.ch"
     @State var connectionEstablished: Bool = false
     
     var body: some View {

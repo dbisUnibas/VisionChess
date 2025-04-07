@@ -12,12 +12,53 @@ struct MoveView: View {
     
     
     var body: some View {
-        Button("Apply Move \(appModel.activeController?.currentMoveEstimate ?? "")", systemImage: "checkmark") {
-            appModel.activeController?.applyPhysicalMove()
+        if let alert = appModel.activeController?.alert {
+            VStack(spacing: 18) {
+                Text(alert)
+                    .foregroundColor(.orange)
+                
+                Button("Proceed", systemImage: "checkmark") {
+                    appModel.activeController?.resetAlert()
+                }
+            }
+            .padding()
+        } else {
+            if appModel.activeController?.localPlayer.isPlaying == true && appModel.activeController?.currentMoveEstimate == nil {
+                Button(action: {}) {
+                    HStack {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .scaleEffect(0.8)
+                        Text("Detecting move...")
+                    }
+                }
+                .disabled(true)
+                .padding()
+            } else if appModel.activeController?.localPlayer.isPlaying == true && appModel.activeController?.currentMoveEstimate != nil {
+                
+                Button("Apply Move \(appModel.activeController?.currentMoveEstimate ?? "")", systemImage: "checkmark") {
+                    appModel.activeController?.applyPhysicalMove()
+                }
+                .tint(.green)
+                .padding()
+                .disabled(
+                    appModel.activeController?.currentMoveEstimate == nil
+                    || appModel.activeController?.moveRequestPending == true
+                    
+                )
+            } else {
+                Button(action: {}) {
+                    HStack {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .scaleEffect(0.8)
+                        Text("Waiting for opponent...")
+                    }
+                }
+                .disabled(true)
+                .padding()
+            }
         }
-        .tint(.green)
-        .padding()
-        .disabled(appModel.activeController?.currentMoveEstimate == nil || appModel.activeController?.moveRequestPending == true)
     }
 }
 

@@ -128,11 +128,11 @@ enum ChessField: String, CaseIterable, Codable {
     
     case defeated
     
-    static func fromArrayIndicies(x: Int, y: Int) -> ChessField? {
+    static func fromArrayIndicies(x: Int, y: Int, side: PlayerModel.Side) -> ChessField? {
         guard x >= 0 && x < 8 && y >= 0 && y < 8 else { return nil }
         let xLetters: [String] = ["a", "b", "c", "d", "e", "f", "g", "h"]
-        let xLetter = xLetters[x]
-        let yString = String(8 - y)
+        let xLetter = side == .white ? xLetters[x] : xLetters[7 - x]
+        let yString = side == .white ? String(8 - y) : String(y + 1)
         return ChessField(rawValue: xLetter + yString)
     }
 }
@@ -150,6 +150,16 @@ enum ChessPieceFen: String, CaseIterable {
     case whiteKnight = "N"
     case whiteRook = "R"
     case whitePawn = "P"
+    
+    static func fromLowerCased(moveNotation: String, side: PlayerModel.Side) -> ChessPieceFen {
+        let letter = side == .white ? moveNotation.uppercased() : moveNotation.lowercased()
+        
+        guard let piece = ChessPieceFen(rawValue: letter) else {
+            fatalError("Invalid move notation: \(moveNotation) for side \(side)")
+        }
+        
+        return piece
+    }
 }
 
 extension ChessPieceFen: CustomStringConvertible {
@@ -304,5 +314,12 @@ func label(for piece: ChessPiece) -> ChessPieceDetectionManager.PredictionResult
     if raw.contains("whitebishop") { return .whiteBishop }
     if raw.contains("whiteknight") { return .whiteKnight }
     if raw.contains("whiterook") { return .whiteRook }
+    
+    if raw.contains("blackpawn") { return .blackPawn }
+    if raw.contains("blackking") { return .blackKing }
+    if raw.contains("blackqueen") { return .blackQueen }
+    if raw.contains("blackbishop") { return .blackBishop }
+    if raw.contains("blackknight") { return .blackKnight }
+    if raw.contains("blackrook") { return .blackRook }
     return nil
 }
