@@ -30,6 +30,7 @@ extension GameModel {
     
     enum ActivityStage: Codable, Hashable, Sendable {
         case modeSelection
+        case recentGames
         case sideSelection
         case inSetup
         case inGame(GameStage)
@@ -45,12 +46,13 @@ extension GameModel {
     }
     
     enum GameMode: Codable, Hashable, Sendable {
-        case physical, mixed, virtual
+        case physical, mixed, virtual, review
         var description : String {
             switch self {
                 case .physical: return "physical"
                 case .mixed: return "mixed"
                 case .virtual: return "virtual"
+                case .review: return "review"
             }
           }
     }
@@ -76,6 +78,39 @@ extension GameModel {
         // Convert from number to OpponentStrength
         static func fromLevel(_ level: Int) -> OpponentStrength? {
             switch level {
+            case 1: return .easy
+            case 2: return .medium
+            case 3: return .hard
+            case 4: return .expert
+            default: return nil // Return nil if level is out of range
+            }
+        }
+    }
+    
+    enum SuggestionLevel: String, CaseIterable, Identifiable {
+        case off = "Off"
+        case easy = "Easy"
+        case medium = "Medium"
+        case hard = "Hard"
+        case expert = "Expert"
+
+        var id: String { self.rawValue }
+
+        // Mapping to numbers 1 to 5
+        var level: Int {
+            switch self {
+            case .off: return 0
+            case .easy: return 1
+            case .medium: return 2
+            case .hard: return 3
+            case .expert: return 4
+            }
+        }
+
+        // Convert from number to OpponentStrength
+        static func fromLevel(_ level: Int) -> SuggestionLevel? {
+            switch level {
+            case 0: return .off
             case 1: return .easy
             case 2: return .medium
             case 3: return .hard

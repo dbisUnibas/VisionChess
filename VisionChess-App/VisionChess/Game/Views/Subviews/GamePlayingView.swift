@@ -43,10 +43,12 @@ struct GamePlayingView: View {
                     }
                 }
                 
-                Button("Open New Window", systemImage: "text.and.command.macwindow") {
-                    openWindow(id: "moveWindow")
+                if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
+                    Button("Open New Window", systemImage: "text.and.command.macwindow") {
+                        openWindow(id: "moveWindow")
+                    }
+                    .opacity(supportsMultipleWindows ? 1 : 0)
                 }
-                .opacity(supportsMultipleWindows ? 1 : 0)
                 
                 Button("End game", systemImage: "xmark") {
                     showEndGameConfirmation = true
@@ -59,12 +61,12 @@ struct GamePlayingView: View {
             }
         }
         .onAppear {
-            if appModel.activeController?.game.mode == .mixed {
+            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
                 openWindow(id: "moveWindow")
             }
         }
         .onDisappear {
-            if appModel.activeController?.game.mode == .mixed {
+            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
                 dismissWindow(id: "moveWindow")
             }
         }
@@ -76,7 +78,7 @@ struct GamePlayingView: View {
                 player.side == team
             }
         } else {
-            if appModel.gameController != nil {
+            if appModel.gameController != nil || appModel.reviewController != nil {
                 return true
             } else {
                 return false
@@ -97,14 +99,14 @@ struct TeamStatusView: View {
     
     var players: [PlayerModel] {
         guard let sessionController = appModel.sessionController else {
-            guard let gameController = appModel.gameController else {
+            guard let activeController = appModel.activeController else {
                 return []
             }
             
-            if gameController.localPlayer.side == team {
-                return [gameController.localPlayer]
+            if activeController.localPlayer.side == team {
+                return [activeController.localPlayer]
             } else {
-                return [PlayerModel(id: UUID(), name: "Stockfish", side: gameController.localPlayer.side == .white ? .black : .white)]
+                return [PlayerModel(id: UUID(), name: "Stockfish", side: activeController.localPlayer.side == .white ? .black : .white)]
             }
         }
         

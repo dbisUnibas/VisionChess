@@ -42,6 +42,7 @@ struct GameSpace: Scene {
         }
         .onChange(of: appModel.sessionController?.game.stage, updateImmersiveSpaceState)
         .onChange(of: appModel.gameController?.game.stage, updateImmersiveSpaceState)
+        .onChange(of: appModel.reviewController?.game.stage, updateImmersiveSpaceState)
     }
     
     func updateImmersiveSpaceState(
@@ -52,10 +53,12 @@ struct GameSpace: Scene {
         let isInGame = newActivityStage?.isInGame ?? false
         let wasInSetup = oldActivityStage == .inSetup
         let isInSetup = newActivityStage == .inSetup
+        let wasGameOver = oldActivityStage == .gameOver
+        let isGameOver = newActivityStage == .gameOver
         
         
         
-        guard wasInGame != isInGame || wasInSetup != isInSetup else {
+        guard wasInGame != isInGame || wasGameOver != isGameOver || wasInSetup != isInSetup else {
             return
         }
         
@@ -64,7 +67,7 @@ struct GameSpace: Scene {
                 appModel.initViewModel(dataSource: dataSource)
                 print("Opening immersive space")
                 await openImmersiveSpace(id: Self.spaceID)
-            } else if !(isInGame || isInSetup) && appModel.isImmersiveSpaceOpen {
+            } else if !(isInGame || isGameOver || isInSetup) && appModel.isImmersiveSpaceOpen {
                 print("Closing immersive space")
                 await dismissImmersiveSpace()
             }

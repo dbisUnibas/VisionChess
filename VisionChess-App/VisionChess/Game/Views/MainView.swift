@@ -17,6 +17,8 @@ struct MainView: View {
             switch appModel.activeController?.game.stage {
                 case .none:
                     WelcomeView()
+                case .recentGames:
+                    RecentGamesView()
                 case .modeSelection:
                     ModeSelectionView()
                 case .sideSelection:

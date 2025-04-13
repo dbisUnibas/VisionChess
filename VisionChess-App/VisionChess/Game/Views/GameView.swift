@@ -41,7 +41,7 @@ struct GameView: View {
             
             Task {
                 switch appModel.activeController?.game.mode {
-                    case .virtual, .physical:
+                case .virtual, .physical, .review:
                         let cursor = try await ModelEntity(named: "PlacementCursor")
                         appModel.activeController?.placementLocation.addChild(cursor)
                         print("Added cursor")
@@ -87,7 +87,7 @@ struct GameView: View {
                         }
                         
                         if (appModel.viewModel?.pointersPlaced == 1 || activeController.game.mode != .mixed) && activeController.pieceEntities.count == 0 {
-                            activeController.startGame(opponentStrength: activeController.opponentStrength)
+                            activeController.startGame()
                         }
                     }
                 }

@@ -151,11 +151,11 @@ enum ChessPieceFen: String, CaseIterable {
     case whiteRook = "R"
     case whitePawn = "P"
     
-    static func fromLowerCased(moveNotation: String, side: PlayerModel.Side) -> ChessPieceFen {
+    static func fromLowerCased(moveNotation: String, side: PlayerModel.Side) -> ChessPieceFen? {
         let letter = side == .white ? moveNotation.uppercased() : moveNotation.lowercased()
         
         guard let piece = ChessPieceFen(rawValue: letter) else {
-            fatalError("Invalid move notation: \(moveNotation) for side \(side)")
+            return nil
         }
         
         return piece

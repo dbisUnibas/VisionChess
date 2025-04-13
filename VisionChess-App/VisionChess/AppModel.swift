@@ -12,8 +12,9 @@ import AVFoundation
 class AppModel {
     var sessionController: SessionController?
     var gameController: GameController?
+    var reviewController: ReviewController?
     var activeController: GameControllerProtocol? {
-        return sessionController ?? gameController
+        return sessionController ?? gameController ?? reviewController
     }
     
     var viewModel: GameViewModel?

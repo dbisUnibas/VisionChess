@@ -66,6 +66,19 @@ struct WelcomeView: View {
                 checkAndRetryConnection(urlString: basePath)
             }
         }
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button("Recent Games", systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90") {
+                    appModel.reviewController = ReviewController()
+                    appModel.activeController?.enterRecentGames()
+                }
+            }
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button("Open Settings", systemImage: "gear") {
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                }
+            }
+        }
     }
 }
 

@@ -71,6 +71,7 @@ class GameViewModel {
     }
 
     func runARKitSession() async {
+        #if !targetEnvironment(simulator)
         if let activeController = appModel?.activeController {
             if activeController.game.mode == .mixed {
                 guard CameraFrameProvider.isSupported else {
@@ -90,7 +91,6 @@ class GameViewModel {
                             continue
                         }
                         let currentPixelBuffer = mainCameraSample.pixelBuffer
-                        print("detect")
                         objectDetectionManager?.detectUsingVision(
                             pixelBuffer: currentPixelBuffer,
                             isARKitBuffer: true
@@ -101,6 +101,7 @@ class GameViewModel {
                 await arInterface.beginSession(world: worldTracking, plane: planeDetection)
             }
         }
+        #endif
     }
 
     func processDeviceAnchorUpdates() async {
@@ -244,7 +245,7 @@ class GameViewModel {
                 
     #endif
             }
-            if let activeController = appModel?.gameController {
+            if appModel?.sessionController == nil, let activeController = appModel?.activeController {
 
     #if targetEnvironment(simulator)
                 entity.renderContent?.position = activeController.placementLocation.position

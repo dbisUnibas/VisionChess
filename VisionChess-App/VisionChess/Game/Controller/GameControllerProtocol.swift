@@ -12,6 +12,7 @@ import RealityKitContent
 
 @MainActor
 protocol GameControllerProtocol {
+    var suggestionLevel: GameModel.SuggestionLevel { get set }
     var opponentStrength: GameModel.OpponentStrength { get set }
     var currentTargetField: [Entity] { get set }
     var currentlyMovingChessPiece: Entity? { get set }
@@ -29,10 +30,11 @@ protocol GameControllerProtocol {
     var pieceEntities: [ChessPiece: Entity] { get set}
     var alert: String? { get set}
     
+    func enterRecentGames()
     func enterTeamSelection(gameMode: GameModel.GameMode)
     func joinTeam(_ side: PlayerModel.Side?)
     func startSetup()
-    func startGame(opponentStrength: GameModel.OpponentStrength)
+    func startGame()
     func beginTurn()
     func endTurn()
     func endGame()
@@ -48,6 +50,9 @@ protocol GameControllerProtocol {
     func setCurrentlyMovingChessPiece(entity: Entity)
     
     func playSoundEffect(_ name: SFX)
+    func setSuggestionLevel(_ level: GameModel.SuggestionLevel)
+    func setGameID(_ id: String)
+    func setMoveHistory(_ history: [String])
     
     func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) async
     var rawPrediction: ChessPieceDetectionManager.ChessBoardPredictionResult? { get set}
@@ -58,13 +63,15 @@ protocol GameControllerProtocol {
 
 extension GameControllerProtocol {
     
-    func getBestMove(completion: @escaping (String?) -> Void) {
+    func getBestMove(opponentStrength: GameModel.OpponentStrength? = nil, completion: @escaping (String?) -> Void) {
         guard let gameId = game.gameId else {
             completion(nil)
             return
         }
         
-        GamesAPI.gamesIdBestMoveGet(id: gameId) { response, error in
+        let suggestion = self.suggestionLevel == .off ? GameModel.SuggestionLevel.expert.level : self.suggestionLevel.level
+        let level = String(opponentStrength?.level ?? suggestion)
+        GamesAPI.gamesIdBestMoveSuggestionLevelGet(id: gameId, suggestionLevel: level) { response, error in
             guard error == nil else {
                 print("Error fetching best move: \(error!.localizedDescription)")
                 completion(nil)

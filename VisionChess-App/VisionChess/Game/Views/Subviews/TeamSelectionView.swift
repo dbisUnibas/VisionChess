@@ -11,6 +11,7 @@ import SwiftUI
 struct TeamSelectionView: View {
     @Environment(AppModel.self) var appModel
     @State private var selectedStrength: GameModel.OpponentStrength = .medium
+    @State private var suggestionLevel: GameModel.SuggestionLevel = .medium
     
     var body: some View {
         VStack {
@@ -21,13 +22,26 @@ struct TeamSelectionView: View {
             
             Spacer()
             
-            if appModel.gameController != nil {
-                OpponentStrengthSelector(selectedStrength: $selectedStrength)
-                    .padding(24)
-                    .onChange(of: selectedStrength) { oldValue, newValue in
-                        appModel.gameController?.opponentStrength = newValue
+            if appModel.activeController?.game.mode != .review {
+                if appModel.gameController != nil {
+                    OpponentStrengthSelector(selectedStrength: $selectedStrength)
+                        .padding([.leading, .trailing])
+                        .onChange(of: selectedStrength) { oldValue, newValue in
+                            appModel.gameController?.opponentStrength = newValue
+                        }
+                    Spacer()
+                        .frame(height: 18.0)
+                }
+                
+                SuggestionLevelSelector(suggestionLevel: $suggestionLevel)
+                    .padding([.leading, .trailing])
+                    .onChange(of: suggestionLevel) { oldValue, newValue in
+                        appModel.activeController?.setSuggestionLevel(newValue)
                     }
+                Spacer()
+                    .frame(height: 32.0)
             }
+            
             
             // Start the game when a participant indicates they're ready.
             Button("Ready", systemImage: "checkmark") {
@@ -56,8 +70,8 @@ struct TeamSelectionView: View {
             return !containsPlayerWithATeam
             
         } else {
-            if let gameController = appModel.gameController {
-                return gameController.localPlayer.side == nil
+            if let activeController = appModel.activeController {
+                return activeController.localPlayer.side == nil
             } else {
                 return true
             }
@@ -97,25 +111,27 @@ struct SideList: View {
             let containsPlayerWithSide = sessionController.players.values.contains {
                 $0.side == side
             }
-            
             return !containsPlayerWithSide
+
+        } else if let gameController = appModel.gameController {
+            return gameController.localPlayer.side != side
+            
+        } else if let reviewController = appModel.reviewController {
+            return reviewController.localPlayer.side != side
+                
         } else {
-            if let gameController = appModel.gameController {
-                return gameController.localPlayer.side != side
-            } else {
-                return true
-            }
+            return true
         }
     }
     
     func playersOnTeam(_ team: PlayerModel.Side) -> [PlayerModel] {
         guard let sessionController = appModel.sessionController else {
-            guard let gameController = appModel.gameController else {
+            guard let activeController = appModel.activeController else {
                 return []
             }
             
-            if gameController.localPlayer.side == team {
-                return [gameController.localPlayer]
+            if activeController.localPlayer.side == team {
+                return [activeController.localPlayer]
             } else {
                 return []
             }
@@ -139,6 +155,25 @@ struct OpponentStrengthSelector: View {
             Picker("Opponent Strength", selection: $selectedStrength) {
                 ForEach(GameModel.OpponentStrength.allCases) { strength in
                     Text(strength.rawValue).tag(strength)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+        }
+    }
+}
+
+struct SuggestionLevelSelector: View {
+    @Binding var suggestionLevel: GameModel.SuggestionLevel
+
+    var body: some View {
+        VStack {
+            Text("Select Move Suggestion Level")
+                .font(.headline)
+            
+            Picker("Suggestion Level", selection: $suggestionLevel) {
+                ForEach(GameModel.SuggestionLevel.allCases) { level in
+                    Text(level.rawValue).tag(level)
                 }
             }
             .pickerStyle(SegmentedPickerStyle())

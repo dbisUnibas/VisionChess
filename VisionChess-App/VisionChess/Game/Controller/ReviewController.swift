@@ -1,8 +1,8 @@
 //
-//  GameController.swift
+//  RevieweController.swift
 //  VisionChess
 //
-//  Created by Tim Bachmann on 12.03.2025.
+//  Created by Tim Bachmann on 11.04.2025.
 //
 
 import Observation
@@ -14,7 +14,7 @@ import RealityKit
 import AVFoundation
 
 @Observable @MainActor
-final class GameController: GameControllerProtocol {
+final class ReviewController: GameControllerProtocol {
     var opponentStrength: GameModel.OpponentStrength = .medium
     var suggestionLevel: GameModel.SuggestionLevel = .medium
     var currentTargetField: [Entity] = []
@@ -32,6 +32,8 @@ final class GameController: GameControllerProtocol {
     var currentMoveEstimate: String?
     var moveRequestPending: Bool = false
     var alert: String? = nil
+    
+    var currentMoveIndex: Int = 0
     
     
     private var sfxPlayer: AVAudioPlayer?
@@ -90,7 +92,6 @@ final class GameController: GameControllerProtocol {
     func enterTeamSelection(gameMode: GameModel.GameMode) {
         game.stage = .sideSelection
         game.mode = gameMode
-        game.moveHistory.removeAll()
     }
     
     func enterRecentGames() {
@@ -117,124 +118,99 @@ final class GameController: GameControllerProtocol {
         game.stage = .inGame(.beforePlayersTurn)
         
         Task {
-            if game.mode == .mixed {
-                await self.startBoardConstruction()
-            }
             await self.findAllFieldEntities()
             await self.findAllPieceEntities()
+            self.playSoundEffect(SFX.boom)
+        }
+    }
+    
+    func nextMove() {
+        if game.moveHistory.count <= currentMoveIndex {
+            return
+        }
+        game.stage = .inGame(.duringPlayersTurn)
+        
+        let move = game.moveHistory[currentMoveIndex]
+        let from = ChessField(rawValue: String(move.prefix(2)))
+        
+        // Get characters at index 2 and 3 (3rd and 4th characters)
+        let startIndex = move.index(move.startIndex, offsetBy: 2)
+        let endIndex = move.index(startIndex, offsetBy: 2)
+        let to = ChessField(rawValue: String(move[startIndex..<endIndex]))
+        
+        let promotedPiece = ChessPieceFen.fromLowerCased(moveNotation: String(move.suffix(1)), side: self.localPlayer.side == .black ? .white : .black)
+        
+        if let from = from, let to = to {
+            let pieceToMove = self.getPieceByField(field: from)
+            let chessPieceEntity = self.pieceEntities[pieceToMove!]
+            let chessFieldEntity = self.fieldEntities[to]
             
-            let deviceId = UIDevice.current.identifierForVendor?.uuidString
-            if let deviceId = deviceId, game.mode != .review {
-                let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: self.opponentStrength.level)
-                GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
-                    if let error = error {
-                        print("Error: \(error.localizedDescription)")
-                        return
-                    }
-                    print(response ?? "response")
+            if let pieceToMove = pieceToMove, let chessPieceEntity = chessPieceEntity, let chessFieldEntity = chessFieldEntity {
+                self.currentlyMovingChessPiece = chessPieceEntity
+                
+                Task {
+                    await self.animateMove(piece: chessPieceEntity, field: chessFieldEntity)
                     
-                    self.game.gameId = response
-                    self.beginTurn()
-                    self.playSoundEffect(SFX.boom)
-                })
-            } else {
-                self.beginTurn()
-                self.playSoundEffect(SFX.boom)
+                    self.move(piece: pieceToMove, to: to, promotedPiece: promotedPiece) { response in
+                        guard response == true else {
+                            return
+                        }
+                        
+                        self.currentMoveIndex += 1
+                        if self.game.moveHistory.count <= self.currentMoveIndex {
+                            self.setWinner(side: self.game.currentSide == .white ? .black : .white)
+                        }
+                    }
+                }
             }
         }
     }
     
-    func beginTurn() {
+    func previousMove() {
+        if currentMoveIndex < 0 {
+            return
+        }
+        let move = game.moveHistory[currentMoveIndex-1]
+        let to = ChessField(rawValue: String(move.prefix(2)))
+        
         game.stage = .inGame(.duringPlayersTurn)
         
-        highlightCheck()
+        // Get characters at index 2 and 3 (3rd and 4th characters)
+        let startIndex = move.index(move.startIndex, offsetBy: 2)
+        let endIndex = move.index(startIndex, offsetBy: 2)
+        let from = ChessField(rawValue: String(move[startIndex..<endIndex]))
         
-        if (game.currentSide != localPlayer.side) {
-            self.getBestMove(opponentStrength: self.opponentStrength) { move in
-                if let move = move {
-                    let move = move.split(separator: ",")[0]
-                    guard move != "(none)" else {
-                        // Checkmate
-                        self.setWinner(side: self.game.currentSide == .white ? .black : .white)
-                        return
-                    }
-                    
-                    let from = ChessField(rawValue: String(move.prefix(2)))
-                    
-                    // Get characters at index 2 and 3 (3rd and 4th characters)
-                    let startIndex = move.index(move.startIndex, offsetBy: 2)
-                    let endIndex = move.index(startIndex, offsetBy: 2)
-                    let to = ChessField(rawValue: String(move[startIndex..<endIndex]))
-                    
-                    let promotedPiece = ChessPieceFen.fromLowerCased(moveNotation: String(move.suffix(1)), side: self.localPlayer.side == .black ? .white : .black)
-                    
-                    if let from = from, let to = to {
-                        let pieceToMove = self.getPieceByField(field: from)
-                        let chessPieceEntity = self.pieceEntities[pieceToMove!]
-                        let chessFieldEntity = self.fieldEntities[to]
-                        
-                        if let pieceToMove = pieceToMove, let chessPieceEntity = chessPieceEntity, let chessFieldEntity = chessFieldEntity {
-                            self.currentlyMovingChessPiece = chessPieceEntity
-                            
-                            Task {
-                                await self.animateMove(piece: chessPieceEntity, field: chessFieldEntity)
-                                
-                                self.move(piece: pieceToMove, to: to, promotedPiece: promotedPiece) { response in
-                                    guard response == true else {
-                                        return
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            self.currentMoveEstimate = nil
+        let promotedPiece = ChessPieceFen.fromLowerCased(moveNotation: String(move.suffix(1)), side: self.localPlayer.side == .black ? .white : .black)
+        
+        if let from = from, let to = to {
+            let pieceToMove = self.getPieceByField(field: from)
+            let chessPieceEntity = self.pieceEntities[pieceToMove!]
+            let chessFieldEntity = self.fieldEntities[to]
             
-            self.getBestMove { move in
-                if let move = move {
-                    let move = move.split(separator: ",")[0]
-                    guard move != "(none)" else {
-                        // Checkmate
-                        self.setWinner(side: self.game.currentSide == .white ? .black : .white)
-                        return
-                    }
+            if let pieceToMove = pieceToMove, let chessPieceEntity = chessPieceEntity, let chessFieldEntity = chessFieldEntity {
+                self.currentlyMovingChessPiece = chessPieceEntity
+                
+                Task {
+                    await self.animateMove(piece: chessPieceEntity, field: chessFieldEntity)
                     
-                    self.localPlayer.isPlaying = true
-                    self.activateInput()
-                    
-                    if self.suggestionLevel == .off {
-                        self.playSoundEffect(SFX.notify)
-                    } else {
-                        let from = ChessField(rawValue: String(move.prefix(2)))
-                        // Get characters at index 2 and 3 (3rd and 4th characters)
-                        let startIndex = move.index(move.startIndex, offsetBy: 2)
-                        let endIndex = move.index(startIndex, offsetBy: 2)
-                        let to = ChessField(rawValue: String(move[startIndex..<endIndex]))
-                        
-                        if let from = from, let to = to {
-                            let chessFieldFromEntity = self.fieldEntities[from]
-                            let chessFieldToEntity = self.fieldEntities[to]
-                            
-                            if let chessFieldToEntity = chessFieldToEntity, let chessFieldFromEntity = chessFieldFromEntity {
-                                chessFieldFromEntity.components[OpacityComponent.self]?.opacity = 0.4
-                                chessFieldToEntity.components[OpacityComponent.self]?.opacity = 0.4
-                                
-                                self.playSoundEffect(SFX.notify)
-                            }
+                    self.move(piece: pieceToMove, to: to, promotedPiece: promotedPiece) { response in
+                        guard response == true else {
+                            return
                         }
+                        
+                        self.currentMoveIndex -= 1
                     }
                 }
             }
         }
     }
+    
+    func beginTurn() {}
     
     func endTurn() {
         guard game.stage.isInGame else {
             return
         }
-        print("End Turn")
         
         currentTargetField = []
         currentlyMovingChessPiece = nil
@@ -250,12 +226,9 @@ final class GameController: GameControllerProtocol {
         game.stage = .inGame(.beforePlayersTurn)
         game.currentSide = game.currentSide == .white ? .black : .white
         
-        print(game.currentSide)
-        
         if game.currentSide != localPlayer.side {
             localPlayer.isPlaying = false
         }
-        self.beginTurn()
     }
     
     func setWinner(side: PlayerModel.Side) {
@@ -297,7 +270,7 @@ final class GameController: GameControllerProtocol {
     }
     
     func move(piece: ChessPiece, to: ChessField, promotedPiece: ChessPieceFen?, completion: @escaping (Bool) -> Void) {
-        guard let gameId = game.gameId else {
+        guard game.gameId != nil else {
             completion(false)
             return
         }
@@ -311,43 +284,28 @@ final class GameController: GameControllerProtocol {
         if promotedPieceVar == nil, let autoPromoted = getAutoPromotion(for: piece, to: to) {
             promotedPieceVar = autoPromoted
         }
-
-        let moveRequest = MoveRequest(move: "\(from)\(to)\(promotedPieceVar?.rawValue ?? "")")
-
-        GamesAPI.gamesIdMovePost(id: gameId, moveRequest: moveRequest) { response, error in
-            guard error == nil else {
-                print("Error performing move: \(error!.localizedDescription)")
-                completion(false)
-                return
-            }
-
-            print("Move \(from)\(to) successfully executed")
             
-            // Update piece position
-            self.game.lastKnownPosition[piece] = to
+        // Update piece position
+        self.game.lastKnownPosition[piece] = to
 
-            // Handle promotion
-            if let promoted = promotedPieceVar {
-                Task {
-                    await self.promotePawn(pawn: piece, to: promoted)
-                }
+        // Handle promotion
+        if let promoted = promotedPieceVar {
+            Task {
+                await self.promotePawn(pawn: piece, to: promoted)
             }
-
-            // Handle castling
-            self.handleCastlingIfNeeded(for: piece, from: from, to: to)
-
-            // Handle en passant
-            self.handleEnPassantIfNeeded(for: piece, to: to)
-
-            // Remove captured piece if any
-            self.removeDefeatedPieces(updatedPiece: piece, at: to)
-
-            // Update game state from server
-            self.updateGameState(with: response)
-
-            self.endTurn()
-            completion(true)
         }
+
+        // Handle castling
+        self.handleCastlingIfNeeded(for: piece, from: from, to: to)
+
+        // Handle en passant
+        self.handleEnPassantIfNeeded(for: piece, to: to)
+
+        // Remove captured piece if any
+        self.removeDefeatedPieces(updatedPiece: piece, at: to)
+
+        self.endTurn()
+        completion(true)
     }
     
     private func getAutoPromotion(for piece: ChessPiece, to field: ChessField) -> ChessPieceFen? {
@@ -396,12 +354,6 @@ final class GameController: GameControllerProtocol {
                 }
             }
         }
-    }
-
-    private func updateGameState(with response: MoveResponse?) {
-        self.game.gameStateFen = response?.newGameState.gameState ?? self.game.gameStateFen
-        self.game.moveHistory = response?.newGameState.moves ?? self.game.moveHistory
-        self.game.checkers = response?.newGameState.checkers.compactMap { ChessField(rawValue: $0) } ?? self.game.checkers
     }
     
     func movePieceToLastKnownPosition(piece: Entity) {
@@ -600,97 +552,8 @@ final class GameController: GameControllerProtocol {
         self.suggestionLevel = level
     }
     
-    func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) async {
-        let (boundingBox, bestMaskIdx) = getBoundingBox(feature: prediction.var_1647.featureValue.multiArrayValue!)
-        
-        let cornerPoints = getCornerPoints(boundingBox, masks: prediction.p.featureValue.multiArrayValue!, bestMaskIdx: bestMaskIdx)
-        
-        // Normalize board corners
-        let boardCorners = cornerPoints.map { point -> CGPoint in
-                return CGPoint(x: point.x / 640, y: point.y / 640)
-            }
-        
-        //let piecePoints = prediction.pieces.compactMap({CGPoint(x: $0.boundingBox.midX, y: (1.0 - $0.boundingBox.midY) + $0.boundingBox.height/4.0 )})
-        //image = Image(uiImage: drawPointsOnImage(named: "test", normalizedPoints: boardCorners + piecePoints)!)
-        
-
-        // Destination points for a flat 8x8 board
-        let destination: [CGPoint] = [
-            CGPoint(x: 0, y: 0),   // top-left
-            CGPoint(x: 1, y: 0),   // top-right
-            CGPoint(x: 1, y: 1),   // bottom-right
-            CGPoint(x: 0, y: 1)    // bottom-left
-        ]
-
-        // Final board representation: 8 rows of 8 columns (row-major, top to bottom)
-        //var board = Array(repeating: Array(repeating: nil as String?, count: 8), count: 8)
-        var positionEstimate: [ChessField: ChessPieceDetectionManager.PredictionResult.Label] = [:]
-        
-        if let perspectiveTransform = PerspectiveTransform(source: boardCorners, destination: destination), let side = localPlayer.side {
-            for piece in prediction.pieces {
-                let centerPoint = center(of: piece.boundingBox)
-                
-                // Warp to board space (0...1)
-                let warped = perspectiveTransform.transform(point: centerPoint)
-                
-                // Exclude warped points outside the destination square [0, 1] x [0, 1]
-                guard warped.x >= 0, warped.x <= 1, warped.y >= 0, warped.y <= 1 else {
-                    continue
-                }
-
-                // Convert to board coordinates
-                let boardX = min(max(Int(warped.x * 8), 0), 7)
-                let boardY = min(max(Int(warped.y * 8), 0), 7)
-                
-                let chessField = ChessField.fromArrayIndicies(x: boardX, y: boardY, side: side)
-                
-                if let chessField = chessField, positionEstimate[chessField] == nil {
-                    //print("Piece: \(piece.label.rawValue), BoardX: \(boardX), BoardY: \(boardY), chessField: \(chessField)")
-                    positionEstimate[chessField] = piece.label
-                }
-            }
-        } else {
-            print("Failed to compute perspective transform.")
-        }
-
-        let move = await detectPhysicalMove(lastKnownPosition: game.lastKnownPosition, positionEstimate: positionEstimate)
-        
-        if let move = move, let gameId = game.gameId {
-            GamesAPI.gamesIdMoveValidMoveGet(id: gameId, move: move) { response, error in
-                guard error == nil else {
-                    print("Error validating move: \(move) - \(error!.localizedDescription)")
-                    return
-                }
-                
-                print(move)
-                self.currentMoveEstimate = move
-            }
-        } else {
-            print("No move detected")
-        }
-    }
+    func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) async {}
     
-    func applyPhysicalMove() {
-        if let currentMoveEstimate = currentMoveEstimate {
-            let from = ChessField(rawValue: String(currentMoveEstimate.prefix(2)))
-            // Get characters at index 2 and 3 (3rd and 4th characters)
-            let startIndex = currentMoveEstimate.index(currentMoveEstimate.startIndex, offsetBy: 2)
-            let endIndex = currentMoveEstimate.index(startIndex, offsetBy: 2)
-            let to = ChessField(rawValue: String(currentMoveEstimate[startIndex..<endIndex]))
-            
-            let chessPiece = game.lastKnownPosition.first(where: {$0.value == from})?.key
-            if let chessPiece = chessPiece, let to = to {
-                self.moveRequestPending = true
-                move(piece: chessPiece, to: to, promotedPiece: nil) { success in
-                    if !success {
-                        print("Return piece to initial position")
-                    }
-                    self.moveRequestPending = false
-                    self.currentMoveEstimate = nil
-                }
-            }
-        }
-        
-    }
+    func applyPhysicalMove() {}
 
 }

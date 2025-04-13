@@ -19,7 +19,8 @@ final class SessionController: GameControllerProtocol {
     let messenger: GroupSessionMessenger
     let systemCoordinator: SystemCoordinator
 
-    var opponentStrength: GameModel.OpponentStrength = .hard
+    var suggestionLevel: GameModel.SuggestionLevel = .medium
+    var opponentStrength: GameModel.OpponentStrength = .medium
     var currentTargetField: [Entity] = []
     var currentlyCapturedPieces: [ChessPiece] = []
     var currentlyMovingChessPiece: Entity? = nil
@@ -142,15 +143,9 @@ final class SessionController: GameControllerProtocol {
     
     func updateSpatialTemplatePreference() {
         switch game.stage {
-            case .modeSelection:
+            case .modeSelection, .recentGames, .sideSelection:
                 systemCoordinator.configuration.spatialTemplatePreference = .custom(TeamSelectionTemplate())
-            case .sideSelection:
-                systemCoordinator.configuration.spatialTemplatePreference = .custom(TeamSelectionTemplate())
-            case .inSetup:
-                systemCoordinator.configuration.spatialTemplatePreference = .custom(GameTemplate())
-            case .inGame:
-                systemCoordinator.configuration.spatialTemplatePreference = .custom(GameTemplate())
-            case .gameOver:
+            case .inSetup, .inGame, .gameOver:
                 systemCoordinator.configuration.spatialTemplatePreference = .custom(GameTemplate())
         }
     }
@@ -158,7 +153,7 @@ final class SessionController: GameControllerProtocol {
     func updateLocalParticipantRole() {
         // Set and unset the participant's spatial template role based on updating game state.
         switch game.stage {
-            case .modeSelection:
+        case .modeSelection, .recentGames:
                 systemCoordinator.resignRole()
             case .sideSelection:
                 switch localPlayer.side {
@@ -199,15 +194,27 @@ final class SessionController: GameControllerProtocol {
         game.moveHistory.removeAll()
     }
     
+    func enterRecentGames() {
+        game.stage = .recentGames
+    }
+    
     func joinTeam(_ side: PlayerModel.Side?) {
         localPlayer.side = side
+    }
+    
+    func setGameID(_ id: String) {
+        self.game.gameId = id
+    }
+    
+    func setMoveHistory(_ history: [String]) {
+        self.game.moveHistory = history
     }
     
     func startSetup() {
         game.stage = .inSetup
     }
     
-    func startGame(opponentStrength: GameModel.OpponentStrength) {
+    func startGame() {
         Task {
             print("Start Game")
             await self.findAllFieldEntities()
@@ -246,6 +253,7 @@ final class SessionController: GameControllerProtocol {
         
         print("Begin Turn")
         
+        self.currentMoveEstimate = nil
         self.activateInput()
         
         self.getBestMove { move in
@@ -257,21 +265,25 @@ final class SessionController: GameControllerProtocol {
                     return
                 }
                 
-                let from = ChessField(rawValue: String(move.prefix(2)))
-                // Get characters at index 2 and 3 (3rd and 4th characters)
-                let startIndex = move.index(move.startIndex, offsetBy: 2)
-                let endIndex = move.index(startIndex, offsetBy: 2)
-                let to = ChessField(rawValue: String(move[startIndex..<endIndex]))
-                
-                if let from = from, let to = to {
-                    let chessFieldFromEntity = self.fieldEntities[from]
-                    let chessFieldToEntity = self.fieldEntities[to]
+                if self.suggestionLevel == .off {
+                    self.playSoundEffect(SFX.notify)
+                } else {
+                    let from = ChessField(rawValue: String(move.prefix(2)))
+                    // Get characters at index 2 and 3 (3rd and 4th characters)
+                    let startIndex = move.index(move.startIndex, offsetBy: 2)
+                    let endIndex = move.index(startIndex, offsetBy: 2)
+                    let to = ChessField(rawValue: String(move[startIndex..<endIndex]))
                     
-                    if let chessFieldToEntity = chessFieldToEntity, let chessFieldFromEntity = chessFieldFromEntity {
-                        chessFieldFromEntity.components[OpacityComponent.self]?.opacity = 0.4
-                        chessFieldToEntity.components[OpacityComponent.self]?.opacity = 0.4
+                    if let from = from, let to = to {
+                        let chessFieldFromEntity = self.fieldEntities[from]
+                        let chessFieldToEntity = self.fieldEntities[to]
                         
-                        self.playSoundEffect(SFX.notify)
+                        if let chessFieldToEntity = chessFieldToEntity, let chessFieldFromEntity = chessFieldFromEntity {
+                            chessFieldFromEntity.components[OpacityComponent.self]?.opacity = 0.4
+                            chessFieldToEntity.components[OpacityComponent.self]?.opacity = 0.4
+                            
+                            self.playSoundEffect(SFX.notify)
+                        }
                     }
                 }
             }
@@ -293,6 +305,7 @@ final class SessionController: GameControllerProtocol {
         currentlyMovingChessPieceCollisionSubscriptionEnd = nil
         deactivateInput()
         hideAllFieldEntities()
+        self.currentMoveEstimate = nil
         
         // self.setWinner(side: self.game.currentSide)
         
@@ -460,9 +473,8 @@ final class SessionController: GameControllerProtocol {
             }
 
             // Handle castling
-            if let side = self.localPlayer.side?.rawValue, self.game.mode != .mixed || self.game.mode == .mixed && piece.rawValue.hasPrefix(side) {
-                self.handleCastlingIfNeeded(for: piece, from: from, to: to)
-            }
+            self.handleCastlingIfNeeded(for: piece, from: from, to: to)
+            
 
             // Handle en passant
             self.handleEnPassantIfNeeded(for: piece, to: to)
@@ -723,6 +735,10 @@ final class SessionController: GameControllerProtocol {
         }
     }
     
+    func setSuggestionLevel(_ level: GameModel.SuggestionLevel) {
+        self.suggestionLevel = level
+    }
+    
     func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) async {
         let (boundingBox, bestMaskIdx) = getBoundingBox(feature: prediction.var_1647.featureValue.multiArrayValue!)
         
@@ -793,10 +809,6 @@ final class SessionController: GameControllerProtocol {
         }
     }
     
-    func resetAlert() {
-        self.alert = nil
-    }
-    
     func applyPhysicalMove() {
         if let currentMoveEstimate = currentMoveEstimate {
             let from = ChessField(rawValue: String(currentMoveEstimate.prefix(2)))
@@ -819,4 +831,9 @@ final class SessionController: GameControllerProtocol {
         }
         
     }
+    
+    
+    func resetAlert() {
+            self.alert = nil
+        }
 }
