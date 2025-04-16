@@ -1,6 +1,7 @@
 package de.timbachmann.api.routes
 
 import de.timbachmann.api.engine.Client
+import de.timbachmann.api.engine.isFenSyntaxValid
 import de.timbachmann.api.model.request.GameRequest
 import de.timbachmann.api.model.request.MoveRequest
 import de.timbachmann.api.model.response.MoveResponse
@@ -95,20 +96,20 @@ fun Route.gameRouting() {
          * Retrieves the best move for a given game state using client engine.
          * @see Client
          */
-        get("/{id?}/bestMove") {
+        get("/{id?}/bestMove/{suggestionLevel?}") {
             val gameId = call.parameters["id"]
-            if (gameId.isNullOrEmpty()) {
+            val suggestionLevel = call.parameters["suggestionLevel"]
+            if (gameId.isNullOrEmpty() || suggestionLevel.isNullOrEmpty()) {
                 return@get call.respondText(
-                    text = "Missing GameId",
+                    text = "Missing GameId or suggestionLevel",
                     status = HttpStatusCode.BadRequest
                 )
             }
             repository.findById(ObjectId(gameId))?.let { game ->
                 val currentPosition = game.gameState
-                val level = game.opponentStrength
 
                 val client = Client()
-                client.initUci(level)
+                client.initUci(suggestionLevel.toInt())
                 client.setPosition(currentPosition)
                 val side = client.getSideToMove(currentPosition)
                 client.getCurrentBestMove()?.let { bestMove ->
@@ -118,6 +119,32 @@ fun Route.gameRouting() {
                     client.close()
                 }
                 return@get call.respondText("No best move found for id $gameId", status = HttpStatusCode.NotFound)
+            } ?:return@get call.respondText("No game found for id $gameId", status = HttpStatusCode.NotFound)
+        }
+
+        get("/{id}/moveValid/{move}") {
+            val gameId = call.parameters["id"]
+            val move = call.parameters["move"]
+
+            if (gameId.isNullOrEmpty() || move.isNullOrEmpty()) {
+                return@get call.respondText(
+                    text = "Missing GameId",
+                    status = HttpStatusCode.BadRequest
+                )
+            }
+
+            repository.findById(ObjectId(gameId))?.let { game ->
+                val currentPosition = game.gameState
+
+                val client = Client()
+                client.initUci()
+                val moveValid = isFenSyntaxValid(currentPosition) && client.isValidMove(move, currentPosition)
+                client.close()
+
+                if (moveValid) {
+                    return@get call.respond(HttpStatusCode.OK, true)
+                }
+                return@get call.respondText("Move {${move}} not valid for state {${game.gameState}}", status = HttpStatusCode.BadRequest)
             } ?:return@get call.respondText("No game found for id $gameId", status = HttpStatusCode.NotFound)
         }
 
@@ -135,10 +162,9 @@ fun Route.gameRouting() {
             }
             repository.findById(ObjectId(gameId))?.let { game ->
                 val currentPosition = game.gameState
-                val level = game.opponentStrength
 
                 val client = Client()
-                client.initUci(level)
+                client.initUci()
                 val moveSucceeded = client.move(moveRequest.move, currentPosition)
                 if (moveSucceeded) {
                     client.getCurrentPosition()?.let { newPosition ->
@@ -153,7 +179,7 @@ fun Route.gameRouting() {
                             return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
                         }
                         client.close()
-                        return@post call.respond(HttpStatusCode.Created, MoveResponse(moveSucceeded = true, newGameState = newPosition))
+                        return@post call.respond(HttpStatusCode.Created, MoveResponse(moveSucceeded = true, newGameState = game.toResponse()))
                     } ?: return@post call.respondText("Game state not updated for id $gameId", status = HttpStatusCode.InternalServerError)
                 }
                 return@post call.respondText("Move {${moveRequest.move}} not valid for state {${game.gameState}}", status = HttpStatusCode.BadRequest)

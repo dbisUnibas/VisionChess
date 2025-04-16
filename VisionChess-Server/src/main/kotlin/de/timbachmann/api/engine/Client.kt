@@ -1,6 +1,6 @@
 package de.timbachmann.api.engine
 
-import de.timbachmann.api.model.entity.OpponentStrength
+import de.timbachmann.api.model.entity.SuggestionLevel
 import de.timbachmann.api.model.entity.Side
 import java.io.BufferedReader
 import java.io.IOException
@@ -58,11 +58,13 @@ class Client {
     /**
      * Initializes the UCI (Universal Chess Interface) for communication with Stockfish.
      */
-    fun initUci(level: Int) {
+    fun initUci(level: Int? = null) {
         try {
             command("uci", identity(), { s -> s?.startsWith("uciok") == true }, 2000L)
-            command("setoption name UCI_LimitStrength value true", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
-            command("setoption name UCI_Elo value ${OpponentStrength.fromLevel(level)}", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
+            if (level != null) {
+                command("setoption name UCI_LimitStrength value true", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
+                command("setoption name UCI_Elo value ${SuggestionLevel.fromLevel(level)}", identity(), { s -> s?.startsWith("readyok") == true }, 2000L)
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -166,7 +168,7 @@ class Client {
      * @param currentPosition The current position in FEN notation.
      * @return `true` if the move is valid, `false` otherwise.
      */
-    private fun isValidMove(move: String, currentPosition: String): Boolean {
+    fun isValidMove(move: String, currentPosition: String): Boolean {
         try {
             setPosition(currentPosition)
             val validMove: String = command(

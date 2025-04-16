@@ -1,6 +1,6 @@
 package de.timbachmann.api.model.entity
 
-enum class OpponentStrength(val rating: Int) {
+enum class SuggestionLevel(val rating: Int) {
     LEVEL_1(600),
     LEVEL_2(800),
     LEVEL_3(1200),
