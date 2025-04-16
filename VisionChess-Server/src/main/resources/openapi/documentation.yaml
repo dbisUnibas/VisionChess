@@ -4,7 +4,7 @@ info:
   description: "VisionChessServer API"
   version: "1.0.0"
 servers:
-- url: "http://10.34.64.140:8090"
+- url: "https://visionchess.xreco-retrieval.ch/"
 paths:
   /:
     get:
@@ -133,7 +133,7 @@ paths:
               examples:
                 Example#1:
                   value: ""
-    put:
+    patch:
       description: "Updates a game by ID."
       tags: ["Games"]
       parameters:
@@ -146,7 +146,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GameRequest"
+              $ref: "#/components/schemas/GameUpdateRequest"
         required: true
       responses:
         "400":
@@ -170,13 +170,18 @@ paths:
             text/plain:
               schema:
                 type: "string"
-  /games/{id}/bestMove:
+  /games/{id}/bestMove/{suggestionLevel}:
     get:
       description: "Retrieves the best move for a given game state using client engine.\
         \ <br> Client "
       tags: ["Games"]
       parameters:
       - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "suggestionLevel"
         in: "path"
         required: true
         schema:
@@ -190,7 +195,7 @@ paths:
                 type: "string"
               examples:
                 Example#1:
-                  value: "Missing GameId"
+                  value: "Missing GameId or suggestionLevel"
         "500":
           description: "Internal Server Error"
           content:
@@ -279,6 +284,8 @@ paths:
                   value: ""
                 Example#8:
                   value: ""
+                Example#9:
+                  value: ""
         "201":
           description: "Created"
           content:
@@ -291,6 +298,64 @@ paths:
                   value:
                     moveSucceeded: true
                     newGameState: "null"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+  /games/{id}/moveValid/{move}:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "move"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: "Missing GameId"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: ""
+                Example#3:
+                  value: ""
+                Example#4:
+                  value: ""
+                Example#5:
+                  value: ""
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
         "404":
           description: "Not Found"
           content:
@@ -541,7 +606,6 @@ paths:
   /users/auth/logout:
     post:
       description: "Handles user logout by invalidating the active session."
-      tags: ["Users"]
       requestBody:
         content:
           application/json:
@@ -658,6 +722,34 @@ components:
       - "black"
       - "opponent"
       - "opponentStrength"
+    GameUpdateRequest:
+      type: "object"
+      properties:
+        gameState:
+          type: "string"
+        moves:
+          type: "array"
+          items:
+            type: "string"
+        white:
+          type: "string"
+        black:
+          type: "string"
+        checkers:
+          type: "array"
+          items:
+            type: "string"
+        opponent:
+          type: "string"
+          enum:
+          - "PHYSICAL"
+          - "MIXED"
+          - "VIRTUAL"
+        opponentStrength:
+          type: "integer"
+          format: "int32"
+        winner:
+          type: "string"
     MoveRequest:
       type: "object"
       properties:
@@ -665,25 +757,13 @@ components:
           type: "string"
       required:
       - "move"
-    GameState:
-      type: "object"
-      properties:
-        gameState:
-          type: "string"
-        checkers:
-          type: "array"
-          items:
-            type: "string"
-      required:
-      - "gameState"
-      - "checkers"
     MoveResponse:
       type: "object"
       properties:
         moveSucceeded:
           type: "boolean"
         newGameState:
-          $ref: "#/components/schemas/GameState"
+          $ref: "#/components/schemas/GameResponse"
       required:
       - "moveSucceeded"
       - "newGameState"

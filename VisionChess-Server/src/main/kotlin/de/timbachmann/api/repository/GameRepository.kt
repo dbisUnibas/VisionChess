@@ -7,10 +7,12 @@ import com.mongodb.client.model.Updates
 import com.mongodb.client.result.UpdateResult
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import de.timbachmann.api.model.entity.Game
+import de.timbachmann.api.model.request.GameUpdateRequest
 import de.timbachmann.api.repository.interfaces.GameRepositoryInterface
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import org.bson.BsonValue
+import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 
 /**
@@ -82,18 +84,23 @@ class GameRepository(private val mongoDatabase: MongoDatabase) : GameRepositoryI
      * @param game The updated game data.
      * @return An {@link UpdateResult} containing details of the update operation.
      */
-    override suspend fun updateOne(objectId: ObjectId, game: Game): UpdateResult {
+    override suspend fun updateOne(objectId: ObjectId, gameUpdate: GameUpdateRequest): UpdateResult {
         val query = Filters.eq("_id", objectId)
-        val updates = Updates.combine(
-            Updates.set(Game::gameState.name, game.gameState),
-            Updates.set(Game::moves.name, game.moves),
-            Updates.set(Game::white.name, game.white),
-            Updates.set(Game::black.name, game.black),
-            Updates.set(Game::checkers.name, game.checkers),
-            Updates.set(Game::opponentStrength.name, game.opponentStrength),
-            Updates.set(Game::opponent.name, game.opponent),
-            Updates.set(Game::winner.name, game.winner)
-        )
+        val updates = mutableListOf<Bson>()
+
+        gameUpdate.gameState?.let { updates.add(Updates.set("gameState", it)) }
+        gameUpdate.moves?.let { updates.add(Updates.set("moves", it)) }
+        gameUpdate.white?.let { updates.add(Updates.set("white", it)) }
+        gameUpdate.black?.let { updates.add(Updates.set("black", it)) }
+        gameUpdate.checkers?.let { updates.add(Updates.set("checkers", it)) }
+        gameUpdate.opponent?.let { updates.add(Updates.set("opponent", it)) }
+        gameUpdate.opponentStrength?.let { updates.add(Updates.set("opponentStrength", it)) }
+        gameUpdate.winner?.let { updates.add(Updates.set("winner", it)) }
+
+        if (updates.isEmpty()) {
+            throw IllegalArgumentException("No fields provided to update.")
+        }
+
         val options = UpdateOptions().upsert(true)
         return mongoDatabase.getCollection<Game>(GAME_COLLECTION).updateOne(query, updates, options)
     }

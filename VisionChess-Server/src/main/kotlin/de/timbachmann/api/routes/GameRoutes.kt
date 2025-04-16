@@ -3,6 +3,7 @@ package de.timbachmann.api.routes
 import de.timbachmann.api.engine.Client
 import de.timbachmann.api.engine.isFenSyntaxValid
 import de.timbachmann.api.model.request.GameRequest
+import de.timbachmann.api.model.request.GameUpdateRequest
 import de.timbachmann.api.model.request.MoveRequest
 import de.timbachmann.api.model.response.MoveResponse
 import de.timbachmann.api.repository.interfaces.GameRepositoryInterface
@@ -79,14 +80,14 @@ fun Route.gameRouting() {
         /**
          * Updates a game by ID.
          */
-        put("/{id?}") {
-            val id = call.parameters["id"] ?: return@put call.respondText(
+        patch("/{id?}") {
+            val id = call.parameters["id"] ?: return@patch call.respondText(
                 text = "Missing game id",
                 status = HttpStatusCode.BadRequest
             )
-            val gameRequest = call.receive<GameRequest>()
-            val updated = repository.updateOne(ObjectId(id), gameRequest.toGameObject())
-            call.respondText(
+            val gameRequest = call.receive<GameUpdateRequest>()
+            val updated = repository.updateOne(ObjectId(id), gameRequest)
+            return@patch call.respondText(
                 text = if (updated.wasAcknowledged()) "Game updated successfully" else updated.toString(),
                 status = if (updated.wasAcknowledged()) HttpStatusCode.OK else HttpStatusCode.InternalServerError
             )
@@ -172,7 +173,7 @@ fun Route.gameRouting() {
                         game.checkers = newPosition.checkers
 
                         game.moves = game.moves.plus(moveRequest.move)
-                        val updated = repository.updateOne(game.id, game)
+                        val updated = repository.updateOne(game.id, GameUpdateRequest.fromGameObject(game))
 
                         if (!updated.wasAcknowledged()) {
                             client.close()

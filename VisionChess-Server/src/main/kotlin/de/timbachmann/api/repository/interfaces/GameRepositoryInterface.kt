@@ -2,6 +2,7 @@ package de.timbachmann.api.repository.interfaces
 
 import com.mongodb.client.result.UpdateResult
 import de.timbachmann.api.model.entity.Game
+import de.timbachmann.api.model.request.GameUpdateRequest
 import org.bson.BsonValue
 import org.bson.types.ObjectId
 
@@ -49,5 +50,5 @@ interface GameRepositoryInterface {
      * @param game The updated game data.
      * @return An {@link UpdateResult} containing details of the update operation.
      */
-    suspend fun updateOne(objectId: ObjectId, game: Game): UpdateResult
+    suspend fun updateOne(objectId: ObjectId, gameUpdate: GameUpdateRequest): UpdateResult
 }
