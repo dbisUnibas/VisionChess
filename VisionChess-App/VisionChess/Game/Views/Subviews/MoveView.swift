@@ -12,7 +12,7 @@ struct MoveView: View {
     
     
     var body: some View {
-        if true { // appModel.activeController?.game.mode == .review {
+        if appModel.activeController?.game.mode == .review {
             ReviewNavigationView()
         } else {
             MoveDetectionView()
@@ -79,32 +79,32 @@ struct ReviewNavigationView: View {
 
     var body: some View {
             
-        HStack(spacing: 32) {
-            Button(action: {
-                appModel.reviewController?.previousMove()
-            }) {
-                Image(systemName: "chevron.backward")
-            }
-            .disabled(appModel.reviewController?.game.stage != .inGame(.beforePlayersTurn) || appModel.reviewController!.currentMoveIndex == 0)
+        VStack(alignment: .center, spacing: 32.0) {
+            Text("Move")
+                .padding([.leading, .trailing], 24.0)
             
-            Button(action: {}) {
-                HStack {
-                    if appModel.reviewController?.game.moveHistory.count ?? 0 > appModel.reviewController?.currentMoveIndex ?? 0 {
-                        Text(appModel.reviewController?.game.moveHistory[appModel.reviewController?.currentMoveIndex ?? 0] ?? "No Move left")
-                    }
+            HStack(spacing: 32) {
+                Button(action: {
+                    appModel.reviewController?.previousMove()
+                }) {
+                    Image(systemName: "chevron.backward")
                 }
+                .disabled(appModel.reviewController?.game.stage != .inGame(.beforePlayersTurn) || appModel.reviewController!.currentMoveIndex == 0)
+                
+                if appModel.reviewController?.game.moveHistory.count ?? 0 > appModel.reviewController?.currentMoveIndex ?? 0 {
+                    Text(appModel.reviewController?.game.moveHistory[appModel.reviewController?.currentMoveIndex ?? 0] ?? "No Move left")
+                        .padding([.leading, .trailing], 24.0)
+                }
+                
+                Button(action: {
+                    appModel.reviewController?.nextMove()
+                }) {
+                    Image(systemName: "chevron.forward")
+                }
+                .disabled(appModel.reviewController?.game.stage != .inGame(.beforePlayersTurn) || appModel.reviewController?.game.moveHistory.count ?? 0 <= appModel.reviewController?.currentMoveIndex ?? 0)
             }
-            .disabled(true)
-            .padding([.leading, .trailing], 24.0)
-            
-            Button(action: {
-                appModel.reviewController?.nextMove()
-            }) {
-                Image(systemName: "chevron.forward")
-            }
-            .disabled(appModel.reviewController?.game.stage != .inGame(.beforePlayersTurn) || appModel.reviewController?.game.moveHistory.count ?? 0 <= appModel.reviewController?.currentMoveIndex ?? 0)
+            .padding()
         }
-        .padding()
     }
 }
 

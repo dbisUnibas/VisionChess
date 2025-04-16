@@ -33,26 +33,18 @@ struct GameView: View {
         RealityView { content, attachments in
             Task {
                 dataSource.removeAll()
-            }
-            
-            guard let scene else {
-                return
-            }
-            
-            Task {
                 switch appModel.activeController?.game.mode {
-                case .virtual, .physical, .review:
+                    case .virtual, .physical, .review:
                         let cursor = try await ModelEntity(named: "PlacementCursor")
                         appModel.activeController?.placementLocation.addChild(cursor)
-                        print("Added cursor")
+                        break
                     case .mixed:
                         let cursor = try await ModelEntity(named: "pointer")
                         appModel.activeController?.placementLocation.addChild(cursor)
-                        print("Added cursor")
+                        break
                     case .none:
-                        print("Game mode not set")
+                        break
                 }
-                
             }
             
             appModel.viewModel?.prepare()
@@ -73,23 +65,7 @@ struct GameView: View {
             SpatialTapGesture()
                 .targetedToAnyEntity()
                 .onEnded { value in
-                    if let activeController = appModel.activeController {
-                        if activeController.game.mode == .mixed {
-                            if appModel.viewModel?.pointersPlaced == 0 {
-                                appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 1))
-                            } else {
-                                appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 2))
-                            }
-                        } else {
-                            if activeController.pieceEntities.count == 0 {
-                                appModel.viewModel?.placeBoard(dataSource.insert(side: appModel.activeController?.localPlayer.side ?? .white, isSpatial: false, isPointer: 0))
-                            }
-                        }
-                        
-                        if (appModel.viewModel?.pointersPlaced == 1 || activeController.game.mode != .mixed) && activeController.pieceEntities.count == 0 {
-                            activeController.startGame()
-                        }
-                    }
+                    tapGestureEnded(value)
                 }
         )
         .gesture(
@@ -98,55 +74,10 @@ struct GameView: View {
                 .targetedToAnyEntity()
                 .handActivationBehavior(.pinch)
                 .onChanged { value in
-                    if appModel.activeController?.game.stage != .inGame(.duringPlayersTurn) {
-                        return
-                    }
-                    
-                    if sourceTransform == nil {
-                        sourceTransform = value.entity.transform
-                    }
-                    
-                    if appModel.activeController?.currentlyMovingChessPiece == nil && appModel.activeController?.currentlyMovingChessPieceCollisionSubscription == nil {
-                        appModel.activeController?.setCurrentlyMovingChessPiece(entity: value.entity)
-                        appModel.activeController?.playSoundEffect(SFX.pickUp)
-                    }
-
-                    if let rotation = value.second?.rotation {
-                        let rotationTransform = Transform(AffineTransform3D(rotation: rotation))
-                        value.entity.transform.rotation = sourceTransform!.rotation * rotationTransform.rotation
-                    } else if let transform = value.first?.location3D {
-                        value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = false
-                        let location3D = value.convert(transform, from: .local, to: .scene)
-                        appModel.activeController?.moveCube(entity: value.entity, to: location3D)
-                    }
+                    dragGestureChanged(value)
                 }
                 .onEnded { value in
-                    sourceTransform = nil
-                    value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = true
-                    
-                    if appModel.activeController?.game.stage != .inGame(.duringPlayersTurn) {
-                        return
-                    }
-                    
-                    if appModel.activeController?.currentTargetField.isEmpty ?? true {
-                        print("Return piece to initial position")
-                        appModel.activeController?.movePieceToLastKnownPosition(piece: value.entity)
-                    } else {
-                        let fieldEntity = appModel.activeController?.currentTargetField.last!
-                        if let fieldEntity = fieldEntity {
-                            
-                            
-                            print("Move piece to field")
-                            appModel.activeController?.move(piece: ChessPiece(rawValue: value.entity.name)!, to: ChessField(rawValue: fieldEntity.name)!, promotedPiece: nil) { success in
-                                if success {
-                                    fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
-                                } else {
-                                    appModel.activeController?.movePieceToLastKnownPosition(piece: value.entity)
-                                    print("Return piece to initial position")
-                                }
-                            }
-                        }
-                    }
+                    dragGestureEnded(value)
                 }
         )
         .task {
@@ -157,6 +88,99 @@ struct GameView: View {
         }
         .task {
             await appModel.viewModel?.processPlaneDetectionUpdates()
+        }
+    }
+}
+    
+extension GameView {
+    
+    func tapGestureEnded(_ value: EntityTargetValue<SpatialTapGesture.Value>) {
+        if let activeController = appModel.activeController,
+           let viewModel = appModel.viewModel {
+            
+            let side = activeController.localPlayer.side ?? .white
+            var pointer: Int?
+            
+            // Determine pointer value based on game mode and board state.
+            if activeController.game.mode == .mixed {
+                pointer = viewModel.pointersPlaced == 0 ? 1 : 2
+            } else if activeController.pieceEntities.isEmpty {
+                pointer = 0
+            }
+            
+            if let pointer = pointer {
+                viewModel.placeBoard(
+                    dataSource.insert(
+                        side: side,
+                        isSpatial: false,
+                        isPointer: pointer
+                    )
+                )
+            }
+            
+            if (viewModel.pointersPlaced == 1 || activeController.game.mode != .mixed) &&
+               activeController.pieceEntities.isEmpty {
+                activeController.startGame()
+            }
+        }
+    }
+    
+    func dragGestureChanged(_ value: EntityTargetValue<SimultaneousGesture<DragGesture, RotateGesture3D>.Value>) {
+        guard let activeController = appModel.activeController,
+              activeController.game.stage == .inGame(.duringPlayersTurn) else {
+            return
+        }
+        
+        if sourceTransform == nil {
+            sourceTransform = value.entity.transform
+        }
+        
+        if activeController.currentlyMovingChessPiece == nil && activeController.currentlyMovingChessPieceCollisionSubscription == nil {
+            activeController.setCurrentlyMovingChessPiece(entity: value.entity)
+            activeController.playSoundEffect(SFX.pickUp)
+        }
+
+        if let rotation = value.second?.rotation {
+            let rotationTransform = Transform(AffineTransform3D(rotation: rotation))
+            value.entity.transform.rotation = sourceTransform!.rotation * rotationTransform.rotation
+        } else if let transform = value.first?.location3D {
+            value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = false
+            let location3D = value.convert(transform, from: .local, to: .scene)
+            value.entity.setPosition(location3D, relativeTo: nil)
+        }
+    }
+    
+    func dragGestureEnded(_ value: EntityTargetValue<SimultaneousGesture<DragGesture, RotateGesture3D>.Value>) {
+        sourceTransform = nil
+        value.entity.components[PhysicsBodyComponent.self]?.isAffectedByGravity = true
+        
+        guard let activeController = appModel.activeController,
+              activeController.game.stage == .inGame(.duringPlayersTurn) else {
+            return
+        }
+        
+        // If no target field exists, return the piece to its last known position.
+        if activeController.currentTargetField.isEmpty {
+            print("Return piece to initial position")
+            activeController.movePieceToLastKnownPosition(piece: value.entity)
+            return
+        }
+        
+        guard let fieldEntity = activeController.currentTargetField.last,
+              let piece = ChessPiece(rawValue: value.entity.name),
+              let field = ChessField(rawValue: fieldEntity.name) else {
+            return
+        }
+        
+        print("Move piece to field")
+
+        activeController.move(piece: piece, to: field, promotedPiece: nil) { success in
+            if success {
+                fieldEntity.components[OpacityComponent.self]?.opacity = 0.0
+            } else {
+                activeController.movePieceToLastKnownPosition(piece: value.entity)
+                print("Return piece to initial position")
+            }
         }
     }
 }

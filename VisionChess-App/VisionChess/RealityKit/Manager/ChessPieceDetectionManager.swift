@@ -80,14 +80,12 @@ class ChessPieceDetectionManager {
         return try? ChessPieceDetectionModel(configuration: config)
     }()
     
-    // MARK: - TableView Data
     let predictionsSubject: PassthroughSubject<ChessBoardPredictionResult, Never> = .init()
     
     init() {
         setUpModel()
     }
     
-    // MARK: - Setup Core ML
     func setUpModel() {
         guard let objectSegmentationModel = objectSegmentationModel else { fatalError("Failed to load the model") }
         if let visionModelSegmentation = try? VNCoreMLModel(for: objectSegmentationModel.model) {

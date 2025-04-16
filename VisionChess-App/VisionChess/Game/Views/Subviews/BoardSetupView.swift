@@ -16,7 +16,7 @@ struct BoardSetupView: View {
         VStack(alignment: .center, spacing: 64) {
             if appModel.activeController?.game.mode == .mixed {
                 VStack(spacing: 24) {
-                    Text("Place two markers on opposite corners of your board's fields.")
+                    Text("Place two markers on opposite corners (top-left & top-right) of your board's fields.")
                         .font(.largeTitle)
                         .multilineTextAlignment(.center)
                     
@@ -36,7 +36,7 @@ struct BoardSetupView: View {
                 Image(systemName: "arrow.down.to.line.square")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 124, height: 124)
+                    .frame(width: 104, height: 104)
             }
         }
         .frame(width: 900, height: 600)

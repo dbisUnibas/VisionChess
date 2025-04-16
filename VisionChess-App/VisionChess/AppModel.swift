@@ -23,6 +23,7 @@ class AppModel {
         didSet {
             UserDefaults.standard.set(playerName, forKey: "player-name")
             sessionController?.localPlayer.name = playerName
+            gameController?.localPlayer.name = playerName
         }
     }
     

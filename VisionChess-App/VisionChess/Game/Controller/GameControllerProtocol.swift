@@ -23,12 +23,15 @@ protocol GameControllerProtocol {
     var raycastOrigin: Entity { get set }
     var placementLocation: Entity { get set }
     var planeToProjectOnFound: Bool { get set }
-    var game: GameModel { get set}
-    var localPlayer: PlayerModel { get set}
-    var gameSyncStore: GameSyncStore { get set}
-    var fieldEntities: [ChessField: Entity] { get set}
-    var pieceEntities: [ChessPiece: Entity] { get set}
-    var alert: String? { get set}
+    var game: GameModel { get set }
+    var localPlayer: PlayerModel { get set }
+    var gameSyncStore: GameSyncStore { get set }
+    var fieldEntities: [ChessField: Entity] { get set }
+    var pieceEntities: [ChessPiece: Entity] { get set }
+    var alert: String? { get set }
+    var rawPrediction: ChessPieceDetectionManager.ChessBoardPredictionResult? { get set}
+    var currentMoveEstimate: String? { get set }
+    var moveRequestPending: Bool { get set }
     
     func enterRecentGames()
     func enterTeamSelection(gameMode: GameModel.GameMode)
@@ -42,22 +45,16 @@ protocol GameControllerProtocol {
     func gameStateChanged()
     func move(piece: ChessPiece, to: ChessField, promotedPiece: ChessPieceFen?, completion: @escaping (Bool) -> Void)
     func resetAlert()
-    
     func movePieceToLastKnownPosition(piece: Entity)
     func handleCollisions(content: RealityViewContent)
     func setPlaneToProjectOnFound(value: Bool)
     func setPlacementLocationTransform(value: Transform)
     func setCurrentlyMovingChessPiece(entity: Entity)
-    
     func playSoundEffect(_ name: SFX)
     func setSuggestionLevel(_ level: GameModel.SuggestionLevel)
     func setGameID(_ id: String)
     func setMoveHistory(_ history: [String])
-    
     func update(prediction: ChessPieceDetectionManager.ChessBoardPredictionResult) async
-    var rawPrediction: ChessPieceDetectionManager.ChessBoardPredictionResult? { get set}
-    var currentMoveEstimate: String? { get set}
-    var moveRequestPending: Bool { get set}
     func applyPhysicalMove()
 }
 
@@ -90,37 +87,6 @@ extension GameControllerProtocol {
         } else {
             return nil
         }
-    }
-    
-    func pieceAt(field: String) -> ChessPieceFen? {
-        let parts = game.gameStateFen.split(separator: " ")
-        guard let boardState = parts.first else { return nil }
-        
-        let ranks = boardState.split(separator: "/")
-        guard ranks.count == 8 else { return nil }
-        
-        let file = field.first!
-        let rank = field.last!
-        
-        guard let rankIndex = "87654321".firstIndex(of: rank),
-              let fileIndex = "abcdefgh".firstIndex(of: file) else { return nil }
-        
-        let row = ranks[rankIndex.utf16Offset(in: "87654321")]
-        
-        var expandedRow = ""
-        for char in row {
-            if let digit = char.wholeNumberValue {
-                expandedRow += String(repeating: ".", count: digit)
-            } else {
-                expandedRow.append(char)
-            }
-        }
-        
-        let fileOffset = fileIndex.utf16Offset(in: "abcdefgh")
-        let expandedIndex = expandedRow.index(expandedRow.startIndex, offsetBy: fileOffset)
-        let pieceChar = expandedRow[expandedIndex]
-        
-        return ChessPieceFen(rawValue: String(pieceChar))
     }
     
     func startBoardConstruction() async {
@@ -305,10 +271,6 @@ extension GameControllerProtocol {
         return ChessPiece(rawValue: piece) != nil
     }
 
-    func moveCube(entity: Entity, to: SIMD3<Float>) {
-        entity.setPosition(to, relativeTo: nil)
-    }
-    
     func getDefeatedPieces(side: String) -> [String] {
         var defeatedPieces: [String] = []
         
@@ -333,18 +295,18 @@ extension GameControllerProtocol {
 
         // Step 1: Move up slightly
         let upTransform = Transform(translation: SIMD3(0, 0.05, 0))
-        await piece.moveAsync(to: upTransform, relativeTo: piece, duration: 0.5, timingFunction: .easeIn)
+        await piece.moveAsync(to: upTransform, relativeTo: piece, duration: 0.3, timingFunction: .easeIn)
         let finalTranslation = field.transform.translation + SIMD3(0, 0.05, 0)
         
         // Step 2: Move to the target field
         let finalTransform = Transform(scale: piece.transform.scale,
                                        rotation: piece.transform.rotation,
                                        translation: finalTranslation)
-        await piece.moveAsync(to: finalTransform, relativeTo: piece.parent!, duration: 1.0, timingFunction: .linear)
+        await piece.moveAsync(to: finalTransform, relativeTo: piece.parent!, duration: 0.8, timingFunction: .linear)
                 
         // Step 3: Move down slightly for a landing effect
-        let downTransform = Transform(translation: SIMD3(0, -0.03, 0))
-        await piece.moveAsync(to: downTransform, relativeTo: piece, duration: 0.5, timingFunction: .easeOut)
+        let downTransform = Transform(translation: SIMD3(0, -0.025, 0))
+        await piece.moveAsync(to: downTransform, relativeTo: piece, duration: 0.3, timingFunction: .easeOut)
         
         // Step 4: Restore gravity
         piece.components[PhysicsBodyComponent.self]?.isAffectedByGravity = true
@@ -472,10 +434,6 @@ extension GameControllerProtocol {
             }
             return nil
         }
-        
-        
         return nil
     }
-
-
 }

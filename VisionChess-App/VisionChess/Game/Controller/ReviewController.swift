@@ -49,7 +49,7 @@ final class ReviewController: GameControllerProtocol {
         }
     }
     
-    var localPlayer = PlayerModel(id: UUID(), name: "You")
+    var localPlayer = PlayerModel(id: UUID(), name: "You", deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString)
     
     var gameSyncStore = GameSyncStore() {
         didSet {

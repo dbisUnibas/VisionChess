@@ -112,7 +112,8 @@ final class SessionController: GameControllerProtocol {
         // Create a representation of the local participant.
         localPlayer = PlayerModel(
             id: session.localParticipant.id,
-            name: appModel.playerName
+            name: appModel.playerName,
+            deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
         )
         appModel.showPlayerNameAlert = localPlayer.name.isEmpty
         
@@ -222,8 +223,21 @@ final class SessionController: GameControllerProtocol {
             
             if game.currentSide == localPlayer.side {
                 let deviceId = UIDevice.current.identifierForVendor?.uuidString
-                if let deviceId = deviceId {
-                    let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: opponentStrength.level)
+                if let localSide = localPlayer.side,
+                   let deviceId = deviceId,
+                   let whitePlayer = game.whitePlayer,
+                   let blackPlayer = game.blackPlayer {
+                    
+                    guard let white = players.first(where: {$0.value.side == .white})?.value,
+                          let black = players.first(where: {$0.value.side == .black})?.value else { return }
+                        
+                    game.whitePlayer = "\(white.deviceId)//\(white.name)"
+                    game.blackPlayer = "\(black.deviceId)//\(black.name)"
+                        
+                    guard let whitePlayer = game.whitePlayer, let blackPlayer = game.blackPlayer else { return }
+                    
+                    let request = GameRequest(white: whitePlayer, black: blackPlayer, opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: opponentStrength.level)
+                    
                     GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
                         if let error = error {
                             print("Error: \(error.localizedDescription)")
@@ -332,6 +346,16 @@ final class SessionController: GameControllerProtocol {
         
         game.winner = side
         game.stage = .gameOver
+        
+        guard let gameId = self.game.gameId else { return }
+        
+        let updateRequest: GameUpdateRequest = GameUpdateRequest(winner: side == .white ? game.whitePlayer : game.blackPlayer)
+        
+        GamesAPI.gamesIdPatch(id: gameId, gameUpdateRequest: updateRequest) { response, error in
+            guard error == nil else {
+                return
+            }
+        }
     }
     
     func endGame() {

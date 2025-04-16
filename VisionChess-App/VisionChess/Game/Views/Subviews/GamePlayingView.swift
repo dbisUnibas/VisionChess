@@ -106,7 +106,7 @@ struct TeamStatusView: View {
             if activeController.localPlayer.side == team {
                 return [activeController.localPlayer]
             } else {
-                return [PlayerModel(id: UUID(), name: "Stockfish", side: activeController.localPlayer.side == .white ? .black : .white)]
+                return [PlayerModel(id: UUID(), name: "Stockfish", deviceId: "1111", side: activeController.localPlayer.side == .white ? .black : .white)]
             }
         }
         

@@ -22,7 +22,7 @@ struct VisionChessApp: App {
             switch newPhase {
                 case .active:
                     print("🌞 App is active")
-                    appModel.playBackgroundMusic() // Or resume if paused
+                    appModel.playBackgroundMusic()
                 case .inactive:
                     print("💤 App is inactive")
                 case .background:

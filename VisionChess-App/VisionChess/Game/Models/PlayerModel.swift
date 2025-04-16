@@ -11,6 +11,7 @@ import SwiftUI
 struct PlayerModel: Codable, Hashable, Sendable, Identifiable {
     let id: UUID
     var name: String
+    var deviceId: String
     
     var score: Int = 0
     var isPlaying: Bool = false

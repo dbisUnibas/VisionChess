@@ -14,6 +14,8 @@ struct GameModel: Codable, Hashable, Sendable {
     var gameStateFen: String = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     var checkers: [ChessField] = []
     var winner: PlayerModel.Side?
+    var whitePlayer: String?
+    var blackPlayer: String?
     var gameId: String?
     var lastKnownPosition: [ChessPiece: ChessField] = initialPosition
     var stage: ActivityStage = .modeSelection

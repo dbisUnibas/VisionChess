@@ -47,7 +47,7 @@ final class GameController: GameControllerProtocol {
         }
     }
     
-    var localPlayer = PlayerModel(id: UUID(), name: "You")
+    var localPlayer: PlayerModel
     
     var gameSyncStore = GameSyncStore() {
         didSet {
@@ -66,7 +66,12 @@ final class GameController: GameControllerProtocol {
         }
     }
     
-    init() {
+    init(appModel: AppModel) {
+        localPlayer = PlayerModel(id: UUID(),
+                                  name: appModel.playerName,
+                                  deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString)
+        appModel.showPlayerNameAlert = localPlayer.name.isEmpty
+        
         contentEntity.addChild(placementLocation)
         deviceLocation.addChild(raycastOrigin)
         
@@ -123,9 +128,19 @@ final class GameController: GameControllerProtocol {
             await self.findAllFieldEntities()
             await self.findAllPieceEntities()
             
-            let deviceId = UIDevice.current.identifierForVendor?.uuidString
-            if let deviceId = deviceId, game.mode != .review {
-                let request = GameRequest(white: deviceId, black: "", opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: self.opponentStrength.level)
+            if let localSide = localPlayer.side {
+                if localSide == .white {
+                    game.whitePlayer = "\(localPlayer.deviceId)//\(localPlayer.name)"
+                    game.blackPlayer = "1111//Stockfish"
+                } else {
+                    game.whitePlayer = "1111//Stockfish"
+                    game.blackPlayer = "\(localPlayer.deviceId)//\(localPlayer.name)"
+                }
+            
+                guard let whitePlayer = game.whitePlayer,
+                      let blackPlayer = game.blackPlayer else { return }
+                
+                let request = GameRequest(white: whitePlayer, black: blackPlayer, opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: self.opponentStrength.level)
                 GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
                     if let error = error {
                         print("Error: \(error.localizedDescription)")
@@ -271,6 +286,16 @@ final class GameController: GameControllerProtocol {
         
         game.winner = side
         game.stage = .gameOver
+        
+        guard let gameId = self.game.gameId else { return }
+        
+        let updateRequest: GameUpdateRequest = GameUpdateRequest(winner: side == .white ? game.whitePlayer : game.blackPlayer)
+        
+        GamesAPI.gamesIdPatch(id: gameId, gameUpdateRequest: updateRequest) { response, error in
+            guard error == nil else {
+                return
+            }
+        }
     }
     
     func endGame() {

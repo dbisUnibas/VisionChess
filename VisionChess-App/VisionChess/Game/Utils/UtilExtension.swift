@@ -46,31 +46,10 @@ extension float4x4 {
     // The identity transform
     static let identity = matrix_identity_float4x4
     
-//    init(translation: SIMD3<Float>) {
-//        self = matrix_identity_float4x4
-//        columns.3.x = translation.x
-//        columns.3.y = translation.y
-//        columns.3.z = translation.z
-//    }
-    
     init(scale: SIMD3<Float>) {
         self = matrix_identity_float4x4
         self.scale = scale
     }
-    
-    /**
-     Treats matrix as a (right-hand column-major convention) transform matrix
-     and factors out the translation component of the transform.
-     */
-//    var translation: SIMD3<Float> {
-//        get {
-//            let translation = columns.3
-//            return SIMD3<Float>(translation.x, translation.y, translation.z)
-//        }
-//        set(newValue) {
-//            columns.3 = SIMD4<Float>(newValue.x, newValue.y, newValue.z, columns.3.w)
-//        }
-//    }
     
     /**
      Factors out the orientation component of the transform.
@@ -283,13 +262,10 @@ extension CVPixelBuffer {
     }
 }
 
-import Foundation
-import RealityKit
-import Combine
-
 extension Entity {
     
-    @MainActor func moveAsync(to target: Transform, relativeTo referenceEntity: Entity?, duration: TimeInterval, timingFunction: AnimationTimingFunction = .default) async {
+    @MainActor
+    func moveAsync(to target: Transform, relativeTo referenceEntity: Entity?, duration: TimeInterval, timingFunction: AnimationTimingFunction = .default) async {
         guard let scene else {
             return
         }

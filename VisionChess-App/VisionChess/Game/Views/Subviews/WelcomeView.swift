@@ -53,7 +53,7 @@ struct WelcomeView: View {
                     .disabled(!connectionEstablished)
                 
                 Button("Training", systemImage: "chart.line.uptrend.xyaxis") {
-                    appModel.gameController = GameController()
+                    appModel.gameController = GameController(appModel: appModel)
                 }
                 .tint(.teal)
                 .disabled(!connectionEstablished)
