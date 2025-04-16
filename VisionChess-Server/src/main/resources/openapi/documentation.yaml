@@ -310,6 +310,7 @@ paths:
   /games/{id}/moveValid/{move}:
     get:
       description: ""
+      tags: ["Games"]
       parameters:
       - name: "id"
         in: "path"
