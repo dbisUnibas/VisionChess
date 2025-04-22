@@ -1,0 +1,81 @@
+{
+    "steps": [
+        {
+            "text": "Welcome to Chess! This tutorial will teach you the basics.",
+        },
+        {
+            "text": "The goal of chess is to checkmate your opponent’s king — trap it so it cannot escape capture.",
+        },
+        {
+            "text": "Chess is a two‑player strategy game played on a board with 64 squares.",
+        },
+        {
+            "text": "The board has 64 squares arranged in an 8×8 grid, alternating light and dark colors.",
+        },
+        {
+            "text": "Each player starts with 16 pieces on the back two ranks.",
+        },
+        {
+            "text": "There are six types of pieces: pawn, knight, bishop, rook, queen, and king, each moving in a unique way.",
+        },
+        {
+            "text": "Pawns move forward one square (or two squares on their first move) and capture diagonally.",
+            "piece": "pawn",
+        },
+        {
+            "text": "Knights move in an L‑shape: two squares one way and then one square perpendicular.",
+            "piece": "knight",
+        },
+        {
+            "text": "Bishops move diagonally any number of squares.",
+            "piece": "bishop",
+        },
+        {
+            "text": "Rooks move straight along ranks or files any number of squares.",
+            "piece": "rook",
+        },
+        {
+            "text": "The queen combines the power of a rook and a bishop, moving any number of squares straight or diagonal.",
+            "piece": "queen",
+        },
+        {
+            "text": "The king moves one square in any direction.",
+            "piece": "king",
+        },
+        {
+            "text": "Let’s learn how a pawn moves: move the pawn from e2 to e4.",
+            "startingPositionFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "desiredMove": "e2e4"
+        },
+        {
+            "text": "Now move the knight from g1 to f3.",
+            "startingPositionFen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
+            "desiredMove": "g1f3"
+        },
+        {
+            "text": "Practice capturing: capture the pawn on e5 with your pawn from d4.",
+            "startingPositionFen": "8/8/8/4p3/3P4/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "desiredMove": "d4e5"
+        },
+        {
+            "text": "Castling: move the king from e1 to g1 and the rook from h1 to f1.",
+            "startingPositionFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "desiredMove": "e1g1"
+        },
+        {
+            "text": "Promotion: move a pawn to the last rank and promote it to a queen.",
+            "startingPositionFen": "8/6P1/8/8/8/8/8/6k1 w - - 0 1",
+            "desiredMove": "g7g8q"
+        },
+        {
+            "text": "En passant: when an opposing pawn moves two squares beside your pawn, you can capture it as if it moved one square.",
+            "startingPositionFen": "",
+            "desiredMove": ""
+        },
+        {
+            "text": "Check and checkmate: attack the opponent’s king so it cannot escape.",
+            "startingPositionFen": "",
+            "desiredMove": ""
+        }
+    ]
+}

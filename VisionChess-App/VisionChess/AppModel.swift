@@ -13,8 +13,9 @@ class AppModel {
     var sessionController: SessionController?
     var gameController: GameController?
     var reviewController: ReviewController?
+    var tutorialController: TutorialController?
     var activeController: GameControllerProtocol? {
-        return sessionController ?? gameController ?? reviewController
+        return sessionController ?? gameController ?? reviewController ?? tutorialController
     }
     
     var viewModel: GameViewModel?
@@ -32,6 +33,13 @@ class AppModel {
         
     func initViewModel(dataSource: PlaneAnchoringDataSource) {
         self.viewModel = .init(appModel: self, dataSource: dataSource)
+    }
+    
+    func destroyController() {
+        sessionController = nil
+        gameController = nil
+        reviewController = nil
+        tutorialController = nil
     }
     
     // AUDIO

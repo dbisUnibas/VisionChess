@@ -42,18 +42,6 @@ struct BoardSetupView: View {
         .frame(width: 900, height: 600)
         .padding()
         .visionChessToolbar()
-        .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                Button("End game", systemImage: "xmark") {
-                    showEndGameConfirmation = true
-                }
-            }
-        }
-        .confirmationDialog("End the game for everyone?", isPresented: $showEndGameConfirmation, titleVisibility: .visible) {
-            Button("End game", role: .destructive) {
-                appModel.sessionController?.endGame()
-            }
-        }
     }
 }
 

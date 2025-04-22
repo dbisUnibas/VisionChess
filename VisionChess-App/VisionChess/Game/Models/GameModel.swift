@@ -48,13 +48,14 @@ extension GameModel {
     }
     
     enum GameMode: Codable, Hashable, Sendable {
-        case physical, mixed, virtual, review
+        case physical, mixed, virtual, review, tutorial
         var description : String {
             switch self {
                 case .physical: return "physical"
                 case .mixed: return "mixed"
                 case .virtual: return "virtual"
                 case .review: return "review"
+                case .tutorial: return "tutorial"
             }
           }
     }

@@ -68,6 +68,12 @@ struct WelcomeView: View {
         }
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
+                Button("Tutorial", systemImage: "graduationcap.fill") {
+                    appModel.tutorialController = TutorialController()
+                    appModel.activeController?.enterRecentGames()
+                }
+            }
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 Button("Recent Games", systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90") {
                     appModel.reviewController = ReviewController()
                     appModel.activeController?.enterRecentGames()

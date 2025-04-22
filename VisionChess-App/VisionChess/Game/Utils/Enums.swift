@@ -10,6 +10,17 @@ import Foundation
 import ARKit
 
 
+struct Tutorial: Decodable {
+    let steps: [TutorialStep]
+}
+
+struct TutorialStep: Decodable {
+    let text: String
+    let piece: String?
+    let startingPositionFen: String?
+    let desiredMove: String?
+}
+
 enum ChessPiece: String, CaseIterable, Codable {
     case blackKing
     case blackQueen

@@ -43,7 +43,7 @@ struct GamePlayingView: View {
                     }
                 }
                 
-                if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
+                if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review || appModel.activeController?.game.mode == .tutorial {
                     Button("Open New Window", systemImage: "text.and.command.macwindow") {
                         openWindow(id: "moveWindow")
                     }
@@ -58,17 +58,16 @@ struct GamePlayingView: View {
         .confirmationDialog("End the game for everyone?", isPresented: $showEndGameConfirmation, titleVisibility: .visible) {
             Button("End game", role: .destructive) {
                 appModel.activeController?.endGame()
+                appModel.destroyController()
             }
         }
         .onAppear {
-            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
+            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review || appModel.activeController?.game.mode == .tutorial {
                 openWindow(id: "moveWindow")
             }
         }
         .onDisappear {
-            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
-                dismissWindow(id: "moveWindow")
-            }
+            dismissWindow(id: "moveWindow")
         }
     }
     
@@ -78,7 +77,7 @@ struct GamePlayingView: View {
                 player.side == team
             }
         } else {
-            if appModel.gameController != nil || appModel.reviewController != nil {
+            if appModel.gameController != nil || appModel.reviewController != nil || appModel.tutorialController != nil {
                 return true
             } else {
                 return false

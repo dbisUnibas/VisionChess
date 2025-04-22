@@ -119,6 +119,9 @@ struct SideList: View {
         } else if let reviewController = appModel.reviewController {
             return reviewController.localPlayer.side != side
                 
+        } else if let tutorialController = appModel.tutorialController {
+            return tutorialController.localPlayer.side != side
+                
         } else {
             return true
         }

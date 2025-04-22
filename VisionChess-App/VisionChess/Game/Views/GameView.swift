@@ -31,10 +31,11 @@ struct GameView: View {
     
     var body: some View {
         RealityView { content, attachments in
+            print("GAMEVIEW RELOAD")
             Task {
                 dataSource.removeAll()
                 switch appModel.activeController?.game.mode {
-                    case .virtual, .physical, .review:
+                    case .virtual, .physical, .review, .tutorial:
                         let cursor = try await ModelEntity(named: "PlacementCursor")
                         appModel.activeController?.placementLocation.addChild(cursor)
                         break

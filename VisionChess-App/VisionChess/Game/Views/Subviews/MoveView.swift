@@ -12,10 +12,13 @@ struct MoveView: View {
     
     
     var body: some View {
-        if appModel.activeController?.game.mode == .review {
-            ReviewNavigationView()
-        } else {
-            MoveDetectionView()
+        switch appModel.activeController?.game.mode {
+            case .review:
+                ReviewNavigationView()
+            case .tutorial:
+                TutorialView()
+            default:
+                MoveDetectionView()
         }
     }
 }
@@ -75,6 +78,40 @@ struct MoveDetectionView: View {
 }
 
 struct ReviewNavigationView: View {
+    @Environment(AppModel.self) var appModel
+
+    var body: some View {
+            
+        VStack(alignment: .center, spacing: 32.0) {
+            Text("Move")
+                .padding([.leading, .trailing], 24.0)
+            
+            HStack(spacing: 32) {
+                Button(action: {
+                    appModel.reviewController?.previousMove()
+                }) {
+                    Image(systemName: "chevron.backward")
+                }
+                .disabled(appModel.reviewController?.game.stage != .inGame(.beforePlayersTurn) || appModel.reviewController!.currentMoveIndex == 0)
+                
+                if appModel.reviewController?.game.moveHistory.count ?? 0 > appModel.reviewController?.currentMoveIndex ?? 0 {
+                    Text(appModel.reviewController?.game.moveHistory[appModel.reviewController?.currentMoveIndex ?? 0] ?? "No Move left")
+                        .padding([.leading, .trailing], 24.0)
+                }
+                
+                Button(action: {
+                    appModel.reviewController?.nextMove()
+                }) {
+                    Image(systemName: "chevron.forward")
+                }
+                .disabled(appModel.reviewController?.game.stage != .inGame(.beforePlayersTurn) || appModel.reviewController?.game.moveHistory.count ?? 0 <= appModel.reviewController?.currentMoveIndex ?? 0)
+            }
+            .padding()
+        }
+    }
+}
+
+struct TutorialView: View {
     @Environment(AppModel.self) var appModel
 
     var body: some View {

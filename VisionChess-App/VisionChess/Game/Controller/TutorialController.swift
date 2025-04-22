@@ -14,7 +14,7 @@ import RealityKit
 import AVFoundation
 
 @Observable @MainActor
-final class ReviewController: GameControllerProtocol {
+final class TutorialController: GameControllerProtocol {
     var opponentStrength: GameModel.OpponentStrength = .medium
     var suggestionLevel: GameModel.SuggestionLevel = .medium
     var currentTargetField: [Entity] = []
@@ -32,7 +32,7 @@ final class ReviewController: GameControllerProtocol {
     var currentMoveEstimate: String?
     var moveRequestPending: Bool = false
     var alert: String? = nil
-    
+    var tutorial: Tutorial? = nil
     var currentMoveIndex: Int = 0
     
     
@@ -71,10 +71,50 @@ final class ReviewController: GameControllerProtocol {
     init() {
         contentEntity.addChild(placementLocation)
         deviceLocation.addChild(raycastOrigin)
+        loadTutorialSteps()
         
         // Angle raycasts 15 degrees down.
         let raycastDownwardAngle = 15.0 * (Float.pi / 180)
         raycastOrigin.orientation = simd_quatf(angle: -raycastDownwardAngle, axis: [1.0, 0.0, 0.0])
+    }
+    
+    func loadTutorialSteps() {
+        // Load the JSON (e.g. from a bundled file called “tutorial.json”)
+        guard let url = Bundle.main.url(forResource: "tutorial", withExtension: "json") else {
+            fatalError("tutorial.json not found in bundle")
+        }
+
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch {
+            fatalError("Could not load tutorial.json: \(error)")
+        }
+        
+        do {
+            tutorial = try JSONDecoder().decode(Tutorial.self, from: data)
+        } catch {
+            fatalError("JSON decoding failed: \(error)")
+        }
+
+        // Iterate through steps
+        if let tutorial = tutorial {
+            for (index, step) in tutorial.steps.enumerated() {
+                print("Step \(index + 1):")
+                print("  Text: \(step.text)")
+                if let piece = step.piece, !piece.isEmpty {
+                    print("  Piece: \(piece)")
+                }
+                if let fen = step.startingPositionFen, !fen.isEmpty {
+                    print("  FEN: \(fen)")
+                }
+                if let move = step.desiredMove, !move.isEmpty {
+                    print("  Move: \(move)")
+                }
+                print()
+            }
+        }
+
     }
     
     func setPlaneToProjectOnFound(value: Bool) {
@@ -260,6 +300,7 @@ final class ReviewController: GameControllerProtocol {
         game.gameStateFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
         game.currentSide = .white
         game.lastKnownPosition = initialPosition
+        game.stage = game.mode == .review ? .recentGames : .modeSelection
     }
     
     func gameStateChanged() {
