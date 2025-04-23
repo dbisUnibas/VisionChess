@@ -15,8 +15,6 @@ struct GameSpace: Scene {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     
-    @State private var reloadID = UUID()
-    
     let dataSource: ModelDataSource
     let modelContainer: ModelContainer
     
@@ -34,7 +32,6 @@ struct GameSpace: Scene {
     var body: some Scene {
         ImmersiveSpace(id: Self.spaceID) {
             GameView(dataSource: dataSource)
-                .id(reloadID)
                 .environment(appModel)
                 .onAppear {
                     appModel.isImmersiveSpaceOpen = true
@@ -43,7 +40,6 @@ struct GameSpace: Scene {
                 .onDisappear {
                     appModel.isImmersiveSpaceOpen = false
                     dataSource.removeAll()
-                    reloadID = UUID()
                 }
         }
         .onChange(of: appModel.sessionController?.game.stage, updateImmersiveSpaceState)

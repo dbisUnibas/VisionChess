@@ -31,25 +31,6 @@ struct GameView: View {
     
     var body: some View {
         RealityView { content, attachments in
-            print("GAMEVIEW RELOAD")
-            Task {
-                dataSource.removeAll()
-                switch appModel.activeController?.game.mode {
-                    case .virtual, .physical, .review, .tutorial:
-                        let cursor = try await ModelEntity(named: "PlacementCursor")
-                        appModel.activeController?.placementLocation.addChild(cursor)
-                        break
-                    case .mixed:
-                        let cursor = try await ModelEntity(named: "pointer")
-                        appModel.activeController?.placementLocation.addChild(cursor)
-                        break
-                    case .none:
-                        break
-                }
-            }
-            
-            appModel.viewModel?.prepare()
-            
         } update: { content, attachments in
             if (appModel.activeController?.game.stage == .inSetup)
                 && !content.entities.contains(where: {$0 == appModel.activeController?.contentEntity}) {
@@ -90,10 +71,38 @@ struct GameView: View {
         .task {
             await appModel.viewModel?.processPlaneDetectionUpdates()
         }
+        .onAppear {
+            initGameView()
+        }
     }
 }
     
 extension GameView {
+    
+    func initGameView() {
+        print("INIT GAME VIEW")
+        Task {
+            dataSource.removeAll()
+            switch appModel.activeController?.game.mode {
+                case .virtual, .physical, .review, .tutorial:
+                    let cursor = try await ModelEntity(named: "PlacementCursor")
+                    appModel.activeController?.placementLocation.addChild(cursor)
+                    break
+                case .mixed:
+                    let cursor = try await ModelEntity(named: "pointer")
+                    appModel.activeController?.placementLocation.addChild(cursor)
+                    break
+                case .none:
+                    break
+            }
+        }
+        
+        appModel.viewModel?.prepare()
+    }
+    
+    func resetView() {
+        dataSource.removeAll()
+    }
     
     func tapGestureEnded(_ value: EntityTargetValue<SpatialTapGesture.Value>) {
         if let activeController = appModel.activeController,

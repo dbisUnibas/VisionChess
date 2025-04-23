@@ -78,6 +78,7 @@ struct GameOverView: View {
             
             Button("Quit", systemImage: "xmark") {
                 appModel.activeController?.endGame()
+                appModel.destroyController()
             }
             .padding()
         }

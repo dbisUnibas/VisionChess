@@ -260,6 +260,7 @@ final class ReviewController: GameControllerProtocol {
         game.gameStateFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
         game.currentSide = .white
         game.lastKnownPosition = initialPosition
+        game.stage = game.mode == .review ? .recentGames : .modeSelection
     }
     
     func gameStateChanged() {

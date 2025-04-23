@@ -222,35 +222,29 @@ final class SessionController: GameControllerProtocol {
             await self.findAllPieceEntities()
             
             if game.currentSide == localPlayer.side {
-                let deviceId = UIDevice.current.identifierForVendor?.uuidString
-                if let localSide = localPlayer.side,
-                   let deviceId = deviceId,
-                   let whitePlayer = game.whitePlayer,
-                   let blackPlayer = game.blackPlayer {
+                let white = players.first(where: {$0.value.side == .white})?.value
+                let black = players.first(where: {$0.value.side == .black})?.value
                     
-                    guard let white = players.first(where: {$0.value.side == .white})?.value,
-                          let black = players.first(where: {$0.value.side == .black})?.value else { return }
-                        
-                    game.whitePlayer = "\(white.deviceId)//\(white.name)"
-                    game.blackPlayer = "\(black.deviceId)//\(black.name)"
-                        
-                    guard let whitePlayer = game.whitePlayer, let blackPlayer = game.blackPlayer else { return }
+                game.whitePlayer = "\(white?.deviceId ?? "0000")//\(white?.name ?? "Player")"
+                game.blackPlayer = "\(black?.deviceId ?? "1111")//\(black?.name ?? "Player")"
                     
-                    let request = GameRequest(white: whitePlayer, black: blackPlayer, opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: opponentStrength.level)
+                guard let whitePlayer = game.whitePlayer, let blackPlayer = game.blackPlayer else { print(game)
+                    return }
+                
+                let request = GameRequest(white: whitePlayer, black: blackPlayer, opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: opponentStrength.level)
+                
+                GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
+                    if let error = error {
+                        print("Error: \(error.localizedDescription)")
+                        return
+                    }
+                    print(response ?? "response")
                     
-                    GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
-                        if let error = error {
-                            print("Error: \(error.localizedDescription)")
-                            return
-                        }
-                        print(response ?? "response")
-                        
-                        self.game.stage = .inGame(.beforePlayersTurn)
-                        self.localPlayer.isPlaying = true
-                        self.game.gameId = response
-                        self.beginTurn()
-                    })
-                }
+                    self.game.stage = .inGame(.beforePlayersTurn)
+                    self.localPlayer.isPlaying = true
+                    self.game.gameId = response
+                    self.beginTurn()
+                })
             }
             self.playSoundEffect(SFX.boom)
         }
