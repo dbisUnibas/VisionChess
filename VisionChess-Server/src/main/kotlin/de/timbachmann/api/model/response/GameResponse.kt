@@ -1,6 +1,7 @@
 package de.timbachmann.api.model.response
 
 import de.timbachmann.api.model.entity.ChessOpponent
+import java.util.Date
 
 /**
  * Data class representing the response for a game.
@@ -22,5 +23,6 @@ data class GameResponse(
     val checkers: List<String>,
     val opponentStrength: Int,
     val opponent: ChessOpponent,
-    val winner: String
+    val winner: String,
+    val date: String
 )

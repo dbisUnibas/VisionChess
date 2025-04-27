@@ -66,11 +66,11 @@ paths:
       description: "Deletes a game by ID."
       tags: ["Games"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       responses:
         "400":
           description: "Bad Request"
@@ -103,11 +103,11 @@ paths:
       description: "Retrieves a specific game by ID."
       tags: ["Games"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       responses:
         "400":
           description: "Bad Request"
@@ -137,11 +137,11 @@ paths:
       description: "Updates a game by ID."
       tags: ["Games"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       requestBody:
         content:
           application/json:
@@ -176,16 +176,16 @@ paths:
         \ <br> Client "
       tags: ["Games"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
-      - name: "suggestionLevel"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "suggestionLevel"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       responses:
         "400":
           description: "Bad Request"
@@ -238,11 +238,11 @@ paths:
       description: "Processes a player's move and updates the game state accordingly."
       tags: ["Games"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       requestBody:
         content:
           application/json:
@@ -312,16 +312,16 @@ paths:
       description: ""
       tags: ["Games"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
-      - name: "move"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "move"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       responses:
         "400":
           description: "Bad Request"
@@ -419,11 +419,11 @@ paths:
       description: "Deletes a user by ID."
       tags: ["Users"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       responses:
         "400":
           description: "Bad Request"
@@ -456,11 +456,11 @@ paths:
       description: "Updates a user's details by ID."
       tags: ["Users"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       requestBody:
         content:
           application/json:
@@ -494,11 +494,11 @@ paths:
       description: "Retrieves a user by email."
       tags: ["Users"]
       parameters:
-      - name: "email"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "email"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       responses:
         "400":
           description: "Bad Request"
@@ -526,11 +526,11 @@ paths:
       description: "Updates a user's password by ID."
       tags: ["Users"]
       parameters:
-      - name: "id"
-        in: "path"
-        required: true
-        schema:
-          type: "string"
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
       requestBody:
         content:
           application/json:
@@ -659,7 +659,7 @@ paths:
           description: "OK"
           content:
             '*/*':
-              schema: {}
+              schema: { }
 components:
   schemas:
     GameResponse:
@@ -687,21 +687,24 @@ components:
         opponent:
           type: "string"
           enum:
-          - "PHYSICAL"
-          - "MIXED"
-          - "VIRTUAL"
+            - "PHYSICAL"
+            - "MIXED"
+            - "VIRTUAL"
         winner:
           type: "string"
+        date:
+          type: "string"
       required:
-      - "id"
-      - "gameState"
-      - "moves"
-      - "white"
-      - "black"
-      - "checkers"
-      - "opponentStrength"
-      - "opponent"
-      - "winner"
+        - "id"
+        - "gameState"
+        - "moves"
+        - "white"
+        - "black"
+        - "checkers"
+        - "opponentStrength"
+        - "opponent"
+        - "winner"
+        - "date"
     GameRequest:
       type: "object"
       properties:
@@ -712,52 +715,60 @@ components:
         opponent:
           type: "string"
           enum:
-          - "PHYSICAL"
-          - "MIXED"
-          - "VIRTUAL"
+            - "PHYSICAL"
+            - "MIXED"
+            - "VIRTUAL"
         opponentStrength:
           type: "integer"
           format: "int32"
       required:
-      - "white"
-      - "black"
-      - "opponent"
-      - "opponentStrength"
+        - "white"
+        - "black"
+        - "opponent"
+        - "opponentStrength"
     GameUpdateRequest:
       type: "object"
       properties:
         gameState:
           type: "string"
+          nullable: true
         moves:
           type: "array"
+          nullable: true
           items:
             type: "string"
         white:
           type: "string"
+          nullable: true
         black:
           type: "string"
+          nullable: true
         checkers:
           type: "array"
+          nullable: true
           items:
             type: "string"
         opponent:
           type: "string"
+          nullable: true
           enum:
-          - "PHYSICAL"
-          - "MIXED"
-          - "VIRTUAL"
+            - "PHYSICAL"
+            - "MIXED"
+            - "VIRTUAL"
         opponentStrength:
           type: "integer"
           format: "int32"
+          nullable: true
         winner:
           type: "string"
+          nullable: true
     MoveRequest:
       type: "object"
       properties:
         move:
           type: "string"
       required:
-      - "move"
+        - "move"
     MoveResponse:
       type: "object"
       properties:
@@ -766,8 +777,8 @@ components:
         newGameState:
           $ref: "#/components/schemas/GameResponse"
       required:
-      - "moveSucceeded"
-      - "newGameState"
+        - "moveSucceeded"
+        - "newGameState"
     UserSessionResponse:
       type: "object"
       properties:
@@ -778,9 +789,9 @@ components:
         validTo:
           type: "string"
       required:
-      - "token"
-      - "CSRF"
-      - "validTo"
+        - "token"
+        - "CSRF"
+        - "validTo"
     UserResponse:
       type: "object"
       properties:
@@ -799,12 +810,12 @@ components:
         role:
           type: "string"
       required:
-      - "id"
-      - "email"
-      - "password"
-      - "lastLogin"
-      - "activeSessions"
-      - "role"
+        - "id"
+        - "email"
+        - "password"
+        - "lastLogin"
+        - "activeSessions"
+        - "role"
     LoginRequest:
       type: "object"
       properties:
@@ -813,11 +824,11 @@ components:
         password:
           type: "string"
       required:
-      - "email"
-      - "password"
+        - "email"
+        - "password"
     HashMap:
       type: "object"
-      properties: {}
+      properties: { }
     HashMap_String:
       type: "string"
     ObjectId:
@@ -826,6 +837,7 @@ components:
         timestamp:
           type: "integer"
           format: "int32"
+          nullable: true
     UserSession:
       type: "object"
       properties:
@@ -837,9 +849,9 @@ components:
           type: "string"
           format: "date-time"
       required:
-      - "token"
-      - "CSRF"
-      - "validTo"
+        - "token"
+        - "CSRF"
+        - "validTo"
     User:
       type: "object"
       properties:
@@ -859,12 +871,12 @@ components:
         role:
           type: "string"
       required:
-      - "id"
-      - "email"
-      - "password"
-      - "lastLogin"
-      - "activeSessions"
-      - "role"
+        - "id"
+        - "email"
+        - "password"
+        - "lastLogin"
+        - "activeSessions"
+        - "role"
     UserLoginResponse:
       type: "object"
       properties:
@@ -877,10 +889,10 @@ components:
         role:
           type: "string"
       required:
-      - "id"
-      - "email"
-      - "CSRF"
-      - "role"
+        - "id"
+        - "email"
+        - "CSRF"
+        - "role"
     LoginResponse:
       type: "object"
       properties:
@@ -889,12 +901,12 @@ components:
         user:
           $ref: "#/components/schemas/UserLoginResponse"
       required:
-      - "token"
-      - "user"
+        - "token"
+        - "user"
     LogoutRequest:
       type: "object"
       properties:
         id:
           type: "string"
       required:
-      - "id"
+        - "id"

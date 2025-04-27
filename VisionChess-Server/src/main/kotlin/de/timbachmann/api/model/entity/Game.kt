@@ -3,6 +3,7 @@ package de.timbachmann.api.model.entity
 import de.timbachmann.api.model.response.GameResponse
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import java.util.Date
 
 /**
  * Data class representing a game entity stored in the database.
@@ -26,6 +27,7 @@ data class Game(
     val opponent: ChessOpponent,
     val opponentStrength: Int,
     val winner: String,
+    val date: Date? = null
 ) {
     /**
      * Converts the `Game` entity to a `GameResponse` object for API responses.
@@ -41,6 +43,7 @@ data class Game(
         checkers = checkers,
         opponentStrength = opponentStrength,
         opponent = opponent,
-        winner = winner
+        winner = winner,
+        date = if (date != null) date.toInstant().toString() else ""
     )
 }

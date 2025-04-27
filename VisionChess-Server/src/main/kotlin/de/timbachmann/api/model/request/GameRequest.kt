@@ -3,6 +3,7 @@ package de.timbachmann.api.model.request
 import de.timbachmann.api.model.entity.ChessOpponent
 import de.timbachmann.api.model.entity.Game
 import org.bson.types.ObjectId
+import java.util.Date
 
 /**
  * Data class representing a request to create a new game.
@@ -33,7 +34,8 @@ data class GameRequest(
             checkers = listOf(),
             opponentStrength = opponentStrength,
             opponent = opponent,
-            winner = "null"
+            winner = "null",
+            date = Date()
         )
     }
 }
