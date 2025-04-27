@@ -329,7 +329,8 @@ extension GameControllerProtocol {
 
     func detectPhysicalMove(
         lastKnownPosition: [ChessPiece: ChessField],
-        positionEstimate: [ChessField: ChessPieceDetectionManager.PredictionResult.Label]
+        positionEstimate: [ChessField: ChessPieceDetectionManager.PredictionResult.Label],
+        strictCastling: Bool = true
     ) async -> String? {
         // Determine the local player's side (e.g., "white" or "black").
         let side = localPlayer.side?.rawValue.lowercased() ?? "white"
@@ -407,7 +408,10 @@ extension GameControllerProtocol {
             for square in newSquares {
                 if let detectedLabel = positionEstimate[square] {
                     // Compare with the expected labels for king and rook.
-                    if detectedLabel == label(for: .whiteKing) || detectedLabel == label(for: .blackKing) {
+                    print("Detected: " + detectedLabel.rawValue)
+                    if (strictCastling && (detectedLabel == label(for: .whiteKing) || detectedLabel == label(for: .blackKing))) ||
+                        (!strictCastling && (detectedLabel == label(for: .whiteKing) || detectedLabel == label(for: .blackKing)
+                                             || detectedLabel == label(for: .blackQueen) || detectedLabel == label(for: .whiteQueen))){
                         kingDestination = square
                     } else if detectedLabel == label(for: .whiteRookA) ||
                               detectedLabel == label(for: .whiteRookH) ||

@@ -73,7 +73,7 @@ class GameViewModel {
     func runARKitSession() async {
         #if !targetEnvironment(simulator)
         if let activeController = appModel?.activeController {
-            if activeController.game.mode == .mixed {
+            if activeController.game.mode == .mixed || activeController.game.mode == .tutorial {
                 guard CameraFrameProvider.isSupported else {
                     print("CameraFrameProvider not supported.")
                     return
@@ -176,7 +176,7 @@ class GameViewModel {
 
     func placeBoard(_ entity: AnchorableEntity) {
         
-        if let activeController = appModel?.activeController, activeController.game.mode == .mixed {
+        if let activeController = appModel?.activeController, activeController.game.mode == .mixed || activeController.game.mode == .tutorial {
             if pointersPlaced == 0 {
                 entity.renderContent?.position = activeController.placementLocation.position
                 entity.renderContent?.orientation = activeController.placementLocation.orientation

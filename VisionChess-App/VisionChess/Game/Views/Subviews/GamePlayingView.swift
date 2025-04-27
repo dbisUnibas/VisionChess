@@ -19,17 +19,24 @@ struct GamePlayingView: View {
     
     var body: some View {
         HStack {
-            List {
-                if teamHasPlayers(.white) {
-                    TeamStatusView(team: .white)
-                }
-                if teamHasPlayers(.black) {
-                    TeamStatusView(team: .black)
-                }
-                
+            switch appModel.activeController?.game.mode {
+            case .mixed, .physical, .review, .virtual, .none:
+                    List {
+                        if teamHasPlayers(.white) {
+                            TeamStatusView(team: .white)
+                        }
+                        if teamHasPlayers(.black) {
+                            TeamStatusView(team: .black)
+                        }
+                        
+                    }
+                    .scrollDisabled(true)
+                    .frame(maxWidth: .infinity)
+                    
+                case .tutorial:
+                    TutorialView()
             }
-            .scrollDisabled(true)
-            .frame(maxWidth: .infinity)
+            
         }
         .padding()
         .visionChessToolbar()
@@ -43,7 +50,7 @@ struct GamePlayingView: View {
                     }
                 }
                 
-                if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review || appModel.activeController?.game.mode == .tutorial {
+                if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
                     Button("Open New Window", systemImage: "text.and.command.macwindow") {
                         openWindow(id: "moveWindow")
                     }
@@ -62,7 +69,7 @@ struct GamePlayingView: View {
             }
         }
         .onAppear {
-            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review || appModel.activeController?.game.mode == .tutorial {
+            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .review {
                 openWindow(id: "moveWindow")
             }
         }
@@ -77,7 +84,7 @@ struct GamePlayingView: View {
                 player.side == team
             }
         } else {
-            if appModel.gameController != nil || appModel.reviewController != nil || appModel.tutorialController != nil {
+            if appModel.gameController != nil || appModel.tutorialController != nil || appModel.tutorialController != nil {
                 return true
             } else {
                 return false
@@ -201,5 +208,61 @@ struct MovesView: View {
                 }
             }
         }.padding()
+    }
+}
+
+struct TutorialView: View {
+    @Environment(AppModel.self) var appModel
+
+    var body: some View {
+            
+        if appModel.tutorialController?.tutorial?.steps.count ?? 0 > appModel.tutorialController?.currentStepIndex ?? 0 {
+            VStack(alignment: .center, spacing: 32.0) {
+                
+                HStack(spacing: 32) {
+                    Button(action: {
+                        appModel.tutorialController?.previousStep()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                    }
+                    .disabled(true)
+                    
+                    Spacer()
+                    
+                    VStack(spacing: 48.0) {
+                        if let piece = appModel.tutorialController?.tutorial?.steps[appModel.tutorialController?.currentStepIndex ?? 0].piece {
+                            HStack(spacing: 48.0) {
+                                Model3D(named: "white-\(piece)")
+                                    .scaleEffect(2)
+                                    .frame(depth: 46, alignment: .center)
+                                
+                                Model3D(named: "black-\(piece)")
+                                    .scaleEffect(2)
+                                    .frame(depth: 46, alignment: .center)
+                            }
+                        }
+                        
+                        Text(appModel.tutorialController?.tutorial?.steps[appModel.tutorialController?.currentStepIndex ?? 0].text ?? "")
+                            .font(.largeTitle)
+                            .multilineTextAlignment(.center)
+                        
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        appModel.tutorialController?.nextStep()
+                    }) {
+                        Image(systemName: "chevron.forward")
+                    }
+                    .disabled(appModel.tutorialController?.tutorial?.steps.count ?? 0 <= appModel.tutorialController?.currentStepIndex ?? 0 || appModel.activeController?.moveRequestPending == true)
+                }
+                .padding()
+                
+                Text("\((appModel.tutorialController?.currentStepIndex ?? 0) + 1)/\(appModel.tutorialController?.tutorial?.steps.count ?? 1)")
+                    .padding([.leading, .trailing], 24.0)
+            }
+            .padding()
+        }
     }
 }

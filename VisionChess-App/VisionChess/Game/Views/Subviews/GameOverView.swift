@@ -18,34 +18,63 @@ struct GameOverView: View {
     var body: some View {
         VStack(spacing: 24) {
             if (appModel.activeController?.game.winner != nil && appModel.activeController?.game.winner == appModel.activeController?.localPlayer.side) {
-                
-                Text("Checkmate 🎉")
-                    .font(.system(size: 42, weight: .heavy))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.2), radius: 24, x: 0, y: 1)
-                    .scaleEffect(didAppear ? 1 : 0.5)
-                    .opacity(didAppear ? 1 : 0)
-                    .blur(radius: didAppear ? 0 : 12)
-                    .offset(y: didAppear ? 0 : 16)
-                    .padding()
-                
-                Spacer()
-                    .frame(height: 32)
-                
-                TeamGameOverViewTrophy()
-                
-                Spacer()
-                    .frame(height: 32)
-                
-                Text("Great job!")
-                    .font(.system(size: 36, weight: .medium))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.2), radius: 24, x: 0, y: 1)
-                    .scaleEffect(didAppear ? 1 : 0.5)
-                    .opacity(didAppear ? 1 : 0)
-                    .blur(radius: didAppear ? 0 : 12)
-                    .offset(y: didAppear ? 0 : 16)
-                    .padding()
+                if appModel.activeController?.game.mode == .tutorial {
+                    Text("Checkmate 🎉")
+                        .font(.system(size: 42, weight: .heavy))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2), radius: 24, x: 0, y: 1)
+                        .scaleEffect(didAppear ? 1 : 0.5)
+                        .opacity(didAppear ? 1 : 0)
+                        .blur(radius: didAppear ? 0 : 12)
+                        .offset(y: didAppear ? 0 : 16)
+                        .padding()
+                    
+                    Spacer()
+                        .frame(height: 32)
+                    
+                    TeamGameOverViewTrophy()
+                    
+                    Spacer()
+                        .frame(height: 32)
+                    
+                    Text("Great job! You successfully completed the tutorial!\n You are now ready to play the game!")
+                        .font(.system(size: 36, weight: .medium))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2), radius: 24, x: 0, y: 1)
+                        .scaleEffect(didAppear ? 1 : 0.5)
+                        .opacity(didAppear ? 1 : 0)
+                        .blur(radius: didAppear ? 0 : 12)
+                        .offset(y: didAppear ? 0 : 16)
+                        .padding()
+                } else {
+                    Text("Checkmate 🎉")
+                        .font(.system(size: 42, weight: .heavy))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2), radius: 24, x: 0, y: 1)
+                        .scaleEffect(didAppear ? 1 : 0.5)
+                        .opacity(didAppear ? 1 : 0)
+                        .blur(radius: didAppear ? 0 : 12)
+                        .offset(y: didAppear ? 0 : 16)
+                        .padding()
+                    
+                    Spacer()
+                        .frame(height: 32)
+                    
+                    TeamGameOverViewTrophy()
+                    
+                    Spacer()
+                        .frame(height: 32)
+                    
+                    Text("Great job!")
+                        .font(.system(size: 36, weight: .medium))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.2), radius: 24, x: 0, y: 1)
+                        .scaleEffect(didAppear ? 1 : 0.5)
+                        .opacity(didAppear ? 1 : 0)
+                        .blur(radius: didAppear ? 0 : 12)
+                        .offset(y: didAppear ? 0 : 16)
+                        .padding()
+                }
             } else {
                 Text("Checkmate...")
                     .font(.system(size: 42, weight: .heavy))

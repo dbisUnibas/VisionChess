@@ -17,8 +17,8 @@ struct Tutorial: Decodable {
 struct TutorialStep: Decodable {
     let text: String
     let piece: String?
-    let startingPositionFen: String?
     let desiredMove: String?
+    let opponentMove: String?
 }
 
 enum ChessPiece: String, CaseIterable, Codable {

@@ -14,7 +14,7 @@ struct BoardSetupView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 64) {
-            if appModel.activeController?.game.mode == .mixed {
+            if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .tutorial {
                 VStack(spacing: 24) {
                     Text("Place two markers on opposite corners (top-left & top-right) of your board's fields.")
                         .font(.largeTitle)

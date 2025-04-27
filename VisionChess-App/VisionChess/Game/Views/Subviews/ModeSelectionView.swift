@@ -26,6 +26,7 @@ struct ModeSelectionView: View {
             }
         }
         .frame(width: 900)
+        .scrollDisabled(true)
         .visionChessToolbar()
         .toolbar {
             if appModel.gameController != nil {

@@ -68,9 +68,9 @@ struct WelcomeView: View {
         }
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
-                Button("Tutorial", systemImage: "graduationcap.fill") {
+                Button("Tutorial", systemImage: "graduationcap") {
                     appModel.tutorialController = TutorialController()
-                    appModel.activeController?.enterRecentGames()
+                    appModel.activeController?.startSetup()
                 }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {

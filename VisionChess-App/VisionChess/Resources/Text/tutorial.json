@@ -1,7 +1,7 @@
 {
     "steps": [
         {
-            "text": "Welcome to Chess! This tutorial will teach you the basics.",
+            "text": "Welcome to Chess! \n This tutorial will teach you the basics.",
         },
         {
             "text": "The goal of chess is to checkmate your opponent’s king — trap it so it cannot escape capture.",
@@ -43,39 +43,68 @@
             "piece": "king",
         },
         {
-            "text": "Let’s learn how a pawn moves: move the pawn from e2 to e4.",
-            "startingPositionFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-            "desiredMove": "e2e4"
+            "text": "Let’s learn how a pawn moves: move the pawn from d2 to d4.",
+            "desiredMove": "d2d4"
         },
         {
             "text": "Now move the knight from g1 to f3.",
-            "startingPositionFen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
-            "desiredMove": "g1f3"
+            "desiredMove": "g1f3",
+            "opponentMove": "e7e5"
         },
         {
             "text": "Practice capturing: capture the pawn on e5 with your pawn from d4.",
-            "startingPositionFen": "8/8/8/4p3/3P4/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-            "desiredMove": "d4e5"
+            "desiredMove": "d4e5",
+            "opponentMove": "f7f6"
+        },
+        {
+            "text": "Move e2e3",
+            "desiredMove": "e2e3",
+            "opponentMove": "b7b5"
+        },
+        {
+            "text": "Move f1d3",
+            "desiredMove": "f1d3",
+            "opponentMove": "c7c6"
         },
         {
             "text": "Castling: move the king from e1 to g1 and the rook from h1 to f1.",
-            "startingPositionFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-            "desiredMove": "e1g1"
-        },
-        {
-            "text": "Promotion: move a pawn to the last rank and promote it to a queen.",
-            "startingPositionFen": "8/6P1/8/8/8/8/8/6k1 w - - 0 1",
-            "desiredMove": "g7g8q"
+            "desiredMove": "e1g1",
+            "opponentMove": "c8a6"
         },
         {
             "text": "En passant: when an opposing pawn moves two squares beside your pawn, you can capture it as if it moved one square.",
-            "startingPositionFen": "",
-            "desiredMove": ""
+            "desiredMove": "e5d6",
+            "opponentMove": "d7d5"
+        },
+        {
+            "text": "Move d6d7",
+            "desiredMove": "d6d7",
+            "opponentMove": "d8a5"
+        },
+        {
+            "text": "Promotion: move a pawn to the last rank and promote it to a queen.\n Exchange your pawn with a queen.",
+            "desiredMove": "d7d8",
+            "opponentMove": "e8f7"
+        },
+        {
+            "text": "Move f1e1",
+            "desiredMove": "f1e1",
+            "opponentMove": "h7h5"
+        },
+        {
+            "text": "Move f3h4",
+            "desiredMove": "f3h4",
+            "opponentMove": "c6c5"
+        },
+        {
+            "text": "Move d1f3",
+            "desiredMove": "d1f3",
+            "opponentMove": "b8c6"
         },
         {
             "text": "Check and checkmate: attack the opponent’s king so it cannot escape.",
-            "startingPositionFen": "",
-            "desiredMove": ""
+            "desiredMove": "f3d5",
+            "opponentMove": "b5b4"
         }
     ]
 }

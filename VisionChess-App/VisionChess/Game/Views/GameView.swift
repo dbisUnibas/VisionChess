@@ -84,11 +84,11 @@ extension GameView {
         Task {
             dataSource.removeAll()
             switch appModel.activeController?.game.mode {
-                case .virtual, .physical, .review, .tutorial:
+                case .virtual, .physical, .review:
                     let cursor = try await ModelEntity(named: "PlacementCursor")
                     appModel.activeController?.placementLocation.addChild(cursor)
                     break
-                case .mixed:
+                case .mixed, .tutorial:
                     let cursor = try await ModelEntity(named: "pointer")
                     appModel.activeController?.placementLocation.addChild(cursor)
                     break
@@ -112,7 +112,7 @@ extension GameView {
             var pointer: Int?
             
             // Determine pointer value based on game mode and board state.
-            if activeController.game.mode == .mixed {
+            if activeController.game.mode == .mixed || activeController.game.mode == .tutorial {
                 pointer = viewModel.pointersPlaced == 0 ? 1 : 2
             } else if activeController.pieceEntities.isEmpty {
                 pointer = 0
@@ -128,7 +128,7 @@ extension GameView {
                 )
             }
             
-            if (viewModel.pointersPlaced == 1 || activeController.game.mode != .mixed) &&
+            if (viewModel.pointersPlaced == 1 || (activeController.game.mode != .mixed && activeController.game.mode != .tutorial)) &&
                activeController.pieceEntities.isEmpty {
                 activeController.startGame()
             }

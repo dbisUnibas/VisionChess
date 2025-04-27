@@ -14,14 +14,19 @@ struct RecentGamesView: View {
     @State var games: [GameResponse] = []
     let deviceId = UIDevice.current.identifierForVendor?.uuidString
     @State var contentLoaded: Bool = false
+    @State var gameDates: [String] = []
     
     var body: some View {
         VStack(alignment: .leading) {
             if contentLoaded == true {
                 Section {
                     List {
-                        ForEach(games, id: \.id) { game in
-                            GameListItem(game: game)
+                        ForEach(gameDates, id: \.self) { currentDate in
+                            Section(header: Text(currentDate)) {
+                                ForEach(games.filter({parseDate($0.date) == currentDate})) { game in
+                                    GameListItem(game: game)
+                                }
+                            }
                         }
                     }
                     .refreshable {
@@ -69,7 +74,40 @@ extension RecentGamesView {
                 return !item.moves.isEmpty && (whitePrefix == deviceId || blackPrefix == deviceId)
             }
             self.games = idFiltered
+            self.gameDates = Array(Set(idFiltered.map { parseDate($0.date) } )).sorted()
             contentLoaded = true
+        }
+    }
+    
+    func parseDate(_ date: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        let dateObject = formatter.date(from: date)
+        
+        if let dateObject = dateObject {
+            let outputFormatter = DateFormatter()
+            outputFormatter.timeStyle = .none
+            outputFormatter.dateStyle = .full
+            outputFormatter.timeZone = TimeZone.current
+            outputFormatter.dateFormat = "dd.MM.yyyy"
+            return outputFormatter.string(from: dateObject.onlyDate)
+        } else {
+            return "Unknown Date"
+        }
+        
+    }
+}
+
+extension Date {
+    var onlyDate: Date {
+        get {
+            let calender = Calendar.current
+            let dateComponents = calender.dateComponents([.year, .month, .day], from: self)
+            let dateFormatter = DateFormatter() 
+            dateFormatter.dateFormat = "yyyy:MM:dd"
+            let date = calender.date(from: dateComponents)
+            let stringDate = dateFormatter.string(from: date!)
+            return dateFormatter.date(from: stringDate)!
         }
     }
 }
