@@ -422,6 +422,9 @@ extension GameControllerProtocol {
                 }
             }
             
+            print(kingSource)
+            print(rookDestination)
+            
             // If we have detected both king and rook moves, verify that the king moved two files.
             if let kingSource = kingSource,
                let kingDestination = kingDestination,

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import RealityKit
+import RealityKitContent
 
 struct GamePlayingView: View {
     @Environment(AppModel.self) var appModel
@@ -217,50 +218,56 @@ struct TutorialView: View {
     var body: some View {
             
         if appModel.tutorialController?.tutorial?.steps.count ?? 0 > appModel.tutorialController?.currentStepIndex ?? 0 {
-            VStack(alignment: .center, spacing: 32.0) {
-                
-                HStack(spacing: 32) {
-                    Button(action: {
-                        appModel.tutorialController?.previousStep()
-                    }) {
-                        Image(systemName: "chevron.backward")
+            VStack(alignment: .center, spacing: 48.0) {
+                if let piece = appModel.tutorialController?.tutorial?.steps[appModel.tutorialController?.currentStepIndex ?? 0].piece {
+                    if piece.starts(with: "Board") {
+                        Model3D(named: piece, bundle: realityKitContentBundle)
+                            .frame(depth: 300, alignment: .center)
+                    } else {
+                        HStack(spacing: 48.0) {
+                            Model3D(named: "white-\(piece)")
+                                .scaleEffect(2)
+                                .frame(depth: 46, alignment: .center)
+                            
+                            Model3D(named: "black-\(piece)")
+                                .scaleEffect(2)
+                                .frame(depth: 46, alignment: .center)
+                        }
                     }
-                    .disabled(true)
+                }
+                
+                Text(appModel.tutorialController?.tutorial?.steps[appModel.tutorialController?.currentStepIndex ?? 0].text ?? "")
+                    .font(.largeTitle)
+                    .multilineTextAlignment(.center)
                     
-                    Spacer()
+                VStack(spacing: 24.0) {
+                    Text("\((appModel.tutorialController?.currentStepIndex ?? 0) + 1)/\(appModel.tutorialController?.tutorial?.steps.count ?? 1)")
+                        .padding([.leading, .trailing], 24.0)
                     
-                    VStack(spacing: 48.0) {
-                        if let piece = appModel.tutorialController?.tutorial?.steps[appModel.tutorialController?.currentStepIndex ?? 0].piece {
-                            HStack(spacing: 48.0) {
-                                Model3D(named: "white-\(piece)")
-                                    .scaleEffect(2)
-                                    .frame(depth: 46, alignment: .center)
-                                
-                                Model3D(named: "black-\(piece)")
-                                    .scaleEffect(2)
-                                    .frame(depth: 46, alignment: .center)
+                    if appModel.tutorialController?.tutorial?.steps.count ?? 0 <= appModel.tutorialController?.currentStepIndex ?? 0 || appModel.activeController?.moveRequestPending == true {
+                        Button(action: {}) {
+                            HStack {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .scaleEffect(0.8)
+                                Text("Detecting your move...")
                             }
                         }
+                        .disabled(true)
                         
-                        Text(appModel.tutorialController?.tutorial?.steps[appModel.tutorialController?.currentStepIndex ?? 0].text ?? "")
-                            .font(.largeTitle)
-                            .multilineTextAlignment(.center)
+                        Text("Please look at the board, while we analyze the game.")
+                            .font(.footnote)
                         
+                    } else {
+                        
+                        Button("Next step", systemImage: "arrowshape.right.circle") {
+                            appModel.tutorialController?.nextStep()
+                        }
+                        .tint(.green)
+                        .padding()
                     }
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        appModel.tutorialController?.nextStep()
-                    }) {
-                        Image(systemName: "chevron.forward")
-                    }
-                    .disabled(appModel.tutorialController?.tutorial?.steps.count ?? 0 <= appModel.tutorialController?.currentStepIndex ?? 0 || appModel.activeController?.moveRequestPending == true)
                 }
-                .padding()
                 
-                Text("\((appModel.tutorialController?.currentStepIndex ?? 0) + 1)/\(appModel.tutorialController?.tutorial?.steps.count ?? 1)")
-                    .padding([.leading, .trailing], 24.0)
             }
             .padding()
         }

@@ -16,18 +16,19 @@ struct BoardSetupView: View {
         VStack(alignment: .center, spacing: 64) {
             if appModel.activeController?.game.mode == .mixed || appModel.activeController?.game.mode == .tutorial {
                 VStack(spacing: 24) {
-                    Text("Place two markers on opposite corners (top-left & top-right) of your board's fields.")
+                    Text("Place a marker on the top-left corner & on the bottom-right corner of your board's fields.")
                         .font(.largeTitle)
                         .multilineTextAlignment(.center)
                     
                     Text("Look at a your board and pinch to place a marker.")
                         .font(.title)
                 }
+                .padding()
                 
                 Image("markerInstructions")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 152, height: 152)
+                    .frame(width: 180, height: 180)
             } else {
                 Text("Look at a flat surface and pinch to place the board.")
                     .font(.largeTitle)

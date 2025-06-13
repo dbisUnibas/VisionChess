@@ -156,10 +156,28 @@ final class TutorialController: GameControllerProtocol {
         if tutorial?.steps.count ?? 1 <= currentStepIndex + 1  {
             return
         }
+        self.hideAllFieldEntities()
+        self.highlightCheck()
         
         self.currentStepIndex += 1
         
         if let step = tutorial?.steps[self.currentStepIndex] {
+            if let highlightedFields = step.highlightedFields, !highlightedFields.isEmpty {
+                for highlightedField in highlightedFields {
+                    let chessField = ChessField(rawValue: highlightedField)
+                    
+                    if let chessField = chessField {
+                        let chessFieldEntity = self.fieldEntities[chessField]
+                        
+                        if let chessFieldEntity = chessFieldEntity {
+                            chessFieldEntity.components[OpacityComponent.self]?.opacity = 0.4
+                        }
+                    }
+                }
+                
+                self.playSoundEffect(SFX.notify)
+            }
+            
             if let opponentMove = step.opponentMove, let desiredMove = step.desiredMove {
                 self.moveRequestPending = true
                 game.stage = .inGame(.duringPlayersTurn)
@@ -191,6 +209,7 @@ final class TutorialController: GameControllerProtocol {
                                 // Player's move
                                 self.game.stage = .inGame(.duringPlayersTurn)
                                 
+                                self.hideAllFieldEntities()
                                 self.highlightCheck()
                                 
                                 let from = ChessField(rawValue: String(desiredMove.prefix(2)))
@@ -572,7 +591,7 @@ final class TutorialController: GameControllerProtocol {
             if let piecesTransform = contentEntity.findEntity(named: side.rawValue.lowercased()) {
                 
                 promotedPieceEntity.components = pawnEntity.components
-                promotedPieceEntity.setScale(.init(x: 1.4, y: 1.4, z: 1.4), relativeTo: nil)
+                promotedPieceEntity.setScale(.init(x: 1.7, y: 1.7, z: 1.7), relativeTo: nil)
                 promotedPieceEntity.position = pawnEntity.position
                 pawnEntity.removeFromParent()
                 piecesTransform.addChild(promotedPieceEntity)
@@ -679,6 +698,7 @@ final class TutorialController: GameControllerProtocol {
                         self.moveRequestPending = false
                         self.currentMoveEstimate = nil
                         self.currentMoveTarget = nil
+                        self.highlightCheck()
                         
                         if self.currentStepIndex + 1 == self.tutorial?.steps.count {
                             self.setWinner(side: .white)

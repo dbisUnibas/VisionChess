@@ -45,7 +45,9 @@ struct GameOverView: View {
                         .opacity(didAppear ? 1 : 0)
                         .blur(radius: didAppear ? 0 : 12)
                         .offset(y: didAppear ? 0 : 16)
-                        .padding()
+                        .padding([.leading, .trailing], 24.0)
+                        .padding([.top, .bottom])
+                        .multilineTextAlignment(.center)
                 } else {
                     Text("Checkmate 🎉")
                         .font(.system(size: 42, weight: .heavy))
@@ -168,6 +170,6 @@ struct GameOverView_Previews: PreviewProvider {
         GameOverView()
             .environment(appModel)
             .glassBackgroundEffect()
-            .frame(width: 900, height: 600)
+            .frame(width: 900, height: 620)
     }
 }

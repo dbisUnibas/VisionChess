@@ -37,16 +37,23 @@ struct MoveDetectionView: View {
             .padding()
         } else {
             if appModel.activeController?.localPlayer.isPlaying == true && appModel.activeController?.currentMoveEstimate == nil {
-                Button(action: {}) {
-                    HStack {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                            .scaleEffect(0.8)
-                        Text("Detecting move...")
+                VStack(spacing: 0) {
+                    Button(action: {}) {
+                        HStack {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .scaleEffect(0.8)
+                            Text("Detecting move...")
+                        }
                     }
+                    .disabled(true)
+                    .padding()
+                    
+                    Text("Please look at the board,\n while we analyze the game.")
+                        .font(.footnote)
+                        .padding([.bottom])
+                        .multilineTextAlignment(.center)
                 }
-                .disabled(true)
-                .padding()
             } else if appModel.activeController?.localPlayer.isPlaying == true && appModel.activeController?.currentMoveEstimate != nil {
                 
                 Button("Apply Move \(appModel.activeController?.currentMoveEstimate ?? "")", systemImage: "checkmark") {

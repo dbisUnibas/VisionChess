@@ -141,6 +141,7 @@ final class GameController: GameControllerProtocol {
                       let blackPlayer = game.blackPlayer else { return }
                 
                 let request = GameRequest(white: whitePlayer, black: blackPlayer, opponent: GameRequest.Opponent.init(rawValue: game.mode!.description.uppercased())!, opponentStrength: self.opponentStrength.level)
+                
                 GamesAPI.gamesPost(gameRequest: request, completion: { response, error in
                     if let error = error {
                         print("Error: \(error.localizedDescription)")
@@ -596,7 +597,7 @@ final class GameController: GameControllerProtocol {
             if let piecesTransform = contentEntity.findEntity(named: side.rawValue.lowercased()) {
                 
                 promotedPieceEntity.components = pawnEntity.components
-                promotedPieceEntity.setScale(.init(x: 1.4, y: 1.4, z: 1.4), relativeTo: nil)
+                promotedPieceEntity.setScale(.init(x: 1.7, y: 1.7, z: 1.7), relativeTo: nil)
                 promotedPieceEntity.position = pawnEntity.position
                 pawnEntity.removeFromParent()
                 piecesTransform.addChild(promotedPieceEntity)

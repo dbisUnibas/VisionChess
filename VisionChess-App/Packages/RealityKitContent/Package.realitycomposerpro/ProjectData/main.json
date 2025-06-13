@@ -5,9 +5,11 @@
     "\/RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Scene.usda" : "0A9B4653-B11E-4D6A-850E-C6FCB621626C",
     "\/RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Untitled Scene.usda" : "D560BB77-AAF3-4BDE-B7C4-989332A4688B",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board-Black.usda" : "B5B4A264-0F48-42E6-AD12-71B4FF289CA3",
+    "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board-HP.usda" : "80A366F4-2BE4-4FA3-B884-7FFBE5E11ED4",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board-Mixed-Black.usda" : "B08BF1FE-AE74-4445-8B56-6F387C6A7C35",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board-Mixed-White.usda" : "F93380D8-3D8E-45A6-9681-96D586DDA733",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board-Mixed.usda" : "C39645ED-A410-4F9B-BE67-4B95CECA7E4D",
+    "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board-Setup.usda" : "A8ABCFDD-33CC-44AB-88BF-F5C78A12E897",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board-White.usda" : "658AD029-9299-4284-9F5A-292124D0B6C8",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/Board.usda" : "BE7A6AB0-9460-4747-9088-1FDCB99E5F09",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/GridMaterial.usda" : "66168B71-AB05-424E-8B6C-D33D6E61B08F",
@@ -18,5 +20,14 @@
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/pointer.usda" : "8F8677B0-6398-4665-828B-0C1E127215F9",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/winner_black.usda" : "2BF05EF6-17D8-4259-A76F-40923610CB89",
     "RealityKitContent\/Sources\/RealityKitContent\/RealityKitContent.rkassets\/winner_white.usda" : "BF6BE29A-C957-4926-8979-1C0CDB57FF76"
+  },
+  "projectID" : -9035730594079667641,
+  "uuidToIntID" : {
+    "80A366F4-2BE4-4FA3-B884-7FFBE5E11ED4" : -3870810231807046743,
+    "A8ABCFDD-33CC-44AB-88BF-F5C78A12E897" : 5525415200697764934,
+    "B08BF1FE-AE74-4445-8B56-6F387C6A7C35" : -7224110591765372017,
+    "BE7A6AB0-9460-4747-9088-1FDCB99E5F09" : 8984273476881986214,
+    "C39645ED-A410-4F9B-BE67-4B95CECA7E4D" : 6903433165646234738,
+    "F93380D8-3D8E-45A6-9681-96D586DDA733" : -2945163722058607439
   }
 }

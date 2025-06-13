@@ -128,6 +128,9 @@ extension GameView {
                 )
             }
             
+            print(viewModel.pointersPlaced)
+            print(activeController.pieceEntities.isEmpty)
+            
             if (viewModel.pointersPlaced == 1 || (activeController.game.mode != .mixed && activeController.game.mode != .tutorial)) &&
                activeController.pieceEntities.isEmpty {
                 activeController.startGame()

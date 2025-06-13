@@ -523,7 +523,7 @@ final class ReviewController: GameControllerProtocol {
             if let piecesTransform = contentEntity.findEntity(named: side.rawValue.lowercased()) {
                 
                 promotedPieceEntity.components = pawnEntity.components
-                promotedPieceEntity.setScale(.init(x: 1.4, y: 1.4, z: 1.4), relativeTo: nil)
+                promotedPieceEntity.setScale(.init(x: 1.7, y: 1.7, z: 1.7), relativeTo: nil)
                 promotedPieceEntity.position = pawnEntity.position
                 pawnEntity.removeFromParent()
                 piecesTransform.addChild(promotedPieceEntity)

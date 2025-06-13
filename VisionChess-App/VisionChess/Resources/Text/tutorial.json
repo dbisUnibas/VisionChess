@@ -16,31 +16,54 @@
             "text": "Each player starts with 16 pieces on the back two ranks.",
         },
         {
-            "text": "There are six types of pieces: pawn, knight, bishop, rook, queen, and king, each moving in a unique way.",
+            "text": "Please set up your board like this.",
+            "piece": "Board-Setup"
         },
         {
-            "text": "Pawns move forward one square (or two squares on their first move) and capture diagonally.",
+            "text": "There are six types of pieces: pawn, knight, bishop, rook, queen, and king, each moving in a unique way. \n In the following steps you will learn how.",
+        },
+        {
+            "text": "Pawns move forward one square (or two squares on their first move) and capture diagonally. (e.g. pawn d2)",
             "piece": "pawn",
+            "highlightedFields": [
+                "d2", "d3", "d4"
+            ]
         },
         {
-            "text": "Knights move in an L‑shape: two squares one way and then one square perpendicular.",
+            "text": "Knights move in an L‑shape: two squares one way and then one square perpendicular. Only the knight can jump over other pieces, all others can only move over unoccupied fields. (e.g. knight b1)",
             "piece": "knight",
+            "highlightedFields": [
+                "b1", "a3", "c3"
+            ]
         },
         {
-            "text": "Bishops move diagonally any number of squares.",
+            "text": "Bishops move diagonally any number of squares. (e.g. bishop c1)",
             "piece": "bishop",
+            "highlightedFields": [
+                "c1", "b2", "a3", "d2", "e3", "f4", "g5", "h6"
+
+            ]
         },
         {
-            "text": "Rooks move straight along ranks or files any number of squares.",
+            "text": "Rooks move straight along ranks or files any number of squares. (e.g. rook a1)",
             "piece": "rook",
+            "highlightedFields": [
+                "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"
+            ]
         },
         {
-            "text": "The queen combines the power of a rook and a bishop, moving any number of squares straight or diagonal.",
+            "text": "The queen combines the power of a rook and a bishop, moving any number of squares straight or diagonal. (e.g. queen d1)",
             "piece": "queen",
+            "highlightedFields": [
+                "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "c2", "b3", "a4", "e2", "f3", "g4", "h5"
+            ]
         },
         {
-            "text": "The king moves one square in any direction.",
+            "text": "The king moves one square in any direction. (e.g. king e1)",
             "piece": "king",
+            "highlightedFields": [
+                "e1", "f1", "d1", "e2", "f2", "d2"
+            ]
         },
         {
             "text": "Let’s learn how a pawn moves: move the pawn from d2 to d4.",
@@ -57,52 +80,52 @@
             "opponentMove": "f7f6"
         },
         {
-            "text": "Move e2e3",
+            "text": "Move e2 to e3",
             "desiredMove": "e2e3",
             "opponentMove": "b7b5"
         },
         {
-            "text": "Move f1d3",
+            "text": "Move f1 to d3",
             "desiredMove": "f1d3",
             "opponentMove": "c7c6"
         },
         {
-            "text": "Castling: move the king from e1 to g1 and the rook from h1 to f1.",
+            "text": "Castling: move BOTH the king from e1 to g1 and the rook from h1 to f1.",
             "desiredMove": "e1g1",
             "opponentMove": "c8a6"
         },
         {
-            "text": "En passant: when an opposing pawn moves two squares beside your pawn, you can capture it as if it moved one square.",
+            "text": "En passant: when an opposing pawn moves two squares beside your pawn, you can capture it as if it moved one square. (e5 to d6)",
             "desiredMove": "e5d6",
             "opponentMove": "d7d5"
         },
         {
-            "text": "Move d6d7",
+            "text": "Move d6 to d7",
             "desiredMove": "d6d7",
             "opponentMove": "d8a5"
         },
         {
-            "text": "Promotion: move a pawn to the last rank and promote it to a queen.\n Exchange your pawn with a queen.",
+            "text": "Promotion: move a pawn (d7) to the last rank and promote it to a queen.\n It can now move like a queen. Exchange your physical pawn with a queen.",
             "desiredMove": "d7d8",
             "opponentMove": "e8f7"
         },
         {
-            "text": "Move f1e1",
+            "text": "Move f1 to e1",
             "desiredMove": "f1e1",
             "opponentMove": "h7h5"
         },
         {
-            "text": "Move f3h4",
+            "text": "Move f3 to h4",
             "desiredMove": "f3h4",
             "opponentMove": "c6c5"
         },
         {
-            "text": "Move d1f3",
+            "text": "Move d1 to f3",
             "desiredMove": "d1f3",
             "opponentMove": "b8c6"
         },
         {
-            "text": "Check and checkmate: attack the opponent’s king so it cannot escape.",
+            "text": "Check and checkmate: attack the opponent’s king so it cannot escape. (f3 to d5)",
             "desiredMove": "f3d5",
             "opponentMove": "b5b4"
         }

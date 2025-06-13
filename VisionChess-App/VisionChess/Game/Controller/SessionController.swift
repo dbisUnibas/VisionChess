@@ -217,7 +217,9 @@ final class SessionController: GameControllerProtocol {
     
     func startGame() {
         Task {
-            print("Start Game")
+            if game.mode == .mixed {
+                await self.startBoardConstruction()
+            }
             await self.findAllFieldEntities()
             await self.findAllPieceEntities()
             
@@ -251,6 +253,7 @@ final class SessionController: GameControllerProtocol {
     }
     
     func beginTurn() {
+        print(currentPlayer ?? "")
         guard localPlayer.isPlaying else {
             return
         }
@@ -315,8 +318,6 @@ final class SessionController: GameControllerProtocol {
         hideAllFieldEntities()
         self.currentMoveEstimate = nil
         
-        // self.setWinner(side: self.game.currentSide)
-        
         let nextSide: PlayerModel.Side = game.currentSide == .white ? .black : .white
         print(nextSide)
         
@@ -373,7 +374,6 @@ final class SessionController: GameControllerProtocol {
     func gameStateChanged() {
         if game.stage == .modeSelection {
             localPlayer.isPlaying = false
-            localPlayer.score = 0
         }
         
         updateSpatialTemplatePreference()
@@ -388,6 +388,8 @@ final class SessionController: GameControllerProtocol {
     func updateCurrentPlayer() {
         if game.stage.isInGame, localPlayer.side == game.currentSide {
             localPlayer.isPlaying = true
+        } else {
+            localPlayer.isPlaying = false
         }
     }
     
@@ -728,7 +730,7 @@ final class SessionController: GameControllerProtocol {
             if let piecesTransform = contentEntity.findEntity(named: side.rawValue.lowercased()) {
                 
                 promotedPieceEntity.components = pawnEntity.components
-                promotedPieceEntity.setScale(.init(x: 1.4, y: 1.4, z: 1.4), relativeTo: nil)
+                promotedPieceEntity.setScale(.init(x: 1.7, y: 1.7, z: 1.7), relativeTo: nil)
                 promotedPieceEntity.position = pawnEntity.position
                 pawnEntity.removeFromParent()
                 piecesTransform.addChild(promotedPieceEntity)

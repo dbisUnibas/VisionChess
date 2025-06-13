@@ -1,0 +1,698 @@
+#usda 1.0
+(
+    defaultPrim = "board_entity"
+)
+
+def "board_entity" (
+    active = true
+    prepend apiSchemas = ["MaterialBindingAPI"]
+    customData = {
+        float3 rotationEulerHint = (0.61086524, 0, 0)
+    }
+    references = @Models/board.usdz@
+)
+{
+    reorder nameChildren = ["Geom", "Materials", "tiles_transform_1", "pieces_transform", "tiles_transform", "ui_right_transform", "ui_left_transform", "ui_bottom_transform"]
+    rel material:binding = </board_entity/Materials/main> (
+        bindMaterialAs = "weakerThanDescendants"
+    )
+    quatf xformOp:orient = (0.953717, 0.3007058, 0, 0)
+    float3 xformOp:scale = (50, 50, 50)
+    float3 xformOp:translate = (0, 0, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+    def Xform "pieces_transform" (
+        active = true
+    )
+    {
+        reorder nameChildren = ["black", "white", "black_rook_1", "black_rook", "black_pawn_8", "black_pawn_7", "black_pawn_6", "black_pawn_5", "black_pawn_4", "black_pawn_3", "black_pawn_2", "black_pawn_1", "black_knight_1", "black_knight_2", "black_bishop_1", "black_bishop_2", "black_king", "black_queen"]
+        float3 xformOp:translate = (0, 0.0305, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Xform "white" (
+            active = true
+        )
+        {
+            reorder nameChildren = ["whiteQueen", "whiteKing", "whiteKnightB", "whiteKnightG", "whiteBishopC", "whiteBishopF", "whiteRookA", "whiteRookH", "whitePawnA", "whitePawnB", "whitePawnC", "whitePawnD", "whitePawnE", "whitePawnF", "whitePawnG", "whitePawnH"]
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 1, 1)
+            float3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def "whiteQueen" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-queen.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.01841, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.015190849, 0.036797777, 0.01494555)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (-6.9849193e-10, 0.01846889, -1.1641532e-9)
+                        }
+                    }
+                }
+            }
+
+            def "whiteKing" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-king.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.01965, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.016147131, 0.04094015, 0.01614713)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (3.7252903e-9, 0.020360075, 9.313226e-10)
+                        }
+                    }
+                }
+            }
+
+            def "whiteKnightB" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                customData = {
+                    float3 rotationEulerHint = (0, 1.5707963, 0)
+                }
+                references = @Models/Pieces/white-knight.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (0.7071237, 0, 0.70708984, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.09759179, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.015317435, 0.02971325, 0.013418974)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0.0001759869, 0.014856864, 0.000049758004)
+                        }
+                    }
+                }
+            }
+
+            def "whiteKnightG" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                customData = {
+                    float3 rotationEulerHint = (0, 1.5707963, 0)
+                }
+                references = @Models/Pieces/white-knight.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (0.7059326, 0, 0.708279, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.09658763, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.015317435, 0.02971325, 0.013418974)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0.0001759869, 0.014856864, 0.000049758004)
+                        }
+                    }
+                }
+            }
+
+            def "whiteBishopC" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-bishop.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.058527574, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013800049, 0.032436542, 0.013798526)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (-0.00013362872, 0.016130108, -0.000020570122)
+                        }
+                    }
+                }
+            }
+
+            def "whiteBishopF" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-bishop.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.058510356, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013800049, 0.032436542, 0.013798526)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (-0.00013362872, 0.016130108, -0.000020570122)
+                        }
+                    }
+                }
+            }
+
+            def "whiteRookA" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-rook.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.13717967, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013905812, 0.02577958, 0.013905821)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (1.0244548e-8, 0.012869786, -7.450581e-9)
+                        }
+                    }
+                }
+            }
+
+            def "whiteRookH" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-rook.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.13860723, 0, 0.137)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.013905812, 0.02577958, 0.013905821)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (1.0244548e-8, 0.012869786, -7.450581e-9)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnA" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.13760424, 1.8626451e-9, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnB" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                reorder nameChildren = ["white_pawn_8", "pawn001_Material_0"]
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.09748808, 0, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnC" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.057314165, 0, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnD" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (-0.018520728, 0, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnE" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.019342639, 0, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnF" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.0590919, 0, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnG" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.100483604, 0, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+
+            def "whitePawnH" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+                references = @Models/Pieces/white-pawn.usdz@</Scene>
+            )
+            {
+                rel material:binding = </board_entity/Materials/Material_White> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
+                float3 xformOp:translate = (0.13839364, 0, 0.097)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "Collider"
+                {
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (0.01149391, 0.02117335, 0.011493914)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                            float3 position = (0, 0.010586675, 0)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    over "Materials"
+    {
+        reorder nameChildren = ["Tile_Material", "Material_White", "main", "Material_Black"]
+        over "main"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+
+        def "Material_Black" (
+            active = true
+            references = @Models/Pieces/black-king.usdz@</Material_2>
+        )
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+
+        def "Material_White" (
+            active = true
+            references = @Models/Pieces/white-king.usdz@</Material_2>
+        )
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+
+        def "Tile_Material" (
+            active = true
+            references = @Models/PlacementCursor.usda@</Cube/DefaultMaterial>
+        )
+        {
+            over "DefaultSurfaceShader"
+            {
+                float inputs:opacity = 1
+                float inputs:opacityThreshold = 0.3
+            }
+        }
+    }
+
+    over "Geom"
+    {
+        over "mesh"
+        {
+            def RealityKitComponent "Collider"
+            {
+                uint group = 1
+                uniform token info:id = "RealityKit.Collider"
+                uint mask = 4294967295
+                token type = "Default"
+
+                def RealityKitStruct "Shape"
+                {
+                    float3 extent = (0.3903988, 0.030547246, 0.39190614)
+                    token shapeType = "Box"
+
+                    def RealityKitStruct "pose"
+                    {
+                        float3 position = (0, 0.017005213, 0)
+                    }
+                }
+            }
+
+            def RealityKitComponent "RigidBody"
+            {
+                uniform token info:id = "RealityKit.RigidBody"
+                bool lockRotationX = 1
+                bool lockRotationY = 1
+                bool lockRotationZ = 1
+                bool lockTranslationX = 1
+                bool lockTranslationY = 1
+                bool lockTranslationZ = 1
+                token motionType = "Static"
+
+                def RealityKitStruct "massFrame"
+                {
+                    def RealityKitStruct "m_pose"
+                    {
+                    }
+                }
+
+                def RealityKitStruct "material"
+                {
+                    double staticFriction = 0.8
+                }
+            }
+        }
+    }
+}
+

@@ -46,7 +46,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.01841, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -101,7 +101,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.01965, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -159,7 +159,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (0.7071237, 0, 0.70708984, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.09759179, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -217,7 +217,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (0.7059326, 0, 0.708279, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.09658763, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -272,7 +272,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.058527574, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -327,7 +327,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.058510356, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -382,7 +382,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.13717967, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -437,7 +437,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.13860723, 0, 0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -492,7 +492,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.13760424, 1.8626451e-9, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -550,7 +550,7 @@ def Xform "Transform" (
                 float2 ui:nodegraph:node:pos = (20, 20)
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.09748808, 0, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -607,7 +607,7 @@ def Xform "Transform" (
                 float2 ui:nodegraph:node:pos = (20, 20)
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.057314165, 0, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -664,7 +664,7 @@ def Xform "Transform" (
                 float2 ui:nodegraph:node:pos = (20, 20)
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.018520728, 0, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -721,7 +721,7 @@ def Xform "Transform" (
                 float2 ui:nodegraph:node:pos = (20, 20)
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.019342639, 0, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -778,7 +778,7 @@ def Xform "Transform" (
                 float2 ui:nodegraph:node:pos = (20, 20)
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.0590919, 0, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -835,7 +835,7 @@ def Xform "Transform" (
                 float2 ui:nodegraph:node:pos = (20, 20)
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.100483604, 0, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -892,7 +892,7 @@ def Xform "Transform" (
                 float2 ui:nodegraph:node:pos = (20, 20)
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.13839364, 0, 0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -958,7 +958,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.137, 0, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1013,7 +1013,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.137, 0, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1069,7 +1069,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.137, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1124,7 +1124,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.09945919, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1179,7 +1179,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.061025277, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1234,7 +1234,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.020307124, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1289,7 +1289,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.017368738, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1344,7 +1344,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.056378208, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1399,7 +1399,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.09593935, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1454,7 +1454,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.137, 0, -0.097)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1512,7 +1512,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (0.70830137, 0, -0.70591015, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.09535442, 0, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1570,7 +1570,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (0.70779145, 0, -0.70642143, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.09909076, 0, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1626,7 +1626,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.055295184, 0, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1682,7 +1682,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.05993679, 0, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1738,7 +1738,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (0.02149, 0, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -1793,7 +1793,7 @@ def Xform "Transform" (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1.4, 1.4, 1.4)
+                float3 xformOp:scale = (1.7, 1.7, 1.7)
                 float3 xformOp:translate = (-0.018, 1.8626451e-9, -0.137)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
